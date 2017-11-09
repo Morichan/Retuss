@@ -72,6 +72,7 @@ class ControllerTest {
                     thirdClickedClassDiagramCanvas.getX() + ( secondClickedClassDiagramCanvas.getX() - thirdClickedClassDiagramCanvas.getX() ) / 2,
                     thirdClickedClassDiagramCanvas.getY() - ( thirdClickedClassDiagramCanvas.getY() - secondClickedClassDiagramCanvas.getY() ) / 2
             );
+
             changeClassMenu = "クラスの名前の変更";
             deleteClassMenu = "クラスをモデルから削除";
             classAttributionMenu = "属性";
