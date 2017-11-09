@@ -34,3 +34,11 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 * testfx
   * guava
   * hamcrest
+
+## コンパイルでの注意点
+
+* テストコードのコンパイル時には `-Djdk.attach.allowAttachSelf` システムプロパティを追加してください。
+* TestFX内で `--illegal-access` エラーを起こしますが、2017/11/10現在のJava9では特に問題ありません。
+  そのうち使えなくなるかもしれませんが、それより前にTestFXが対応してくれると信じましょう。
+* JMockitは他のライブラリと比べても、バージョンの違いによる仕様変更が激しいようです。
+  そこまで核となるような事はしていないと思いますが、気を付けてください。
