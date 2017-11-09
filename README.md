@@ -24,3 +24,13 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 * testfx-core-4.0.8-alpha ([TestFX](https://github.com/TestFX/TestFX))
 * testfx-internal-java9-4.0.8-alpha (TestFX)
 * testfx-junit5-4.0.8-alpha (TestFX)
+
+### 依存関係
+
+* assertj
+* jmockit
+* junit-jupiter
+  * opentest4j
+* testfx
+  * guava
+  * hamcrest
