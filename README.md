@@ -4,7 +4,7 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 
 ## 言い訳
 
-現在は何もありませんが、これから少しずつ大きくしていこうと思います。
+現在はただの低レベルなクラス図描画ツールですが、これから少しずつ大きくしていこうと思います。
 
 ## 開発環境
 
