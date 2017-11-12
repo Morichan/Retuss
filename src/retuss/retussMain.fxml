@@ -55,6 +55,7 @@
                                                                                 <Button fx:id="classButtonInCD" mnemonicParsing="false" onAction="#selectClassInCD" text="Class" />
                                                                                 <Button fx:id="noteButtonInCD" mnemonicParsing="false" onAction="#selectNoteInCD" text="Note" />
                                                                                 <Button fx:id="compositionButtonInCD" mnemonicParsing="false" onAction="#selectCompositionInCD" text="Composition" />
+                                                            <Button fx:id="generalizationButtonInCD" mnemonicParsing="false" onAction="#selectGeneralizationInCD" text="Generalization" />
                                                                             </items>
                                                                         </ToolBar>
                                                                     </top>

@@ -27,6 +27,8 @@ public class Controller {
     @FXML
     Button compositionButtonInCD;
     @FXML
+    Button generalizationButtonInCD;
+    @FXML
     ScrollPane classDiagramScrollPane;
     @FXML
     Canvas classDiagramCanvas;
@@ -47,7 +49,7 @@ public class Controller {
      */
     @FXML
     void initialize() {
-        buttonsInCD.addAll( Arrays.asList( normalButtonInCD, classButtonInCD, noteButtonInCD, compositionButtonInCD ) );
+        buttonsInCD.addAll( Arrays.asList( normalButtonInCD, classButtonInCD, noteButtonInCD, compositionButtonInCD, generalizationButtonInCD ) );
     }
 
     @FXML
@@ -65,6 +67,10 @@ public class Controller {
     @FXML
     public void selectCompositionInCD() {
         buttonsInCD = util.setAllDefaultButtonIsFalseWithout( buttonsInCD, compositionButtonInCD );
+    }
+    @FXML
+    public void selectGeneralizationInCD() {
+        buttonsInCD = util.setAllDefaultButtonIsFalseWithout( buttonsInCD, generalizationButtonInCD );
     }
 
     @FXML
@@ -104,6 +110,14 @@ public class Controller {
                     classDiagramDrawer.addDrawnEdge( buttonsInCD, compositionName, mouseX, mouseY );
                     classDiagramDrawer.allReDrawCanvas();
                 }
+            } else if( util.getDefaultButtonIn( buttonsInCD ) == generalizationButtonInCD ) {
+                if( ! classDiagramDrawer.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, mouseX, mouseY ) ) {
+                    classDiagramDrawer.setMouseCoordinates( mouseX, mouseY );
+                    classDiagramDrawer.allReDrawCanvas();
+                } else {
+                    classDiagramDrawer.addDrawnEdge( buttonsInCD, "", mouseX, mouseY );
+                    classDiagramDrawer.allReDrawCanvas();
+                }
             }
         } else {
             classDiagramDrawer.setMouseCoordinates( mouseX, mouseY );
@@ -113,6 +127,9 @@ public class Controller {
                 classDiagramDrawer.addDrawnNode( buttonsInCD );
                 classDiagramDrawer.allReDrawCanvas();
             } else if( util.getDefaultButtonIn( buttonsInCD ) == compositionButtonInCD ) {
+                classDiagramDrawer.resetNodeChosen( classDiagramDrawer.getCurrentNodeNumber() );
+                classDiagramDrawer.allReDrawCanvas();
+            } else if( util.getDefaultButtonIn( buttonsInCD ) == generalizationButtonInCD ) {
                 classDiagramDrawer.resetNodeChosen( classDiagramDrawer.getCurrentNodeNumber() );
                 classDiagramDrawer.allReDrawCanvas();
             }
@@ -195,6 +212,11 @@ public class Controller {
             RelationshipAttribution relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
             ContextMenu contextMenu = util.getClassContextMenuInCD( relation.getName(), relation.getType() );
             classDiagramScrollPane.setContextMenu( formatContextMenuInCD( contextMenu, relation.getType(), mouseX, mouseY ) );
+
+        } else if( currentType == ContentType.Generalization ) {
+            RelationshipAttribution relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
+            ContextMenu contextMenu = util.getClassContextMenuInCD( "", relation.getType() );
+            classDiagramScrollPane.setContextMenu( formatContextMenuInCD( contextMenu, relation.getType(), mouseX, mouseY ) );
         }
     }
 
@@ -208,12 +230,16 @@ public class Controller {
      */
     private ContextMenu formatContextMenuInCD( ContextMenu contextMenu, ContentType type, double mouseX, double mouseY ) {
         if( type == ContentType.Class ) {
-            if (contextMenu.getItems().size() != 5) return null;
+            if ( contextMenu.getItems().size() != 5 ) return null;
             contextMenu = formatClassContextMenuInCD( contextMenu );
 
         } else if( type == ContentType.Composition ) {
-            if (contextMenu.getItems().size() != 2) return null;
+            if ( contextMenu.getItems().size() != 2 ) return null;
             contextMenu = formatCompositionContextMenuInCD( contextMenu, mouseX, mouseY );
+
+        } else if( type == ContentType.Generalization ) {
+            if ( contextMenu.getItems().size() != 1 ) return null;
+            contextMenu = formatGeneralizationContextMenuInCD( contextMenu, mouseX, mouseY );
 
         } else {
             return null;
@@ -314,6 +340,16 @@ public class Controller {
         } );
         // コンポジション関係の削除
         contextMenu.getItems().get(1).setOnAction( event -> {
+            classDiagramDrawer.deleteDrawnEdge( mouseX, mouseY );
+            classDiagramDrawer.allReDrawCanvas();
+        } );
+
+        return contextMenu;
+    }
+
+    private ContextMenu formatGeneralizationContextMenuInCD( ContextMenu contextMenu, double mouseX, double mouseY ) {
+        // 汎化関係の削除
+        contextMenu.getItems().get(0).setOnAction( event -> {
             classDiagramDrawer.deleteDrawnEdge( mouseX, mouseY );
             classDiagramDrawer.allReDrawCanvas();
         } );

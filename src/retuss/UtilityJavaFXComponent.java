@@ -55,8 +55,10 @@ public class UtilityJavaFXComponent {
         ContextMenu popup = new ContextMenu();
 
         if( nodeType == ContentType.Composition ) {
-            popup.getItems().add( new MenuItem( ( nodeName ) + " の変更" ) );
-            popup.getItems().add( new MenuItem( ( nodeName ) + " の削除" ) );
+            popup.getItems().add( new MenuItem( nodeName + " の変更" ) );
+            popup.getItems().add( new MenuItem( nodeName + " の削除" ) );
+        } else if( nodeType == ContentType.Generalization ) {
+            popup.getItems().add( new MenuItem( "汎化の削除" ) );
         }
 
         return popup;

@@ -210,11 +210,25 @@ public class ClassDiagramDrawer {
             int fromNodeId = currentNodeNumber;
             getNodeDiagramId( toMouseX, toMouseY );
             int toNodeId = currentNodeNumber;
-            relations.createEdgeText( ContentType.Composition, name );
-            relations.setRelationId( ContentType.Composition, relations.getCompositionsCount() - 1, toNodeId );
-            relations.setRelationSourceId( ContentType.Composition, relations.getCompositionsCount() - 1, fromNodeId );
-            relations.setRelationPoint( ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get( toNodeId ).getPoint() );
-            relations.setRelationSourcePoint( ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get( fromNodeId ).getPoint() );
+            if( name.length() > 0 ) {
+                relations.createEdgeText( ContentType.Composition, name );
+                relations.setRelationId( ContentType.Composition, relations.getCompositionsCount() - 1, toNodeId );
+                relations.setRelationSourceId( ContentType.Composition, relations.getCompositionsCount() - 1, fromNodeId );
+                relations.setRelationPoint( ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get( toNodeId ).getPoint() );
+                relations.setRelationSourcePoint( ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get( fromNodeId ).getPoint() );
+            }
+
+        } else if( button.getText().equals( "Generalization" ) ) {
+            getNodeDiagramId( mouseX, mouseY );
+            int fromNodeId = currentNodeNumber;
+            getNodeDiagramId( toMouseX, toMouseY );
+            int toNodeId = currentNodeNumber;
+            relations.createEdgeText( ContentType.Generalization, name );
+            relations.setRelationId( ContentType.Generalization, relations.getCompositionsCount() - 1, toNodeId );
+            relations.setRelationSourceId( ContentType.Generalization, relations.getCompositionsCount() - 1, fromNodeId );
+            relations.setRelationPoint( ContentType.Generalization, relations.getCompositionsCount() - 1, nodes.get( toNodeId ).getPoint() );
+            relations.setRelationSourcePoint( ContentType.Generalization, relations.getCompositionsCount() - 1, nodes.get( fromNodeId ).getPoint() );
+            relations.deleteGeneralizationFromSameRelationSourceNode( fromNodeId );
         }
     }
 

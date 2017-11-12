@@ -288,6 +288,20 @@ class UtilityJavaFXComponentTest extends JavaFXComponentTest {
     }
 
     @Test
+    public void 汎化関係の右クリックする際に表示するコンテキストメニューを整形する() {
+
+        ContextMenu expected = new ContextMenu();
+
+        expected.getItems().add( new MenuItem( "汎化の削除" ) );
+
+        ContextMenu actual = util.getClassContextMenuInCD( "", ContentType.Generalization );
+
+        assertThat( actual.getItems().size() ).isEqualTo( expected.getItems().size() );
+        assertThat( actual.getItems().size() ).isEqualTo( 1 );
+        assertThat( actual.getItems().get( 0 ).getText() ).isEqualTo( expected.getItems().get( 0 ).getText() );
+    }
+
+    @Test
     public void 旧版_角が複数存在する多角形の内側に点が存在するか否かを確認する() {
         List< Point2D > quadrangle1 = Arrays.asList(
                 new Point2D( 100.0, 100.0 ), new Point2D( 100.0, 500.0 ),

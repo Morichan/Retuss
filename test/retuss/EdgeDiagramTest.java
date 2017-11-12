@@ -47,12 +47,24 @@ class EdgeDiagramTest {
 
     @Test
     public void コンポジションを削除する() {
-        String expected = "- composition";
+        String composition = "- composition";
+
+        obj.createEdgeText( ContentType.Composition, composition );
+        obj.deleteEdgeText( ContentType.Composition, 0 );
+        String actual = obj.getEdgeContentText( ContentType.Composition, 0 );
+
+        assertThat( actual ).isEmpty();
+    }
+
+    @Test
+    public void コンポジションで空文字を入力した場合は追加しない() {
+        String expected = "";
 
         obj.createEdgeText( ContentType.Composition, expected );
-        obj.deleteEdgeText( ContentType.Composition, 0 );
+        String actual = obj.getEdgeContentText( ContentType.Composition, 0 );
 
-        assertThrows( IndexOutOfBoundsException.class, () -> obj.getEdgeContentText( ContentType.Composition, 0 ) );
+        assertThat( actual ).isEqualTo( expected );
+        assertThat( obj.getCompositionsCount() ).isEqualTo( 0 );
     }
 
     @Test
@@ -282,12 +294,16 @@ class EdgeDiagramTest {
 
     @Test
     public void 関係のタイプを返す() {
-        ContentType expected = ContentType.Composition;
+        ContentType expected1 = ContentType.Composition;
+        ContentType expected2 = ContentType.Generalization;
 
-        obj.createEdgeText( expected, "- composition" );
-        ContentType actual = obj.getContentType( 0 );
+        obj.createEdgeText( expected1, "- composition" );
+        obj.createEdgeText( expected2, "" );
+        ContentType actual1 = obj.getContentType( 0 );
+        ContentType actual2 = obj.getContentType( 1 );
 
-        assertThat( actual ).isEqualTo( expected );
+        assertThat( actual1 ).isEqualTo( expected1 );
+        assertThat( actual2 ).isEqualTo( expected2 );
     }
 
     @Test
@@ -545,5 +561,42 @@ class EdgeDiagramTest {
         assertThat( actual6 ).isEqualTo( 45.0 );
         assertThat( actual7 ).isEqualTo( 135.0 );
         assertThat( actual8 ).isEqualTo( 225.0 );
+    }
+
+    @Test
+    public void 汎化を追加する() {
+
+        obj.createEdgeText( ContentType.Generalization, "" );
+        obj.deleteGeneralizationFromSameRelationSourceNode( 0 );
+        String actual = obj.getEdgeContentText( ContentType.Generalization, 0 );
+
+        assertThat( actual ).isEmpty();
+        assertThat( obj.getCompositionsCount() ).isEqualTo( 1 );
+    }
+
+    @Test
+    public void 汎化を削除する() {
+
+        obj.createEdgeText( ContentType.Generalization, "" );
+        obj.deleteGeneralizationFromSameRelationSourceNode( 0 );
+        obj.deleteEdgeText( ContentType.Generalization, 0 );
+
+        String actual = obj.getEdgeContentText( ContentType.Generalization, 0 );
+
+        assertThat( actual ).isEmpty();
+    }
+
+    @Test
+    public void 汎化を2回追加する際に関係元が同じ場合は最初に記述した汎化を削除する() {
+
+        obj.createEdgeText( ContentType.Generalization, "" );
+        obj.setRelationSourceId( ContentType.Generalization, 0, 0 );
+        obj.deleteGeneralizationFromSameRelationSourceNode( 0 );
+
+        obj.createEdgeText( ContentType.Generalization, "" );
+        obj.setRelationSourceId( ContentType.Generalization, 1, 0 );
+        obj.deleteGeneralizationFromSameRelationSourceNode( 0 );
+
+        assertThat( obj.getCompositionsCount() ).isEqualTo( 1 );
     }
 }

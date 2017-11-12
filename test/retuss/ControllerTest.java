@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
@@ -411,6 +412,7 @@ class ControllerTest {
             clickOn( "#normalButtonInCD" );
             rightClickOn( firstClickedClassDiagramCanvas );
             clickOn( "ClassName" + changeClassMenu );
+            push( KeyCode.BACK_SPACE );
             clickOn( okButtonOnDialogBox );
             clickOn( "#normalButtonInCD" );
 
@@ -471,6 +473,32 @@ class ControllerTest {
             rightClickOn( firstClickedClassDiagramCanvas );
             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
             assertThat( ( ( Menu ) ( ( Menu ) scrollPane.getContextMenu().getItems().get( 3 ) ).getItems().get( 1 ) ).getItems().get( 0 ).getText() ).isEqualTo( "- attribution : double" );
+        }
+
+        @Test
+        public void ノーマルアイコンを選択している際にキャンバスに描かれているClassNameクラスに追加した属性の変更メニューを選択した際に何も入力しない場合は描画していたClassNameクラスの属性を変更しない() {
+            clickOn( "#classButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            write( "ClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( "#normalButtonInCD" );
+            rightClickOn( firstClickedClassDiagramCanvas );
+            moveTo( classAttributionMenu );
+            clickOn( addMenu );
+            write( "- attribution : int" );
+            clickOn( okButtonOnDialogBox );
+
+            rightClickOn( firstClickedClassDiagramCanvas );
+            moveTo( classAttributionMenu );
+            moveTo( addMenu );
+            moveTo( changeMenu );
+            clickOn( "- attribution : int" );
+            push( KeyCode.BACK_SPACE );
+            clickOn( okButtonOnDialogBox );
+
+            rightClickOn( firstClickedClassDiagramCanvas );
+            ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+            assertThat( ( ( Menu ) ( ( Menu ) scrollPane.getContextMenu().getItems().get( 3 ) ).getItems().get( 1 ) ).getItems().get( 0 ).getText() ).isEqualTo( "- attribution : int" );
         }
 
         @Test
@@ -659,6 +687,32 @@ class ControllerTest {
             GraphicsContext gc = getGraphicsContext();
             TextAlignment textAlignment = gc.getTextAlign();
             assertThat( textAlignment ).isEqualTo( TextAlignment.CENTER );
+        }
+
+        @Test
+        public void ノーマルアイコンを選択している際にキャンバスに描かれているClassNameクラスに追加した操作の変更メニューを選択した際に何も入力しない場合は描画していたClassNameクラスの操作を変更しない() {
+            clickOn( "#classButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            write( "ClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( "#normalButtonInCD" );
+            rightClickOn( firstClickedClassDiagramCanvas );
+            moveTo( classOperationMenu );
+            clickOn( addMenu );
+            write( "+ operation() : int" );
+            clickOn( okButtonOnDialogBox );
+
+            rightClickOn( firstClickedClassDiagramCanvas );
+            moveTo( classOperationMenu );
+            moveTo( addMenu );
+            moveTo( changeMenu );
+            clickOn( "+ operation() : int" );
+            push( KeyCode.BACK_SPACE );
+            clickOn( okButtonOnDialogBox );
+
+            rightClickOn( firstClickedClassDiagramCanvas );
+            ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+            assertThat( ( ( Menu ) ( ( Menu ) scrollPane.getContextMenu().getItems().get( 4 ) ).getItems().get( 1 ) ).getItems().get( 0 ).getText() ).isEqualTo( "+ operation() : int" );
         }
 
         @Test
@@ -994,6 +1048,28 @@ class ControllerTest {
         }
 
         @Test
+        public void コンポジションアイコンを選択している際にキャンバスに描かれている2つのクラスをクリックしDialogに関係属性を記述しなかった場合はコンポジション関係を描画しない() {
+            clickOn( "#classButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            write( "FirstClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( secondClickedClassDiagramCanvas );
+            write( "SecondClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( "#compositionButtonInCD" );
+
+            clickOn( firstClickedClassDiagramCanvas );
+            clickOn( secondClickedClassDiagramCanvas );
+
+            clickOn( okButtonOnDialogBox );
+
+            clickOn( "#normalButtonInCD" );
+            rightClickOn( betweenFirstAndSecondClickedClassDiagramCanvas );
+            ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+            assertThat( scrollPane.getContextMenu() ).isNull();
+        }
+
+        @Test
         public void コンポジションアイコンを選択している際にキャンバスに描かれているFirstClassNameクラスをクリックし描画されていない箇所をクリックした後でFirstClassNameクラスをクリックすると縁の色を変更するがDialogは表示しない() {
             clickOn( "#classButtonInCD" );
             clickOn( firstClickedClassDiagramCanvas );
@@ -1071,6 +1147,33 @@ class ControllerTest {
 
             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
             assertThat( scrollPane.getContextMenu().getItems().get( 0 ).getText() ).startsWith( "+ changedComposition" );
+        }
+
+        @Test
+        public void ノーマルアイコンを選択している際にキャンバスに描かれている関係属性を右クリックし変更を選択し何も記述しなかった場合はコンポジション関係を変更しない() {
+            clickOn( "#classButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            write( "FirstClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( secondClickedClassDiagramCanvas );
+            write( "SecondClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( "#compositionButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            clickOn( secondClickedClassDiagramCanvas );
+            write( "- notChangingComposition" );
+            clickOn( okButtonOnDialogBox );
+
+            clickOn( "#normalButtonInCD" );
+            rightClickOn( betweenFirstAndSecondClickedClassDiagramCanvas );
+            clickOn( "- notChangingComposition の変更" );
+
+            push( KeyCode.BACK_SPACE );
+            clickOn( okButtonOnDialogBox );
+            rightClickOn( betweenFirstAndSecondClickedClassDiagramCanvas );
+
+            ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+            assertThat( scrollPane.getContextMenu().getItems().get( 0 ).getText() ).startsWith( "- notChangingComposition" );
         }
 
         @Test
@@ -1196,6 +1299,134 @@ class ControllerTest {
             rightClickOn( betweenFirstAndThirdClickedClassDiagramCanvas );
             scrollPane = getScrollPaneBelowClassDiagramCanvas();
             assertThat( scrollPane.getContextMenu().getItems().get( 0 ).getText() ).startsWith( "- compositionFromThirdToFirst" );
+        }
+
+        @Test
+        public void 汎化アイコンを選択している際にキャンバスに描かれているClassNameクラスをクリックするとClassNameクラスの縁の色を変更する() {
+            clickOn( "#classButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            write( "ClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( "#generalizationButtonInCD" );
+
+            clickOn( firstClickedClassDiagramCanvas );
+            GraphicsContext gc = getGraphicsContext();
+            Paint fillColor = gc.getFill();
+            Paint strokeColor = gc.getStroke();
+            TextAlignment textAlignment = gc.getTextAlign();
+
+            assertThat( fillColor ).isEqualTo( Color.BLACK );
+            assertThat( strokeColor ).isEqualTo( Color.RED );
+            assertThat( textAlignment ).isEqualTo( TextAlignment.CENTER );
+        }
+
+        @Test
+        public void 汎化アイコンを選択している際にキャンバスに描かれているClassNameクラスをクリックした後にクラスを描画していない箇所をクリックするとClassNameクラスの縁の色を元に戻す() {
+            clickOn( "#classButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            write( "ClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( "#generalizationButtonInCD" );
+
+            clickOn( firstClickedClassDiagramCanvas );
+            clickOn( secondClickedClassDiagramCanvas );
+            GraphicsContext gc = getGraphicsContext();
+            Paint fillColor = gc.getFill();
+            Paint strokeColor = gc.getStroke();
+            TextAlignment textAlignment = gc.getTextAlign();
+
+            assertThat( fillColor ).isEqualTo( Color.BLACK );
+            assertThat( strokeColor ).isEqualTo( Color.BLACK );
+            assertThat( textAlignment ).isEqualTo( TextAlignment.CENTER );
+        }
+
+        @Test
+        public void 汎化アイコンを選択している際にキャンバスに描かれている2つのクラスをクリックしDialogに関係属性を記述すると汎化関係を描画する() {
+            clickOn( "#classButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            write( "FirstClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( secondClickedClassDiagramCanvas );
+            write( "SecondClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( "#generalizationButtonInCD" );
+
+            clickOn( firstClickedClassDiagramCanvas );
+            clickOn( secondClickedClassDiagramCanvas );
+
+            clickOn( "#normalButtonInCD" );
+            rightClickOn( betweenFirstAndSecondClickedClassDiagramCanvas );
+            ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+            assertThat( scrollPane.getContextMenu().getItems().get( 0 ).getText() ).startsWith( "汎化" );
+        }
+
+        @Test
+        public void 汎化アイコンを選択している際にキャンバスに描かれているFirstClassNameクラスをクリックし描画されていない箇所をクリックした後でFirstClassNameクラスをクリックすると縁の色を変更する() {
+            clickOn( "#classButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            write( "FirstClassName" );
+            clickOn( okButtonOnDialogBox );
+
+            clickOn( "#generalizationButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            clickOn( secondClickedClassDiagramCanvas );
+            clickOn( firstClickedClassDiagramCanvas );
+            GraphicsContext gc = getGraphicsContext();
+            Paint strokeColor = gc.getStroke();
+
+            assertThat( strokeColor ).isEqualTo( Color.RED );
+        }
+
+        @Test
+        public void ノーマルアイコンを選択している際にキャンバスに描かれている汎化関係を右クリックし削除を選択すると汎化関係を削除する() {
+            clickOn( "#classButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            write( "FirstClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( secondClickedClassDiagramCanvas );
+            write( "SecondClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( "#generalizationButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            clickOn( secondClickedClassDiagramCanvas );
+
+            clickOn( "#normalButtonInCD" );
+            rightClickOn( betweenFirstAndSecondClickedClassDiagramCanvas );
+            clickOn( "汎化の削除" );
+
+            rightClickOn( betweenFirstAndSecondClickedClassDiagramCanvas );
+
+            ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+            assertThat( scrollPane.getContextMenu() ).isNull();
+        }
+
+        @Test
+        public void ノーマルアイコンを選択している際にキャンバスに描かれている3つのクラス間のうち多重継承の関係属性を2つ描画しようとすると最初に記述した汎化関係を削除する() {
+            clickOn( "#classButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            write( "FirstClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( secondClickedClassDiagramCanvas );
+            write( "SecondClassName" );
+            clickOn( okButtonOnDialogBox );
+            clickOn( thirdClickedClassDiagramCanvas );
+            write( "ThirdClassName" );
+            clickOn( okButtonOnDialogBox );
+
+            clickOn( "#generalizationButtonInCD" );
+            clickOn( firstClickedClassDiagramCanvas );
+            clickOn( secondClickedClassDiagramCanvas );
+            clickOn( firstClickedClassDiagramCanvas );
+            clickOn( thirdClickedClassDiagramCanvas );
+
+            clickOn( "#normalButtonInCD" );
+            rightClickOn( betweenFirstAndSecondClickedClassDiagramCanvas );
+            ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+            assertThat( scrollPane.getContextMenu() ).isNull();
+
+            rightClickOn( betweenFirstAndThirdClickedClassDiagramCanvas );
+            scrollPane = getScrollPaneBelowClassDiagramCanvas();
+            assertThat( scrollPane.getContextMenu().getItems().get( 0 ).getText() ).isEqualTo( "汎化の削除" );
         }
 
 

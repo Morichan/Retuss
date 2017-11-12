@@ -9,11 +9,12 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class EdgeDiagram {
     GraphicsContext gc;
-    private List< RelationshipAttribution > compositions = new ArrayList<>();
+    private List< RelationshipAttribution > relations = new ArrayList<>();
     private boolean hasRelationSourceNodeSelected = false;
     private UtilityJavaFXComponent util = new UtilityJavaFXComponent();
 
@@ -22,57 +23,65 @@ public class EdgeDiagram {
     }
 
     public void createEdgeText( ContentType type, String text ) {
-        compositions.add( new RelationshipAttribution( text ) );
-        compositions.get( compositions.size() - 1 ).setType( ContentType.Composition );
+        if( text.length() > 0 || type == ContentType.Generalization ) {
+            relations.add( new RelationshipAttribution( text ) );
+            relations.get( relations.size() - 1 ).setType( type );
+        }
     }
     public void changeEdgeText( ContentType type, int number, String text ) {
-        compositions.get( number ).setName( text );
+        if( text.length() > 0 ) {
+            relations.get( number ).setName( text );
+        }
     }
     public void deleteEdgeText( ContentType type, int number ) {
-        compositions.remove( number );
+        relations.remove( number );
     }
     public String getEdgeContentText( ContentType type, int number ) {
-        return compositions.get( number ).getName();
+        if( relations.size() > 0 ) {
+            return relations.get( number ).getName();
+        } else {
+            return "";
+        }
     }
 
     public void setRelationId( ContentType type, int number, int id ) {
-        compositions.get( number ).setRelationId( id );
+        relations.get( number ).setRelationId( id );
     }
 
     public int getRelationId( ContentType type, int number ) {
-        return compositions.get( number ).getRelationId();
+        return relations.get( number ).getRelationId();
     }
 
     public void setRelationSourceId( ContentType type, int number, int id ) {
-        compositions.get( number ).setRelationSourceId( id );
+        relations.get( number ).setRelationSourceId( id );
     }
 
     public int getRelationSourceId( ContentType type, int number ) {
-        return compositions.get( number ).getRelationSourceId();
+        return relations.get( number ).getRelationSourceId();
     }
 
     public void setRelationPoint( ContentType type, int number, Point2D point ) {
-        compositions.get( number ).setRelationPoint( point );
+        relations.get( number ).setRelationPoint( point );
     }
 
     public Point2D getRelationPoint( ContentType type, int number ) {
-        return compositions.get( number ).getRelationPoint();
+        return relations.get( number ).getRelationPoint();
     }
 
     public void setRelationSourcePoint( ContentType type, int number, Point2D point ) {
-        compositions.get( number ).setRelationSourcePoint( point );
+        relations.get( number ).setRelationSourcePoint( point );
     }
 
     public Point2D getRelationSourcePoint( ContentType type, int number ) {
-        return compositions.get( number ).getRelationSourcePoint();
+        return relations.get( number ).getRelationSourcePoint();
     }
 
     public ContentType getContentType( int number ) {
-        return compositions.get( number ).getType();
+        return relations.get( number ).getType();
     }
 
     public int getCompositionsCount() {
-        return compositions.size();
+        return relations.size();
     }
 
     boolean hasRelationSourceNodeSelected() {
@@ -90,26 +99,36 @@ public class EdgeDiagram {
     public RelationshipAttribution searchCurrentRelation( Point2D mousePoint ) {
         RelationshipAttribution content = null;
         int number = searchCurrentRelationNumber( mousePoint );
-        if( number > -1 ) content = compositions.get( number );
+        if( number > -1 ) content = relations.get( number );
         return content;
+    }
+
+    public void deleteGeneralizationFromSameRelationSourceNode( int id ) {
+        // 最後に設定した汎化関係は無視
+        for( int i = 0; i < relations.size() - 1; i++ ) {
+            if( relations.get( i ).getRelationSourceId() == id ) {
+                relations.remove( i );
+                i--;
+            }
+        }
     }
 
     public void changeCurrentRelation( Point2D mousePoint, String content ) {
         int number = searchCurrentRelationNumber( mousePoint );
-        if( number > -1 ) changeEdgeText( compositions.get( number ).getType(), number, content );
+        if( number > -1 ) changeEdgeText( relations.get( number ).getType(), number, content );
     }
 
     public void deleteCurrentRelation( Point2D mousePoint ) {
         int number = searchCurrentRelationNumber( mousePoint );
-        if( number > -1 ) deleteEdgeText( compositions.get( number ).getType(), number );
+        if( number > -1 ) deleteEdgeText( relations.get( number ).getType(), number );
     }
 
     public int searchCurrentRelationNumber( Point2D mousePoint ) {
         int number = -1;
 
         // 重なっているエッジの内1番上に描画しているエッジはcompositionsリストの1番後半に存在するため、1番上に描画しているエッジを取るためには尻尾から見なければならない。
-        for( int i = compositions.size() - 1; i >= 0; i-- ) {
-            if( isAlreadyDrawnAnyEdge( compositions.get( i ).getType(), i, mousePoint ) ) {
+        for(int i = relations.size() - 1; i >= 0; i-- ) {
+            if( isAlreadyDrawnAnyEdge( relations.get( i ).getType(), i, mousePoint ) ) {
                 number = i;
                 break;
             }
@@ -120,8 +139,8 @@ public class EdgeDiagram {
 
     public boolean isAlreadyDrawnAnyEdge( ContentType type, int number, Point2D mousePoint ) {
         boolean isAlreadyDrawnAnyEdge = false;
-        Point2D relationPoint = compositions.get( number ).getRelationPoint();
-        Point2D relationSourcePoint = compositions.get( number ).getRelationSourcePoint();
+        Point2D relationPoint = relations.get( number ).getRelationPoint();
+        Point2D relationSourcePoint = relations.get( number ).getRelationSourcePoint();
 
         List< Point2D > edgePolygon = createOneEdgeQuadrangleWithMargin( getRelationMarginLength( ContentType.Composition ), relationPoint, relationSourcePoint );
         if( util.isInsidePointFromPolygonUsingWNA( edgePolygon, mousePoint ) ) isAlreadyDrawnAnyEdge = true;
@@ -196,6 +215,8 @@ public class EdgeDiagram {
         if( type == ContentType.Composition ) {
             drawEdgeNavigation( relationIntersectPoint, relationSourceIntersectPoint );
             drawEdgeComposition( relationIntersectPoint, relationSourceIntersectPoint );
+        } else if( type == ContentType.Generalization ) {
+            drawEdgeGeneralization( relationIntersectPoint, relationSourceIntersectPoint );
         }
     }
 
@@ -219,6 +240,27 @@ public class EdgeDiagram {
 
         gc.strokeLine( relationIntersectPoint.getX(), relationIntersectPoint.getY(), firstNavigationPoint.getX(), firstNavigationPoint.getY() );
         gc.strokeLine( relationIntersectPoint.getX(), relationIntersectPoint.getY(), secondNavigationPoint.getX(), secondNavigationPoint.getY() );
+    }
+
+    private void drawEdgeGeneralization( Point2D relationIntersectPoint, Point2D relationSourceIntersectPoint ) {
+        double angle = calculateDegreeFromStart( relationIntersectPoint, relationSourceIntersectPoint );
+        double length = 20.0;
+        Point2D firstNavigationPoint = calculateUmbrellaPoint( relationIntersectPoint, angle - 30.0, length );
+        Point2D secondNavigationPoint = calculateUmbrellaPoint( relationIntersectPoint, angle + 30.0, length );
+        List< Point2D > generalizationPoints = Arrays.asList( relationIntersectPoint, firstNavigationPoint, secondNavigationPoint, relationIntersectPoint );
+
+        double[] xPoints = new double[ 4 ];
+        double[] yPoints = new double[ 4 ];
+
+        for( int i = 0; i < generalizationPoints.size(); i++ ) {
+            xPoints[ i ] = generalizationPoints.get( i ).getX();
+            yPoints[ i ] = generalizationPoints.get( i ).getY();
+        }
+
+        gc.setFill( Color.WHITE );
+        gc.fillPolygon( xPoints, yPoints, 4 );
+        gc.setStroke( Color.BLACK );
+        gc.strokePolygon( xPoints, yPoints, 4 );
     }
 
     private void drawEdgeComposition( Point2D relationIntersectPoint, Point2D relationSourceIntersectPoint ) {
