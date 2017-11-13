@@ -9,6 +9,7 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 ## 開発環境
 
 * Windows 10 Pro (64 bit) 1703
+* IntelliJ IDEA 2017.2.5
 * Java9
 * JUnit5 (5.0.1)
 
@@ -35,10 +36,21 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
   * guava
   * hamcrest
 
-## コンパイルでの注意点
+## 注意点
+
+### コンパイル時
 
 * テストコードのコンパイル時には `-Djdk.attach.allowAttachSelf` システムプロパティを追加してください。
-* TestFX内で `--illegal-access` エラーを起こしますが、2017/11/10現在のJava9では特に問題ありません。
+* TestFX内（正確には testfx-core-4.0.8-alpha.jar における `org.testfx.toolkit.impl.ToolkitServiceImpl` メソッド）で `--illegal-access` エラーを起こしますが、2017/11/10現在のJava9では特に問題ありません。
   そのうち使えなくなるかもしれませんが、それより前にTestFXが対応してくれると信じましょう。
 * JMockitは他のライブラリと比べても、バージョンの違いによる仕様変更が激しいようです。
   そこまで核となるような事はしていないと思いますが、気を付けてください。
+
+### その他
+
+* テストコード内ではHamcrestではなくAssertJのみを使用していますが、TestFXがHamcrestを利用しているため、Hamcrestを除外できません。
+  テストコード内ではAssertJのみを使用してもらえると助かります。
+* Gradleに未対応です。
+  本来なら対応したほうがいいとは思いますが、対応の仕方がわかりませんでした。
+  教えていただけるととても嬉しいです！
+  また、自分もちょくちょく勉強していくつもりです。

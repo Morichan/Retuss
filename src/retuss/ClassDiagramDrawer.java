@@ -5,8 +5,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * <p> クラス図描画クラス </p>
@@ -23,17 +23,8 @@ public class ClassDiagramDrawer {
     private int currentNodeNumber = -1;
     private double mouseX = 0.0;
     private double mouseY = 0.0;
-    private String nodeText;
+    private String nodeText = "";
     private ContentType nowStateType = ContentType.Undefined;
-
-    /**
-     * 生成したクラス図のノードのリストを返す。
-     * テストコードで主に用いる。
-     * @return 生成したノードリスト sizeが0の可能性あり
-     */
-    List< NodeDiagram > getNodes() {
-        return nodes;
-    }
 
     /**
      * 操作中のノード番号を返す。
@@ -45,7 +36,7 @@ public class ClassDiagramDrawer {
     }
 
     /**
-     * {@link Controller} クラスから {@link javafx.scene.canvas.Canvas} クラスが持つ {@link GraphicsContext} クラスのインスタンスを受け取り、 {@link EdgeDiagram} クラスのインスタンスに渡す。
+     * {@link Controller} クラスからretussMain.fxmlの {@link javafx.scene.canvas.Canvas} クラスのインスタンスが持つ {@link GraphicsContext} クラスのインスタンスを受け取り、 {@link EdgeDiagram} クラスのインスタンスに渡す。
      * また、キャンバスの縁を描画する。
      *
      * @param gc {@link Controller} クラスから受け取るグラフィックスコンテキスト
@@ -116,7 +107,7 @@ public class ClassDiagramDrawer {
     /**
      * クラス図キャンバスにおけるノードの初期化を行う。
      *
-     * @param number
+     * @param number 任意のノード番号
      */
     public void setupDrawnNode( int number ) {
         if( nodeText.length() <= 0 ) return;
@@ -127,17 +118,44 @@ public class ClassDiagramDrawer {
         nodes.get( number ).setChosen( false );
     }
 
+    /**
+     * ノードリストにおける任意のノードを描画する。
+     *
+     * @param number 任意のノード番号
+     */
     public void drawNode( int number ) {
         nodes.get( number ).draw();
     }
 
+    /**
+     * ノードリストにおける任意のノードの幅を返す。
+     *
+     * @param number 任意のノード番号
+     * @return ノードの幅 <br> ノードの内容などによっては、幅を計算した後でないと正しい結果を返さない恐れがある。
+     */
     public double getNodeWidth( int number ) {
         return nodes.get( number ).getWidth();
     }
+
+    /**
+     * ノードリストにおける任意のノードの高さを返す。
+     *
+     * @param number 任意のノード番号
+     * @return ノードの高さ <br> ノードの内容などによっては、高さを計算した後でないと正しい結果を返さない恐れがある。
+     */
     public double getNodeHeight( int number ) {
         return nodes.get( number ).getHeight();
     }
 
+    /**
+     * <p>
+     *     ノードを追加する。
+     *     追加する際には、RetussMainウィンドウにおけるどのボタンを押されていたかに応じて処理を変更するため、
+     *     {@link UtilityJavaFXComponent#setAllDefaultButtonIsFalseWithout(List, Button)} で生成したボタンのリストを入力する必要がある。
+     * </p>
+     *
+     * @param buttons {@link UtilityJavaFXComponent#setAllDefaultButtonIsFalseWithout(List, Button)} で生成したボタンのリスト <br> どのボタンも押されていなかった場合は何も動作しない。
+     */
     public void addDrawnNode( List<Button> buttons ) {
         for( Button button : buttons ) {
             if( button.isDefaultButton() ) {
@@ -147,6 +165,15 @@ public class ClassDiagramDrawer {
         }
     }
 
+    /**
+     * <p>
+     *     エッジを追加する。
+     *     追加する際には、RetussMainウィンドウにおけるどのボタンを押されていたかに応じて処理を変更するため、
+     *     {@link UtilityJavaFXComponent#setAllDefaultButtonIsFalseWithout(List, Button)} で生成したボタンのリストを入力する必要がある。
+     * </p>
+     *
+     * @param buttons {@link UtilityJavaFXComponent#setAllDefaultButtonIsFalseWithout(List, Button)} で生成したボタンのリスト <br> どのボタンも押されていなかった場合は何も動作しない。
+     */
     public void addDrawnEdge( List< Button > buttons, String name, double toMouseX, double toMouseY ) {
         for( Button button : buttons ) {
             if( button.isDefaultButton() ) {
@@ -156,36 +183,101 @@ public class ClassDiagramDrawer {
         }
     }
 
+    /**
+     * 描画済みの任意のノードの内容を文字列のリストで取得する。
+     *
+     * @param nodeNumber 任意のノード番号
+     * @param type 任意のノードにおける内容の種類
+     * @return 任意のノードの内容の文字列リスト
+     */
     public List< String > getDrawnNodeTextList( int nodeNumber, ContentType type ) {
         return nodes.get( nodeNumber ).getNodeContents( type );
     }
 
+    /**
+     * <p>
+     *     描画済みの任意のノードに真偽値を設定する。
+     *     設定する内容における大枠の種類を {@param parent} で指定し、設定する内容の種類を {@param child} で指定する。
+     *     また、 {@param nodeNumber} は描画済みの任意のノード番号であり、 {@param contentNumber} は設定する内容の種類における任意の設定したい内容の番号である。
+     * </p>
+     *
+     * @param nodeNumber 描画済みの任意のノード番号
+     * @param parent 設定する内容における大枠の種類
+     * @param child 設定する内容の種類
+     * @param contentNumber 設定する内容の種類における任意の番号
+     * @param isChecked 設定値
+     */
     public void setDrawnNodeContentBoolean( int nodeNumber, ContentType parent, ContentType child, int contentNumber, boolean isChecked ) {
         nodes.get( nodeNumber ).setNodeContentBoolean( parent, child, contentNumber, isChecked );
     }
 
+
+    /**
+     * <p>
+     *     描画済みの任意のノードにおける真偽値のリストを取得する。
+     *     取得する内容における大枠の種類を {@param parent} で指定し、取得する内容の種類を {@param child} で指定する。
+     *     また、 {@param nodeNumber} は描画済みの任意のノード番号であり、 {@param contentNumber} は取得する内容の種類における任意の取得したい内容の番号である。
+     * </p>
+     *
+     * @param nodeNumber 描画済みの任意のノード番号
+     * @param parent 取得する内容における大枠の種類
+     * @param child 取得する内容の種類
+     * @return 描画済みの任意のノードにおける真偽値のリスト
+     */
     public List< Boolean > getDrawnNodeContentsBooleanList( int nodeNumber, ContentType parent, ContentType child ) {
         return nodes.get( nodeNumber ).getNodeContentsBoolean( parent, child );
     }
 
+    /**
+     * 描画済みの任意のノードにおける内容のテキストを追加する。
+     *
+     * @param number 描画済みの任意のノード番号
+     * @param type 描画済みの任意のノードにおける追加したい内容の種類
+     * @param text 追加するテキスト
+     */
     public void addDrawnNodeText( int number, ContentType type, String text ) {
         if( text.length() <= 0 ) return;
         nodes.get( number ).createNodeText( type, text );
     }
 
+    /**
+     * 描画済みの任意のノードにおける任意の内容のテキストを変更する。
+     *
+     * @param nodeNumber 描画済みの任意のノード番号
+     * @param type 描画済みの任意のノードにおける追加したい内容の種類
+     * @param contentNumber 描画済みの任意のノードにおける追加したい種類の番号
+     * @param text 変更するテキスト
+     */
     public void changeDrawnNodeText( int nodeNumber, ContentType type, int contentNumber, String text ) {
         if( text.length() <= 0 ) return;
         nodes.get( nodeNumber ).changeNodeText( type, contentNumber, text );
     }
 
+    /**
+     * 描画済みの任意のノードを削除する。
+     *
+     * @param number 描画済みの任意のノード番号
+     */
     public void deleteDrawnNode( int number ) {
         nodes.remove( number );
     }
 
+    /**
+     * 描画済みの任意のノードにおける任意の内容を削除する。
+     *
+     * @param nodeNumber 描画済みの任意のノード番号
+     * @param type 描画済みの任意のノードにおける追加したい内容の種類
+     * @param contentNumber 描画済みの任意のノードにおける追加したい種類の番号
+     */
     public void deleteDrawnNodeText( int nodeNumber, ContentType type, int contentNumber ) {
         nodes.get( nodeNumber ).deleteNodeText( type, contentNumber );
     }
 
+    /**
+     * 追加するノードの初期化を行う。
+     *
+     * @param button 追加したいノードとしてRetussWindow上で押しているボタン
+     */
     private void setupDrawnNode( Button button ) {
         if( nodeText.length() <= 0 ) return;
 
@@ -202,6 +294,17 @@ public class ClassDiagramDrawer {
         }
     }
 
+    /**
+     * <p>
+     *     追加するエッジの初期化を行う。
+     *     このメソッドを動かす前に {@link #setMouseCoordinates(double, double)} で関係元のノードのマウスのXY軸を設定しておかなければならない。
+     * </p>
+     *
+     * @param button 追加したいエッジとしてRetussWindow上で押しているボタン
+     * @param name 追加したいエッジ名 <br> 追加したいエッジによっては空文字では追加しない可能性がある。
+     * @param toMouseX 追加したい関係先のマウスのX軸
+     * @param toMouseY 追加したい関係先のマウスのY軸
+     */
     private void createDrawnEdge( Button button, String name, double toMouseX, double toMouseY ) {
         if( nodeText.length() <= 0 ) return;
 
@@ -232,6 +335,13 @@ public class ClassDiagramDrawer {
         }
     }
 
+    /**
+     * キャンバス上の任意のポイントにおける描画済みのノードのインスタンスを探索する。
+     *
+     * @param mouseX キャンバス上の任意のポイントのX軸
+     * @param mouseY キャンバス上の任意のポイントのY軸
+     * @return 探索できた描画済みのノードのインスタンス <br> 描画していなかった場合は {@code null} を返す。
+     */
     public NodeDiagram findNodeDiagram( double mouseX, double mouseY ) {
         int number = getNodeDiagramId( mouseX, mouseY );
 
@@ -239,6 +349,16 @@ public class ClassDiagramDrawer {
         else return nodes.get( currentNodeNumber );
     }
 
+    /**
+     * <p>
+     *     キャンバス上の任意のポイントに図を描画済みか否かを取得する。
+     *     ノードでもエッジでも、とりあえず何かしらが描画済みであれば真を返す。
+     * </p>
+     *
+     * @param mouseX キャンバス上の任意のポイントのX軸
+     * @param mouseY キャンバス上の任意のポイントのY軸
+     * @return キャンバス上の任意のポイントに任意の図を描画済みか否かの真偽値
+     */
     public boolean isAlreadyDrawnAnyDiagram( double mouseX, double mouseY ) {
         boolean act = false;
 
@@ -258,19 +378,55 @@ public class ClassDiagramDrawer {
         return act;
     }
 
+    /**
+     * キャンバス上の任意のポイントにおける描画済みのエッジのインスタンスを取得する。
+     *
+     * @param mouseX キャンバス上の任意のポイントのX軸
+     * @param mouseY キャンバス上の任意のポイントのY軸
+     * @return キャンバス上の任意のポイントにおける描画済みのエッジのインスタンス <br> キャンバス上の任意のポイントに何も描画していない場合は {@code null} を返す。
+     */
     public RelationshipAttribution searchDrawnEdge( double mouseX, double mouseY ) {
         RelationshipAttribution relation = relations.searchCurrentRelation( new Point2D( mouseX, mouseY ) );
         return relation;
     }
 
+    /**
+     * <p>
+     *     キャンバス上の任意のポイントにおける描画済みのエッジの内容のテキストを変更する。
+     *     キャンバス上の任意のポイントに何も描画していない場合は何もしない。
+     * </p>
+     *
+     * @param mouseX キャンバス上の任意のポイントのX軸
+     * @param mouseY キャンバス上の任意のポイントのY軸
+     * @param content キャンバス上の任意のポイントに描画済みのエッジの変更したい内容のテキスト
+     */
     public void changeDrawnEdge( double mouseX, double mouseY, String content ) {
         relations.changeCurrentRelation( new Point2D( mouseX, mouseY ), content );
     }
 
+    /**
+     * <p>
+     *     キャンバス上の任意のポイントにおける描画済みのエッジを削除する。
+     *     キャンバス上の任意のポイントに何も描画していない場合は何もしない。
+     * </p>
+     *
+     * @param mouseX キャンバス上の任意のポイントのX軸
+     * @param mouseY キャンバス上の任意のポイントのY軸
+     */
     public void deleteDrawnEdge( double mouseX, double mouseY ) {
         relations.deleteCurrentRelation( new Point2D( mouseX, mouseY ) );
     }
 
+    /**
+     * <p>
+     *     キャンバス上の任意のポイントに描画済みの図の種類を取得する。
+     *     ノードでもエッジでも、とりあえず何かしらが描画済みであればその図の種類を返す。
+     * </p>
+     *
+     * @param mouseX キャンバス上の任意のポイントのX軸
+     * @param mouseY キャンバス上の任意のポイントのY軸
+     * @return キャンバス上の任意のポイントに描画済みの図の種類
+     */
     public ContentType searchDrawnAnyDiagramType( double mouseX, double mouseY ) {
         ContentType type = ContentType.Undefined;
 
@@ -290,6 +446,22 @@ public class ClassDiagramDrawer {
         return type;
     }
 
+    /**
+     * <p>
+     *     正当な描画したい図を待機中か否かを返す。
+     *     主にエッジを描画する際に用いる。
+     *     このメソッドにおける正当な描画したい図とは、GUI上で2度（関係元と関係先のノード）を選択した際に、2度とも同じ図を描画しようとしているか否かである。
+     *     例えば1回目にFirstClassNodeを選択し、2回目にSecondClassNodeを選択した場合を考える。
+     *     この時、1回目と2回目で同じ関係（例えばコンポジション）を選択している場合は、2回目は正当な描画したい図を待機中であるとする。
+     *     もし1回目と2回目で異なる関係（例えば1回目にはコンポジション、2回目には汎化）を選択している場合は、2回目には正当な描画したい図を待機中でないとする。
+     *     なお、1回目は必ず正当な描画したい図を待機中でないとする。
+     * </p>
+     *
+     * @param type 描画したい図の種類
+     * @param mouseX キャンバス上の任意のポイントのX軸
+     * @param mouseY キャンバス上の任意のポイントのY軸
+     * @return 正当な描画したい図を待機中か否か <br> 判定基準については本文を参照
+     */
     public boolean hasWaitedCorrectDrawnDiagram( ContentType type, double mouseX, double mouseY ) {
         boolean act = false;
 
@@ -318,20 +490,52 @@ public class ClassDiagramDrawer {
         return act;
     }
 
+    /**
+     * <p>
+     *     正当な描画したい図の待機中をリセットする。
+     *     エッジを描画完了した際や、エッジ描画中にノード描画を行おうとした際などに呼び出さなければならない。
+     * </p>
+     *
+     * @param number エッジを描画しようとしていた関係元のノード番号
+     */
     public void resetNodeChosen( int number ) {
         nodes.get( number ).setChosen( false );
         nowStateType = ContentType.Undefined;
         relations.resetRelationSourceNodeSelectedState();
     }
 
+    /**
+     * <p>
+     *     任意のノードを選択中か否かを設定する。
+     *     エッジを描画中である場合などに関係元のノードとして設定する。
+     * </p>
+     *
+     * @param number 任意のノード番号
+     * @param isChosen 選択中か否か
+     */
     public void setNodeChosen(int number, boolean isChosen ) {
         nodes.get( number ).setChosen( isChosen );
     }
 
+    /**
+     * 現在描画中のエッジの種類を取得する。
+     *
+     * @return 現在描画中のエッジの種類
+     */
     public ContentType getNowStateType() {
         return nowStateType;
     }
 
+    /**
+     * <p>
+     *     キャンバス上の任意のポイントに描画済みのノードのIDを取得する。
+     *     キャンバス上の任意のポイントに複数の描画済みのノードが重なっている場合は、最後に描画した、すなわちキャンバス上では一番上に描画しているノードのIDを返す。
+     * </p>
+     *
+     * @param mouseX キャンバス上の任意のポイントのX軸
+     * @param mouseY キャンバス上の任意のポイントのY軸
+     * @return キャンバス上の任意のポイントに描画済みのノードのID
+     */
     public int getNodeDiagramId( double mouseX, double mouseY ) {
         int act = -1;
 
@@ -347,15 +551,34 @@ public class ClassDiagramDrawer {
         return act;
     }
 
-    public EdgeDiagram getEdgeDiagram() {
-        return relations;
-    }
-
+    /**
+     * クラス図キャンバスの縁を描画する。
+     */
     private void drawDiagramCanvasEdge() {
         double space = 5.0;
         double width = gc.getCanvas().getWidth();
         double height = gc.getCanvas().getHeight();
         gc.setStroke( Color.BLACK );
         gc.strokeRect( space, space, width - space * 2, height - space * 2 );
+    }
+
+    /**
+     * 生成したクラス図のノードのリストを返す。
+     * テストコードで主に用いる。
+     *
+     * @return 生成したノードリスト <br> sizeが0の可能性あり
+     */
+    List< NodeDiagram > getNodes() {
+        return nodes;
+    }
+
+    /**
+     * 生成したクラス図のエッジのインスタンスを返す。
+     * テストコードで主に用いる。
+     *
+     * @return 生成したエッジのインスタンス <br> {@code null} の可能性は無いが、内容が空の可能性あり
+     */
+    EdgeDiagram getEdgeDiagram() {
+        return relations;
     }
 }
