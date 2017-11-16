@@ -12,6 +12,13 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * <p> クラス図キャンバスにおけるクラスに関するクラス </p>
+ *
+ * <p>
+ *     {@link NodeDiagram} を継承している。
+ * </p>
+ */
 public class ClassNodeDiagram extends NodeDiagram {
     private Point2D upperLeftCorner = Point2D.ZERO;
     private Point2D bottomRightCorner = Point2D.ZERO;
@@ -29,10 +36,8 @@ public class ClassNodeDiagram extends NodeDiagram {
     private List< ClassData > attributions = new ArrayList<>();
     private List< ClassData > operations = new ArrayList<>();
 
-    // private List< Boolean > attributionIsVisibility = new ArrayList<>();
     private int attributionNotVisibilityCount = 0;
 
-    // private List< Boolean > operationIsVisibility = new ArrayList<>();
     private int operationNotVisibilityCount = 0;
 
     public double getClassNameSpace() {

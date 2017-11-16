@@ -9,7 +9,7 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 ## 開発環境
 
 * Windows 10 Pro (64 bit) 1703
-* IntelliJ IDEA 2017.2.5
+* IntelliJ IDEA 2017.2.6
 * Java9
 * JUnit5 (5.0.1)
 
