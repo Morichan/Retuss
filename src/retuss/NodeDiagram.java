@@ -31,13 +31,6 @@ abstract public class NodeDiagram {
     abstract public boolean isAlreadyDrawnNode( double x, double y );
 
     /**
-     * クラス図キャンバスにおいてノードを描画する。
-     *
-     * {@link NodeDiagram#gc} が存在しない場合は {@link NullPointerException} を返す。
-     */
-    abstract public void draw();
-
-    /**
      * クラス図キャンバスにおいてノードを選択しているか否かの真偽値を設定する。
      *
      * @param isChosen ノードを選択しているか否かの真偽値
@@ -91,25 +84,32 @@ abstract public class NodeDiagram {
 
     /**
      * ノードの任意の種類の任意の内容に真偽値を設定する。
-     * 正確には、ノードの任意の種類 {@code parent} における番号 {@code contentNumber} の内容の種類 {@code child} に真偽値 {@code isChecked} を設定する。
-     * 例えば、クラス図の属性の表示しているか否かを設定する場合は、 {@code parent} に {@link ContentType#Attribution} 、 {@code child} に {@link ContentType#Indication} を引数に入れる。
+     * 正確には、ノードの任意の種類 {@code type} における番号 {@code contentNumber} の内容の種類 {@code subtype} に真偽値 {@code isChecked} を設定する。
+     * 例えば、クラス図の属性の表示しているか否かを設定する場合は、 {@code type} に {@link ContentType#Attribution} 、 {@code subtype} に {@link ContentType#Indication} を引数に入れる。
      *
-     * @param parent ノードの任意の種類
-     * @param child 内容の種類
+     * @param type ノードの任意の種類
+     * @param subtype 内容の種類
      * @param contentNumber ノードの任意の番号
      * @param isChecked ノードの内容の真偽値
      */
-    abstract public void setNodeContentBoolean( ContentType parent, ContentType child, int contentNumber, boolean isChecked );
+    abstract public void setNodeContentBoolean( ContentType type, ContentType subtype, int contentNumber, boolean isChecked );
 
     /**
      * ノードの任意の種類の任意の内容の真偽値のリストを取得する。
-     * 例えば、クラス図の属性の表示しているか否かのリストを取得する場合は、 {@code parent} に {@link ContentType#Attribution} 、 {@code child} に {@link ContentType#Indication} を引数に入れる。
+     * 例えば、クラス図の属性の表示しているか否かのリストを取得する場合は、 {@code type} に {@link ContentType#Attribution} 、 {@code subtype} に {@link ContentType#Indication} を引数に入れる。
      *
-     * @param parent ノードの任意の種類
-     * @param child 内容の種類
+     * @param type ノードの任意の種類
+     * @param subtype 内容の種類
      * @return ノードの任意の種類の任意の内容の真偽値のリスト
      */
-    abstract public List< Boolean > getNodeContentsBoolean( ContentType parent, ContentType child );
+    abstract public List< Boolean > getNodeContentsBoolean( ContentType type, ContentType subtype );
+
+    /**
+     * クラス図キャンバスにおいてノードを描画する。
+     *
+     * {@link NodeDiagram#gc} が存在しない場合は {@link NullPointerException} を返す。
+     */
+    abstract public void draw();
 
     NodeDiagram() {
         nodeId = nodeCount;
