@@ -157,12 +157,12 @@ public class UtilityJavaFXComponent {
      *
      * <p>
      *     凡例<br>
-     *     <ui>
+     *     <ul>
      *         <li> - : 多角形の領域外（多角形が作る穴 == Holeは除く） </li>
      *         <li> O : 多角形の領域内（自己交差内は除く） </li>
      *         <li> X : 多角形が作る穴 == Hole（多角形の領域外） </li>
      *         <li> A : 多角形の自己交差内の領域（多角形の領域内） </li>
-     *     </ui>
+     *     </ul>
      * </p>
      *
      * <p>
@@ -257,12 +257,12 @@ public class UtilityJavaFXComponent {
      * @deprecated
      * <p>
      *     現在このメソッドは、次の点により使用を推奨しない。
-     *     <ui>
+     *     <ul>
      *         <li> {@link Polygon} クラスのcontainsメソッドのアルゴリズムが不明瞭である点（特に {@link java.awt.Shape} に記述している判定計算の負荷が非常に大きい場合はfalseを返す恐れがあるとの解釈が不安材料） </li>
      *         <li> {@link Polygon#contains(int, int)} の引数が {@code int} である点（ {@link javafx.geometry.Point2D} のXY軸のポイントはどちらも {@code double} 型） </li>
      *         <li> {@link javafx.scene.shape.Polygon} クラスではなく {@link java.awt.Polygon} を使っており名称被りを起こす可能性がある点（もしこのクラス内で {@link javafx.scene.shape.Polygon} を用いることがあればこのメソッドを削除してよい） </li>
      *         <li> 多角形の自己交差内のポイントを多角形外に存在すると判定する点（Crossing Number Algorithmを用いていると予測するが正確なアルゴリズムは不明） </li>
-     *     </ui>
+     *     </ul>
      *     今後は {@link #isInsidePointFromPolygonUsingWNA(List, Point2D)} の利用を推奨する。
      * </p>
      */
@@ -417,13 +417,13 @@ public class UtilityJavaFXComponent {
      * @return
      * <p>
      *     点と線分の関係
-     *     <ui>
+     *     <ul>
      *         <li> 1 == 任意のポイントは線分の反時計方向に存在 </li>
      *         <li> -1 == 任意のポイントは線分の時計方向に存在 </li>
      *         <li> 2 == 任意のポイントは線分の手前に存在 </li>
      *         <li> -2 == 任意のポイントは線分の先に存在 </li>
      *         <li> 0 == 任意のポイントは線分上に存在 </li>
-     *     </ui>
+     *     </ul>
      * </p>
      */
     private int ccw( Point2D lineStartPoint, Point2D lineEndPoint, Point2D anyPoint ) {

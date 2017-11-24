@@ -6,12 +6,12 @@ package retuss;
  * <p>
  *     このクラスは、クラス図におけるクラスのデータに関するクラスです。
  *     次の属性を持ちます。
- *     <ui>
+ *     <ul>
  *         <li> 名前 </li>
  *         <li> 種類 </li>
  *         <li> 可視性 </li>
  *         <li> 表示しているか否か </li>
- *     </ui>
+ *     </ul>
  * </p>
  */
 public class ClassData {
