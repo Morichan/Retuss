@@ -551,7 +551,7 @@ class ClassNodeDiagramTest {
     }
 
     @Test
-    public void クラス図の中央ポイントを取得する() {
+    public void クラスの中央ポイントを取得する() {
         Point2D expected = new Point2D( 100, 200 );
         obj.setMouseCoordinates( expected.getX(), expected.getY() );
         obj.createNodeText( ContentType.Title, "ClassName" );
@@ -562,7 +562,7 @@ class ClassNodeDiagramTest {
     }
 
     @Test
-    public void クラス図の幅と高さを取得する() {
+    public void クラスの幅と高さを取得する() {
         double expectedWidth = 100.0;
         double expectedHeight = 80.0;
         obj.setMouseCoordinates( 100.0, 200.0 );
