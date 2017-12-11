@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ class ClassDiagramDrawerTest {
     }
 
     @Nested
-    public class クラスアイコンを選択している場合 extends JavaFXComponentTest {
+    public class クラスアイコンを選択している場合 extends ApplicationTest {
         ClassDiagramDrawer cdd;
 
         List< Button > buttons = new ArrayList<>();
@@ -513,7 +514,7 @@ class ClassDiagramDrawerTest {
     }
 
     @Nested
-    public class ノートアイコンを選択している場合 extends JavaFXComponentTest {
+    public class ノートアイコンを選択している場合 extends ApplicationTest {
         @Tested
         ClassDiagramDrawer cdd;
 
@@ -557,7 +558,7 @@ class ClassDiagramDrawerTest {
     }
 
     @Nested
-    public class ノーマルアイコンを選択している場合 extends JavaFXComponentTest {
+    public class ノーマルアイコンを選択している場合 extends ApplicationTest {
         @Tested
         ClassDiagramDrawer cdd;
 
@@ -602,7 +603,7 @@ class ClassDiagramDrawerTest {
     }
 
     @Nested
-    public class コンポジションアイコンを選択している場合 extends JavaFXComponentTest {
+    public class コンポジションアイコンを選択している場合 extends ApplicationTest {
         @Tested
         ClassDiagramDrawer cdd;
 
@@ -645,7 +646,7 @@ class ClassDiagramDrawerTest {
     }
 
     @Nested
-    public class クラスを3つ記述後にコンポジションアイコンを選択している場合 extends JavaFXComponentTest {
+    public class クラスを3つ記述後にコンポジションアイコンを選択している場合 extends ApplicationTest {
         @Tested
         ClassDiagramDrawer cdd;
 
@@ -902,7 +903,7 @@ class ClassDiagramDrawerTest {
     }
 
     @Nested
-    public class クラスを3つ記述後に汎化アイコンを選択している場合 extends JavaFXComponentTest {
+    public class クラスを3つ記述後に汎化アイコンを選択している場合 extends ApplicationTest {
         @Tested
         ClassDiagramDrawer cdd;
 
