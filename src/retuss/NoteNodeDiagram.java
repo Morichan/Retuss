@@ -26,10 +26,10 @@ public class NoteNodeDiagram extends NodeDiagram {
     }
 
     @Override
-    public void setNodeContentBoolean( ContentType parent, ContentType child, int contentNumber, boolean isChecked ) {}
+    public void setNodeContentBoolean(ContentType type, ContentType subtype, int contentNumber, boolean isChecked ) {}
 
     @Override
-    public List< Boolean > getNodeContentsBoolean(ContentType parent, ContentType type ) { return null; }
+    public List< Boolean > getNodeContentsBoolean(ContentType parent, ContentType subtype) { return null; }
 
     @Override
     public void draw() {
