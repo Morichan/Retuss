@@ -13,13 +13,7 @@ public class Java9EvalListener extends Java9BaseListener {
     }
 
     @Override
-    public void enterCompilationUnit( Java9Parser.CompilationUnitContext ctx ) {
-        //System.out.println("Foooo");
-    }
-
-    @Override
     public void enterClassDeclaration( Java9Parser.ClassDeclarationContext ctx ) {
-        //System.out.println("aaaaaa!");
         className = ctx.normalClassDeclaration().Identifier().toString();
     }
 }

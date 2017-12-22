@@ -14,8 +14,7 @@ import parser.java9.Java9Parser;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.fail;
 
 class Java9EvalListenerTest {
     Java9EvalListener obj;
@@ -27,10 +26,10 @@ class Java9EvalListenerTest {
     ParseTreeWalker walker;
 
     @Nested
-    class サンプルコードの場合 {
+    class 構文解析機自体に関して {
 
         @Nested
-        class Java7までのソースコードに関して {
+        class Java7までのソースコードの場合 {
 
             @BeforeEach
             public void setup() throws IOException {
@@ -39,20 +38,23 @@ class Java9EvalListenerTest {
                 tokens = new CommonTokenStream( lexer );
                 parser = new Java9Parser( tokens );
                 tree = parser.compilationUnit();
-                System.out.println("hoge>"+parser.getNumberOfSyntaxErrors());
                 walker = new ParseTreeWalker();
                 obj = new Java9EvalListener( parser );
             }
 
-            //@Disabled("ローカルインタフェースに未対応 : Java9EvalListenerTest#サンプルコードの場合#Java7までのソースコードに関して#構文解析する")
+            @Disabled("ローカルインタフェースに未対応 : Java9EvalListenerTest#サンプルコードの場合#Java7までのソースコードに関して#構文解析する")
             @Test
             public void 構文解析時にエラーが出ないか確認する() {
-                assertThrows( NullPointerException.class, () -> walker.walk( obj, tree ) );
+                try {
+                    walker.walk(obj, tree);
+                } catch (NullPointerException e) {
+                    fail("ParseTreeObjectNullError");
+                }
             }
         }
 
         @Nested
-        class Java8のソースコードに関して {
+        class Java8のソースコードの場合 {
 
             @BeforeEach
             public void setup() throws IOException {
@@ -63,12 +65,15 @@ class Java9EvalListenerTest {
                 tree = parser.compilationUnit();
                 walker = new ParseTreeWalker();
                 obj = new Java9EvalListener( parser );
-                walker.walk( obj, tree );
             }
 
             @Test
             public void 構文解析時にエラーが出ないか確認する() {
-                assertThat( obj.className ).isEqualTo( "Unicode" );
+                try {
+                    walker.walk( obj, tree );
+                } catch (NullPointerException e) {
+                    fail("ParseTreeObjectNullError");
+                }
             }
         }
     }

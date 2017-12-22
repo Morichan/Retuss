@@ -13,6 +13,7 @@ import parser.java.JavaParser;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JavaEvalListenerTest {
@@ -27,10 +28,10 @@ class JavaEvalListenerTest {
     String code = "package retuss; class TestCode { public int test = 0; }";
 
     @Nested
-    class サンプルコードの場合 {
+    class 構文解析機自体に関して {
 
         @Nested
-        class Java7までのソースコードに関して {
+        class Java7までのソースコードの場合 {
 
             @BeforeEach
             public void setup() throws IOException {
@@ -41,17 +42,21 @@ class JavaEvalListenerTest {
                 tree = parser.compilationUnit();
                 walker = new ParseTreeWalker();
                 obj = new JavaEvalListener( parser );
-                walker.walk( obj, tree );
+                //walker.walk( obj, tree );
             }
 
             @Test
             public void 構文解析時にエラーが出ないか確認する() {
-                assertThat( obj.className ).isEqualTo( "IntegerArray" );
+                try {
+                    walker.walk( obj, tree );
+                } catch ( NullPointerException e ) {
+                    fail("ParseTreeObjectNullError");
+                }
             }
         }
 
         @Nested
-        class Java8のソースコードに関して {
+        class Java8のソースコードの場合 {
 
             @BeforeEach
             public void setup() throws IOException {
@@ -62,12 +67,16 @@ class JavaEvalListenerTest {
                 tree = parser.compilationUnit();
                 walker = new ParseTreeWalker();
                 obj = new JavaEvalListener( parser );
-                walker.walk( obj, tree );
+                //walker.walk( obj, tree );
             }
 
             @Test
             public void 構文解析時にエラーが出ないか確認する() {
-                assertThat( obj.className ).isEqualTo( "Unicode" );
+                try {
+                    walker.walk( obj, tree );
+                } catch ( NullPointerException e ) {
+                    fail("ParseTreeObjectNullError");
+                }
             }
         }
     }
