@@ -25,19 +25,19 @@ public class ClassNodeDiagram extends NodeDiagram {
     private Point2D bottomRightCorner = Point2D.ZERO;
 
     private int classNameFontSize = 20;
-    private int classAttributionFontSize = 15;
+    private int classAttributeFontSize = 15;
     private int classOperationFontSize = 15;
     private final double defaultWidth = 100.0;
     private final double defaultClassHeight = 40.0;
-    private final double defaultAttributionHeight = 20.0;
+    private final double defaultAttributeHeight = 20.0;
     private final double defaultOperationHeight = 20.0;
     private final double classNameSpace = 20.0;
     private final double leftSpace = 5.0;
 
-    private List< ClassData > attributions = new ArrayList<>();
+    private List< ClassData > attributes = new ArrayList<>();
     private List< ClassData > operations = new ArrayList<>();
 
-    private int attributionNotVisibilityCount = 0;
+    private int attributeNotVisibilityCount = 0;
 
     private int operationNotVisibilityCount = 0;
 
@@ -89,8 +89,8 @@ public class ClassNodeDiagram extends NodeDiagram {
     public void createNodeText( ContentType type, String text ) {
         if( type == ContentType.Title ) {
             nodeText = text;
-        } else if( type == ContentType.Attribution ) {
-            attributions.add( new Attribution( text ) );
+        } else if( type == ContentType.Attribute) {
+            attributes.add( new Attribute( text ) );
         } else if( type == ContentType.Operation ) {
             operations.add( new Operation( text ) );
         }
@@ -107,8 +107,8 @@ public class ClassNodeDiagram extends NodeDiagram {
     public void changeNodeText( ContentType type, int number, String text ) {
         if( type == ContentType.Title ) {
             nodeText = text;
-        } else if( type == ContentType.Attribution ) {
-            attributions.get( number ).setName( text );
+        } else if( type == ContentType.Attribute) {
+            attributes.get( number ).setName( text );
         } else if( type == ContentType.Operation ) {
             operations.get( number ).setName( text );
         }
@@ -123,8 +123,8 @@ public class ClassNodeDiagram extends NodeDiagram {
      */
     @Override
     public void deleteNodeText( ContentType type, int number ) {
-        if( type == ContentType.Attribution ) {
-            attributions.remove( number );
+        if( type == ContentType.Attribute) {
+            attributes.remove( number );
         } else if( type == ContentType.Operation ) {
             operations.remove( number );
         }
@@ -141,8 +141,8 @@ public class ClassNodeDiagram extends NodeDiagram {
     public String getNodeContentText( ContentType type, int number ) {
         String content;
 
-        if( type == ContentType.Attribution ) {
-            content = attributions.get( number ).getName();
+        if( type == ContentType.Attribute) {
+            content = attributes.get( number ).getName();
         } else if( type == ContentType.Operation ) {
             content = operations.get( number ).getName();
         } else {
@@ -160,9 +160,9 @@ public class ClassNodeDiagram extends NodeDiagram {
     @Override
     public List< String > getNodeContents( ContentType type ) {
         List< String > list = new ArrayList<>();
-        if( type == ContentType.Attribution ) {
-            for( ClassData attribution : attributions ) {
-                list.add( attribution.getName() );
+        if( type == ContentType.Attribute) {
+            for( ClassData attribute : attributes) {
+                list.add( attribute.getName() );
             }
         } else if( type == ContentType.Operation ) {
             for( ClassData operation : operations ) {
@@ -177,7 +177,7 @@ public class ClassNodeDiagram extends NodeDiagram {
     /**
      * クラスの任意の内容における任意のサブ内容に真偽値を設定する。
      * 正確には、クラスの任意の内容の種類 {@code type} における番号 {@code contentNumber} の任意のサブ内容の種類 {@code subtype} に真偽値 {@code isChecked} を設定する。
-     * 例えば、クラス図の属性の表示しているか否かを設定する場合は、 {@code type} に {@link ContentType#Attribution} 、 {@code subtype} に {@link ContentType#Indication} を引数に入れる。
+     * 例えば、クラス図の属性の表示しているか否かを設定する場合は、 {@code type} に {@link ContentType#Attribute} 、 {@code subtype} に {@link ContentType#Indication} を引数に入れる。
      *
      * @param type クラスの内容の種類
      * @param subtype クラスのサブ内容の種類
@@ -186,9 +186,9 @@ public class ClassNodeDiagram extends NodeDiagram {
      */
     @Override
     public void setNodeContentBoolean( ContentType type, ContentType subtype, int contentNumber, boolean isChecked ) {
-        if( type == ContentType.Attribution ) {
+        if( type == ContentType.Attribute) {
             if( subtype == ContentType.Indication ) {
-                attributions.get( contentNumber ).setIndication( isChecked );
+                attributes.get( contentNumber ).setIndication( isChecked );
             }
         } else if( type == ContentType.Operation ) {
             if( subtype == ContentType.Indication ) {
@@ -199,7 +199,7 @@ public class ClassNodeDiagram extends NodeDiagram {
 
     /**
      * クラスの任意の内容における任意のサブ内容の真偽値のリストを取得する。
-     * 例えば、クラス図の属性の表示しているか否かのリストを取得する場合は、 {@code type} に {@link ContentType#Attribution} 、 {@code subtype} に {@link ContentType#Indication} を引数に入れる。
+     * 例えば、クラス図の属性の表示しているか否かのリストを取得する場合は、 {@code type} に {@link ContentType#Attribute} 、 {@code subtype} に {@link ContentType#Indication} を引数に入れる。
      *
      * @param type クラスの内容の種類
      * @param subtype クラスのサブ内容の種類
@@ -208,9 +208,9 @@ public class ClassNodeDiagram extends NodeDiagram {
     @Override
     public List< Boolean > getNodeContentsBoolean(ContentType type, ContentType subtype ) {
         List< Boolean > list = new ArrayList<>();
-        if( type == ContentType.Attribution ) {
-            for( ClassData attribution : attributions ) {
-                list.add( attribution.isIndicate() );
+        if( type == ContentType.Attribute) {
+            for( ClassData attribute : attributes) {
+                list.add( attribute.isIndicate() );
             }
         } else if( type == ContentType.Operation ) {
             for( ClassData operation : operations ) {
@@ -234,77 +234,77 @@ public class ClassNodeDiagram extends NodeDiagram {
 
         Text classNameText = new Text( nodeText );
         classNameText.setFont( Font.font( diagramFont , FontWeight.BOLD, classNameFontSize ) );
-        List< Text > attributionsText = new ArrayList<>();
+        List< Text > attributesText = new ArrayList<>();
         List< Text > operationsText = new ArrayList<>();
-        for( ClassData attribution: attributions ) {
-            Text text = new Text( attribution.getName() );
-            text.setFont( Font.font( diagramFont, FontWeight.LIGHT, classAttributionFontSize ) );
-            attributionsText.add( text );
+        for( ClassData attribute: attributes) {
+            Text text = new Text( attribute.getName() );
+            text.setFont( Font.font( diagramFont, FontWeight.LIGHT, classAttributeFontSize) );
+            attributesText.add( text );
         }
         for( ClassData operation: operations ) {
             Text text = new Text( operation.getName() );
             text.setFont( Font.font( diagramFont, FontWeight.LIGHT, classOperationFontSize ) );
             operationsText.add( text );
         }
-        double maxWidth = calculateMaxWidth( classNameText, attributionsText, operationsText );
+        double maxWidth = calculateMaxWidth( classNameText, attributesText, operationsText );
         double classHeight = defaultClassHeight;
-        double attributionHeight = calculateMaxAttributionHeight( attributions );
+        double attributeHeight = calculateMaxAttributeHeight(attributes);
         double operationHeight = calculateMaxOperationHeight( operations );
-        double operationStartHeight = calculateStartOperationHeight( attributions );
+        double operationStartHeight = calculateStartOperationHeight(attributes);
 
-        calculateWidthAndHeight( maxWidth, classHeight + attributionHeight + operationHeight );
+        calculateWidthAndHeight( maxWidth, classHeight + attributeHeight + operationHeight );
 
-        drawGraphicsContext( classNameText, attributionsText, operationsText, maxWidth, classHeight, attributionHeight, operationHeight, operationStartHeight );
+        drawGraphicsContext( classNameText, attributesText, operationsText, maxWidth, classHeight, attributeHeight, operationHeight, operationStartHeight );
     }
 
     /**
      * クラス図キャンバスにおいてクラスを描画する。
      *
      * @param classNameText クラス名のテキスト
-     * @param attributionsText クラス属性のテキストのリスト
+     * @param attributesText クラス属性のテキストのリスト
      * @param operationsText クラス操作のテキストのリスト
      * @param maxWidth 最大幅
      * @param classHeight クラス名の高さ
-     * @param attributionHeight クラス属性の高さ
+     * @param attributeHeight クラス属性の高さ
      * @param operationHeight クラス操作の高さ
      * @param operationStartHeight クラス捜査を最初に描画する高さ
      */
-    private void drawGraphicsContext( Text classNameText, List< Text > attributionsText, List< Text > operationsText, double maxWidth, double classHeight, double attributionHeight, double operationHeight, double operationStartHeight ) {
+    private void drawGraphicsContext( Text classNameText, List< Text > attributesText, List< Text > operationsText, double maxWidth, double classHeight, double attributeHeight, double operationHeight, double operationStartHeight ) {
         gc.setFill( Color.BEIGE );
-        gc.fillRect( upperLeftCorner.getX(), upperLeftCorner.getY(), maxWidth, classHeight + attributionHeight + operationHeight );
+        gc.fillRect( upperLeftCorner.getX(), upperLeftCorner.getY(), maxWidth, classHeight + attributeHeight + operationHeight );
 
         if( isChosen ) {
             gc.setStroke( Color.RED );
         } else {
             gc.setStroke( Color.BLACK );
         }
-        gc.strokeRect( upperLeftCorner.getX(), upperLeftCorner.getY(), maxWidth, classHeight + attributionHeight + operationHeight );
+        gc.strokeRect( upperLeftCorner.getX(), upperLeftCorner.getY(), maxWidth, classHeight + attributeHeight + operationHeight );
         gc.strokeLine( upperLeftCorner.getX(), upperLeftCorner.getY() + classHeight, bottomRightCorner.getX(), upperLeftCorner.getY() + classHeight );
-        gc.strokeLine( upperLeftCorner.getX(), upperLeftCorner.getY() + classHeight + attributionHeight, bottomRightCorner.getX(), upperLeftCorner.getY() + classHeight + attributionHeight );
+        gc.strokeLine( upperLeftCorner.getX(), upperLeftCorner.getY() + classHeight + attributeHeight, bottomRightCorner.getX(), upperLeftCorner.getY() + classHeight + attributeHeight );
 
         gc.setFill( Color.BLACK );
         gc.setTextAlign( TextAlignment.CENTER );
         gc.setFont( classNameText.getFont() );
         gc.fillText( classNameText.getText(), currentPoint.getX(), upperLeftCorner.getY() + classHeight/2 );
 
-        if( attributionsText.size() > 0 ) {
+        if( attributesText.size() > 0 ) {
             gc.setTextAlign( TextAlignment.LEFT );
-            gc.setFont( attributionsText.get( 0 ).getFont() );
-            int notDrawAttributionCount = 0;
+            gc.setFont( attributesText.get( 0 ).getFont() );
+            int notDrawAttributeCount = 0;
             boolean isExistedNoIndication = false;
-            for( int i = 0; i < attributionsText.size(); i++ ) {
-                if( attributions.get( i ).isIndicate() ) {
-                    gc.fillText( attributionsText.get(i).getText(),
-                            upperLeftCorner.getX() + leftSpace, upperLeftCorner.getY() + classHeight + 15.0 + ( defaultAttributionHeight * ( i - notDrawAttributionCount ) ) );
+            for( int i = 0; i < attributesText.size(); i++ ) {
+                if( attributes.get( i ).isIndicate() ) {
+                    gc.fillText( attributesText.get(i).getText(),
+                            upperLeftCorner.getX() + leftSpace, upperLeftCorner.getY() + classHeight + 15.0 + ( defaultAttributeHeight * ( i - notDrawAttributeCount ) ) );
                 } else {
-                    notDrawAttributionCount++;
+                    notDrawAttributeCount++;
                     isExistedNoIndication = true;
                 }
             }
             if( isExistedNoIndication ) {
                 gc.setTextAlign( TextAlignment.CENTER );
-                gc.fillText( "... " + attributionNotVisibilityCount + " more",
-                        currentPoint.getX(), upperLeftCorner.getY() + classHeight + 15.0 + ( defaultAttributionHeight * ( attributionsText.size() - attributionNotVisibilityCount ) ) );
+                gc.fillText( "... " + attributeNotVisibilityCount + " more",
+                        currentPoint.getX(), upperLeftCorner.getY() + classHeight + 15.0 + ( defaultAttributeHeight * ( attributesText.size() - attributeNotVisibilityCount) ) );
             }
         }
 
@@ -343,18 +343,18 @@ public class ClassNodeDiagram extends NodeDiagram {
      * </p>
      *
      * @param text クラス名
-     * @param attributionsText クラス属性のリスト
+     * @param attributesText クラス属性のリスト
      * @param operationsText クラス操作のリスト
      * @return 最大幅
      */
-    public double calculateMaxWidth( Text text, List< Text > attributionsText, List< Text > operationsText ) {
+    public double calculateMaxWidth( Text text, List< Text > attributesText, List< Text > operationsText ) {
         double width = defaultWidth - classNameSpace;
 
-        List< Double > classAttributions = new ArrayList<>();
-        classAttributions.add( 0.0 );
-        for( int i = 0; i < attributionsText.size(); i++ ) {
-            if( attributions.get( i ).isIndicate() )
-                classAttributions.add( attributionsText.get( i ).getLayoutBounds().getWidth() );
+        List< Double > classAttributes = new ArrayList<>();
+        classAttributes.add( 0.0 );
+        for( int i = 0; i < attributesText.size(); i++ ) {
+            if( attributes.get( i ).isIndicate() )
+                classAttributes.add( attributesText.get( i ).getLayoutBounds().getWidth() );
         }
         List< Double > classOperations = new ArrayList<>();
         classOperations.add( 0.0 );
@@ -363,10 +363,10 @@ public class ClassNodeDiagram extends NodeDiagram {
                 classOperations.add( operationsText.get( i ).getLayoutBounds().getWidth() );
         }
 
-        classAttributions.sort( Comparator.reverseOrder() );
+        classAttributes.sort( Comparator.reverseOrder() );
         classOperations.sort( Comparator.reverseOrder() );
 
-        List< Double > classWidth = Arrays.asList( text.getLayoutBounds().getWidth(), classAttributions.get( 0 ), classOperations.get( 0 ) );
+        List< Double > classWidth = Arrays.asList( text.getLayoutBounds().getWidth(), classAttributes.get( 0 ), classOperations.get( 0 ) );
 
         classWidth.sort( Comparator.reverseOrder() );
 
@@ -381,26 +381,26 @@ public class ClassNodeDiagram extends NodeDiagram {
      *
      * <p>
      *     クラス属性が複数ある場合は最大高さを高くしなければならない。
-     *     ただし、1つ以上非表示のクラス属性が存在する場合は、高さを {@code (非表示の属性の個数 - 1) * defaultAttributionHeight} 分減らす。
+     *     ただし、1つ以上非表示のクラス属性が存在する場合は、高さを {@code (非表示の属性の個数 - 1) * defaultAttributeHeight} 分減らす。
      *     ここにおける {@code -1} とは、非表示の属性の個数を表示する列の分である。
-     *     クラス属性が存在しない場合、またはクラス属性が1つだけ存在する場合、または全てのクラス属性が非表示の場合は {@link ClassNodeDiagram#defaultAttributionHeight} を返す。
+     *     クラス属性が存在しない場合、またはクラス属性が1つだけ存在する場合、または全てのクラス属性が非表示の場合は {@link ClassNodeDiagram#defaultAttributeHeight} を返す。
      * </p>
      *
-     * @param attributions クラス属性のリスト
+     * @param attributes クラス属性のリスト
      * @return クラス属性の箇所の高さ
      */
-    public double calculateMaxAttributionHeight( List< ClassData > attributions ) {
-        double height = defaultAttributionHeight;
-        attributionNotVisibilityCount = countNotBooleanContents( attributions );
+    public double calculateMaxAttributeHeight(List< ClassData > attributes ) {
+        double height = defaultAttributeHeight;
+        attributeNotVisibilityCount = countNotBooleanContents( attributes );
 
-        if( attributions.size() > 0 ) {
-            if( attributionNotVisibilityCount > 0 ) {
-                if( attributionNotVisibilityCount != attributions.size() )
-                    height = ( attributions.size() - attributionNotVisibilityCount + 1 ) * defaultAttributionHeight;
+        if( attributes.size() > 0 ) {
+            if( attributeNotVisibilityCount > 0 ) {
+                if( attributeNotVisibilityCount != attributes.size() )
+                    height = ( attributes.size() - attributeNotVisibilityCount + 1 ) * defaultAttributeHeight;
                 else
-                    height = defaultAttributionHeight;
+                    height = defaultAttributeHeight;
             } else {
-                height = attributions.size() * defaultAttributionHeight;
+                height = attributes.size() * defaultAttributeHeight;
             }
         }
 
@@ -412,19 +412,19 @@ public class ClassNodeDiagram extends NodeDiagram {
      * ここにおける高さの基準とは、クラス図キャンバスにおいてクラス属性を描画開始する高さである。
      * すなわち、 {@code 0.0} の場合、クラス属性の描画開始する高さを返すことになる（実際には必ず属性1つ分の高さは存在する）。
      *
-     * @param attributions クラス属性のリスト
+     * @param attributes クラス属性のリスト
      * @return クラス操作を描画開始する高さ
      */
-    public double calculateStartOperationHeight( List< ClassData > attributions ) {
+    public double calculateStartOperationHeight( List< ClassData > attributes ) {
         double height = 20.0;
 
-        if( attributions.size() > 0 ) {
-            height = attributions.size() * 20.0;
+        if( attributes.size() > 0 ) {
+            height = attributes.size() * 20.0;
         }
-        if( attributionNotVisibilityCount > 0 ) {
-            height -= ( ( attributionNotVisibilityCount - 1 ) * 20 );
+        if( attributeNotVisibilityCount > 0 ) {
+            height -= ( ( attributeNotVisibilityCount - 1 ) * 20 );
         }
-        if( attributions.size() == attributionNotVisibilityCount ) {
+        if( attributes.size() == attributeNotVisibilityCount) {
             height = 20.0;
         }
 

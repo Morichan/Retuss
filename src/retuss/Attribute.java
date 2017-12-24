@@ -8,16 +8,16 @@ package retuss;
  *     {@link ClassData} クラスを継承しています。
  * </p>
  */
-public class Attribution extends ClassData {
+public class Attribute extends ClassData {
 
-    Attribution() {
+    Attribute() {
         name = "";
         visibility = "";
         type = ContentType.Undefined;
         isIndicate = true;
     }
 
-    Attribution( String name ) {
+    Attribute(String name ) {
         this.name = name;
         isIndicate = true;
     }

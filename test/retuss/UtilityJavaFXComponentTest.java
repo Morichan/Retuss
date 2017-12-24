@@ -137,27 +137,27 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
             String className = "ClassName";
 
             ContextMenu expected = new ContextMenu();
-            Menu attributionMenu = new Menu("属性");
+            Menu attributeMenu = new Menu("属性");
             Menu operationMenu = new Menu("操作");
 
-            MenuItem addAttributionMenuItem = new MenuItem("追加");
-            Menu changeAttributionMenu = new Menu("変更");
-            Menu deleteAttributionMenu = new Menu("削除");
-            Menu displayAttributionMenu = new Menu("表示選択");
+            MenuItem addAttributeMenuItem = new MenuItem("追加");
+            Menu changeAttributeMenu = new Menu("変更");
+            Menu deleteAttributeMenu = new Menu("削除");
+            Menu displayAttributeMenu = new Menu("表示選択");
             MenuItem addOperationMenuItem = new MenuItem("追加");
             Menu changeOperationMenu = new Menu("変更");
             Menu deleteOperationMenu = new Menu("削除");
             Menu displayOperationMenu = new Menu("表示選択");
 
-            List<String> attributions = Arrays.asList("- content1 : int", "- content2 : double", "- content3 : char");
+            List<String> attributes = Arrays.asList("- content1 : int", "- content2 : double", "- content3 : char");
             List<String> operations = Arrays.asList("- content1() : int", "- content2( argv : int ) : double", "- content3( argv1 : int, argv2 : double ) : char");
-            List<Boolean> attributionsVisibility = Arrays.asList(true, true, true);
+            List<Boolean> attributesVisibility = Arrays.asList(true, true, true);
             List<Boolean> operationsVisibility = Arrays.asList(true, true, true);
 
-            for (String attribution : attributions) {
-                changeAttributionMenu.getItems().add(new MenuItem(attribution));
-                deleteAttributionMenu.getItems().add(new MenuItem(attribution));
-                displayAttributionMenu.getItems().add(new CheckMenuItem(attribution));
+            for (String attribute : attributes) {
+                changeAttributeMenu.getItems().add(new MenuItem(attribute));
+                deleteAttributeMenu.getItems().add(new MenuItem(attribute));
+                displayAttributeMenu.getItems().add(new CheckMenuItem(attribute));
             }
             for (String operation : operations) {
                 changeOperationMenu.getItems().add(new MenuItem(operation));
@@ -165,10 +165,10 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
                 displayOperationMenu.getItems().add(new CheckMenuItem(operation));
             }
 
-            attributionMenu.getItems().add(addAttributionMenuItem);
-            attributionMenu.getItems().add(changeAttributionMenu);
-            attributionMenu.getItems().add(deleteAttributionMenu);
-            attributionMenu.getItems().add(displayAttributionMenu);
+            attributeMenu.getItems().add(addAttributeMenuItem);
+            attributeMenu.getItems().add(changeAttributeMenu);
+            attributeMenu.getItems().add(deleteAttributeMenu);
+            attributeMenu.getItems().add(displayAttributeMenu);
             operationMenu.getItems().add(addOperationMenuItem);
             operationMenu.getItems().add(changeOperationMenu);
             operationMenu.getItems().add(deleteOperationMenu);
@@ -177,10 +177,10 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
             expected.getItems().add(new MenuItem(className + "クラスの名前の変更"));
             expected.getItems().add(new MenuItem(className + "クラスをモデルから削除"));
             expected.getItems().add(new SeparatorMenuItem());
-            expected.getItems().add(attributionMenu);
+            expected.getItems().add(attributeMenu);
             expected.getItems().add(operationMenu);
 
-            ContextMenu actual = util.getClassContextMenuInCD(className, ContentType.Class, attributions, operations, attributionsVisibility, operationsVisibility);
+            ContextMenu actual = util.getClassContextMenuInCD(className, ContentType.Class, attributes, operations, attributesVisibility, operationsVisibility);
 
             assertThat(actual.getItems().size()).isEqualTo(expected.getItems().size());
             assertThat(actual.getItems().size()).isEqualTo(5);
@@ -236,28 +236,28 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
             String className = "ClassName";
 
             ContextMenu expected = new ContextMenu();
-            Menu attributionMenu = new Menu("属性");
+            Menu attributeMenu = new Menu("属性");
             Menu operationMenu = new Menu("操作");
 
-            MenuItem addAttributionMenuItem = new MenuItem("追加");
-            Menu changeAttributionMenu = new Menu("変更");
-            Menu deleteAttributionMenu = new Menu("削除");
-            Menu displayAttributionMenu = new Menu("表示選択");
+            MenuItem addAttributeMenuItem = new MenuItem("追加");
+            Menu changeAttributeMenu = new Menu("変更");
+            Menu deleteAttributeMenu = new Menu("削除");
+            Menu displayAttributeMenu = new Menu("表示選択");
             MenuItem addOperationMenuItem = new MenuItem("追加");
             Menu changeOperationMenu = new Menu("変更");
             Menu deleteOperationMenu = new Menu("削除");
             Menu displayOperationMenu = new Menu("表示選択");
 
             String expectedMenuText = "なし";
-            List<String> attributions = new ArrayList<>();
+            List<String> attributes = new ArrayList<>();
             List<String> operations = new ArrayList<>();
-            List<Boolean> attributionsVisibility = new ArrayList<>();
+            List<Boolean> attributesVisibility = new ArrayList<>();
             List<Boolean> operationsVisibility = new ArrayList<>();
 
-            attributionMenu.getItems().add(addAttributionMenuItem);
-            attributionMenu.getItems().add(changeAttributionMenu);
-            attributionMenu.getItems().add(deleteAttributionMenu);
-            attributionMenu.getItems().add(displayAttributionMenu);
+            attributeMenu.getItems().add(addAttributeMenuItem);
+            attributeMenu.getItems().add(changeAttributeMenu);
+            attributeMenu.getItems().add(deleteAttributeMenu);
+            attributeMenu.getItems().add(displayAttributeMenu);
             operationMenu.getItems().add(addOperationMenuItem);
             operationMenu.getItems().add(changeOperationMenu);
             operationMenu.getItems().add(deleteOperationMenu);
@@ -266,10 +266,10 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
             expected.getItems().add(new MenuItem(className + "クラスをモデルから削除"));
             expected.getItems().add(new MenuItem(className + "クラスの名前の変更"));
             expected.getItems().add(new SeparatorMenuItem());
-            expected.getItems().add(attributionMenu);
+            expected.getItems().add(attributeMenu);
             expected.getItems().add(operationMenu);
 
-            ContextMenu actual = util.getClassContextMenuInCD(className, ContentType.Class, attributions, operations, attributionsVisibility, operationsVisibility);
+            ContextMenu actual = util.getClassContextMenuInCD(className, ContentType.Class, attributes, operations, attributesVisibility, operationsVisibility);
 
             assertThat(actual.getItems().size()).isEqualTo(expected.getItems().size());
             assertThat(actual.getItems().size()).isEqualTo(5);

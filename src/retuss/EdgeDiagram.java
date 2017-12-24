@@ -14,7 +14,7 @@ import java.util.List;
 
 public class EdgeDiagram {
     GraphicsContext gc;
-    private List< RelationshipAttribution > relations = new ArrayList<>();
+    private List<RelationshipAttribute> relations = new ArrayList<>();
     private boolean hasRelationSourceNodeSelected = false;
     private UtilityJavaFXComponent util = new UtilityJavaFXComponent();
 
@@ -36,7 +36,7 @@ public class EdgeDiagram {
      */
     public void createEdgeText( ContentType type, String text ) {
         if( text.length() > 0 || type == ContentType.Generalization ) {
-            relations.add( new RelationshipAttribution( text ) );
+            relations.add( new RelationshipAttribute( text ) );
             relations.get( relations.size() - 1 ).setType( type );
         }
     }
@@ -216,8 +216,8 @@ public class EdgeDiagram {
      * @param mousePoint クラス図キャンバスにおける任意のポイント
      * @return 任意のポイントに描画している関係
      */
-    public RelationshipAttribution searchCurrentRelation( Point2D mousePoint ) {
-        RelationshipAttribution content = null;
+    public RelationshipAttribute searchCurrentRelation(Point2D mousePoint ) {
+        RelationshipAttribute content = null;
         int number = searchCurrentRelationNumber( mousePoint );
         if( number > -1 ) content = relations.get( number );
         return content;

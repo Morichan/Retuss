@@ -72,12 +72,12 @@ public class UtilityJavaFXComponent {
             popup.getItems().add( new MenuItem( nodeName + "クラスをモデルから削除" ) );
             popup.getItems().add( new SeparatorMenuItem() );
 
-            Menu attributionMenu = new Menu( "属性" );
+            Menu attributeMenu = new Menu( "属性" );
             Menu operationMenu = new Menu( "操作" );
-            MenuItem addAttributionMenuItem = new MenuItem( "追加" );
-            Menu changeAttributionMenu = new Menu( "変更" );
-            Menu deleteAttributionMenu = new Menu( "削除" );
-            Menu displayAttributionMenu = new Menu( "表示選択" );
+            MenuItem addAttributeMenuItem = new MenuItem( "追加" );
+            Menu changeAttributeMenu = new Menu( "変更" );
+            Menu deleteAttributeMenu = new Menu( "削除" );
+            Menu displayAttributeMenu = new Menu( "表示選択" );
             MenuItem addOperationMenuItem = new MenuItem( "追加" );
             Menu changeOperationMenu = new Menu( "変更" );
             Menu deleteOperationMenu = new Menu( "削除" );
@@ -85,22 +85,22 @@ public class UtilityJavaFXComponent {
 
             if( nodeContents1.size() > 0 ) {
                 for( int i = 0; i < nodeContents1.size(); i++ ) {
-                    changeAttributionMenu.getItems().add( new MenuItem( nodeContents1.get( i ) ) );
-                    deleteAttributionMenu.getItems().add( new MenuItem( nodeContents1.get( i ) ) );
+                    changeAttributeMenu.getItems().add( new MenuItem( nodeContents1.get( i ) ) );
+                    deleteAttributeMenu.getItems().add( new MenuItem( nodeContents1.get( i ) ) );
                     CheckMenuItem checkMenuItem = new CheckMenuItem( nodeContents1.get( i ) );
                     checkMenuItem.setSelected( nodeContents3.get( i ) );
-                    displayAttributionMenu.getItems().add( checkMenuItem );
+                    displayAttributeMenu.getItems().add( checkMenuItem );
                 }
             } else {
-                MenuItem hasNotChangeAttributionMenuItem = new MenuItem( "なし" );
-                MenuItem hasNotDeleteAttributionMenuItem = new MenuItem( "なし" );
-                CheckMenuItem hasNotDisplayAttributionCheckMenuItem = new CheckMenuItem( "なし" );
-                hasNotChangeAttributionMenuItem.setDisable( true );
-                hasNotDeleteAttributionMenuItem.setDisable( true );
-                hasNotDisplayAttributionCheckMenuItem.setDisable( true );
-                changeAttributionMenu.getItems().add( hasNotChangeAttributionMenuItem );
-                deleteAttributionMenu.getItems().add( hasNotDeleteAttributionMenuItem );
-                displayAttributionMenu.getItems().add( hasNotDisplayAttributionCheckMenuItem );
+                MenuItem hasNotChangeAttributeMenuItem = new MenuItem( "なし" );
+                MenuItem hasNotDeleteAttributeMenuItem = new MenuItem( "なし" );
+                CheckMenuItem hasNotDisplayAttributeCheckMenuItem = new CheckMenuItem( "なし" );
+                hasNotChangeAttributeMenuItem.setDisable( true );
+                hasNotDeleteAttributeMenuItem.setDisable( true );
+                hasNotDisplayAttributeCheckMenuItem.setDisable( true );
+                changeAttributeMenu.getItems().add( hasNotChangeAttributeMenuItem );
+                deleteAttributeMenu.getItems().add( hasNotDeleteAttributeMenuItem );
+                displayAttributeMenu.getItems().add( hasNotDisplayAttributeCheckMenuItem );
             }
 
             if( nodeContents2.size() > 0 ) {
@@ -123,16 +123,16 @@ public class UtilityJavaFXComponent {
                 displayOperationMenu.getItems().add( hasNotDisplayOperationCheckMenuItem );
             }
 
-            attributionMenu.getItems().add( addAttributionMenuItem );
-            attributionMenu.getItems().add( changeAttributionMenu );
-            attributionMenu.getItems().add( deleteAttributionMenu );
-            attributionMenu.getItems().add( displayAttributionMenu );
+            attributeMenu.getItems().add( addAttributeMenuItem );
+            attributeMenu.getItems().add( changeAttributeMenu );
+            attributeMenu.getItems().add( deleteAttributeMenu );
+            attributeMenu.getItems().add( displayAttributeMenu );
             operationMenu.getItems().add( addOperationMenuItem );
             operationMenu.getItems().add( changeOperationMenu );
             operationMenu.getItems().add( deleteOperationMenu );
             operationMenu.getItems().add( displayOperationMenu );
 
-            popup.getItems().add( attributionMenu );
+            popup.getItems().add( attributeMenu );
             popup.getItems().add( operationMenu );
         } else {
             //popup.getItems().add( new MenuItem( "内容の変更" ) );

@@ -43,7 +43,7 @@ class ControllerTest {
         Point2D betweenSecondAndThirdClickedClassDiagramCanvas;
         String changeClassMenu;
         String deleteClassMenu;
-        String classAttributionMenu;
+        String classAttributeMenu;
         String classOperationMenu;
         String addMenu;
         String changeMenu;
@@ -81,7 +81,7 @@ class ControllerTest {
 
             changeClassMenu = "クラスの名前の変更";
             deleteClassMenu = "クラスをモデルから削除";
-            classAttributionMenu = "属性";
+            classAttributeMenu = "属性";
             classOperationMenu = "操作";
             addMenu = "追加";
             changeMenu = "変更";
@@ -267,9 +267,9 @@ class ControllerTest {
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
-                        write("- attribution : int");
+                        write("- attribute : int");
                         clickOn(okButtonOnDialogBox);
 
                         GraphicsContext gc = getGraphicsContext();
@@ -283,7 +283,7 @@ class ControllerTest {
 
                         rightClickOn(firstClickedClassDiagramCanvas);
                         ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
-                        assertThat(((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText()).isEqualTo("- attribution : int");
+                        assertThat(((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText()).isEqualTo("- attribute : int");
                     }
 
                     @Test
@@ -292,22 +292,22 @@ class ControllerTest {
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
-                        write("- attribution : int");
+                        write("- attribute : int");
                         clickOn(okButtonOnDialogBox);
 
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         moveTo(addMenu);
                         moveTo(changeMenu);
-                        clickOn("- attribution : int");
-                        write("- attribution : double");
+                        clickOn("- attribute : int");
+                        write("- attribute : double");
                         clickOn(okButtonOnDialogBox);
 
                         rightClickOn(firstClickedClassDiagramCanvas);
                         ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
-                        assertThat(((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText()).isEqualTo("- attribution : double");
+                        assertThat(((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText()).isEqualTo("- attribute : double");
                     }
 
                     @Test
@@ -316,22 +316,22 @@ class ControllerTest {
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
-                        write("- attribution : int");
+                        write("- attribute : int");
                         clickOn(okButtonOnDialogBox);
 
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         moveTo(addMenu);
                         moveTo(changeMenu);
-                        clickOn("- attribution : int");
+                        clickOn("- attribute : int");
                         push(KeyCode.BACK_SPACE);
                         clickOn(okButtonOnDialogBox);
 
                         rightClickOn(firstClickedClassDiagramCanvas);
                         ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
-                        assertThat(((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText()).isEqualTo("- attribution : int");
+                        assertThat(((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText()).isEqualTo("- attribute : int");
                     }
 
                     @Test
@@ -340,16 +340,16 @@ class ControllerTest {
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
-                        write("- attribution : int");
+                        write("- attribute : int");
                         clickOn(okButtonOnDialogBox);
 
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         moveTo(addMenu);
                         moveTo(deleteMenu);
-                        clickOn("- attribution : int");
+                        clickOn("- attribute : int");
 
                         rightClickOn(firstClickedClassDiagramCanvas);
                         ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
@@ -362,16 +362,16 @@ class ControllerTest {
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
-                        write("- attribution : int");
+                        write("- attribute : int");
                         clickOn(okButtonOnDialogBox);
 
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         moveTo(addMenu);
                         moveTo(checkMenu);
-                        clickOn("- attribution : int");
+                        clickOn("- attribute : int");
 
                         rightClickOn(firstClickedClassDiagramCanvas);
                         ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
@@ -388,23 +388,23 @@ class ControllerTest {
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
-                        write("- attribution : int");
+                        write("- attribute : int");
                         clickOn(okButtonOnDialogBox);
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         moveTo(addMenu);
                         moveTo(checkMenu);
-                        clickOn("- attribution : int");
+                        clickOn("- attribute : int");
 
                         rightClickOn(firstClickedClassDiagramCanvas);
                         ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
                         assertThat(((CheckMenuItem) ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(3)).getItems().get(0)).isSelected()).isFalse();
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         moveTo(addMenu);
                         moveTo(checkMenu);
-                        clickOn("- attribution : int");
+                        clickOn("- attribute : int");
 
                         rightClickOn(firstClickedClassDiagramCanvas);
                         scrollPane = getScrollPaneBelowClassDiagramCanvas();
@@ -619,12 +619,12 @@ class ControllerTest {
                         drawClasses(firstClickedClassDiagramCanvas, "Test");
                         clickOn("#normalButtonInCD");
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
                         write("- x : int");
                         clickOn(okButtonOnDialogBox);
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
                         write("- y : int");
                         clickOn(okButtonOnDialogBox);
@@ -659,12 +659,12 @@ class ControllerTest {
                         drawClasses(firstClickedClassDiagramCanvas, "Test");
                         clickOn("#normalButtonInCD");
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
                         write("- x : int");
                         clickOn(okButtonOnDialogBox);
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
                         write("- y : int");
                         clickOn(okButtonOnDialogBox);
@@ -711,14 +711,14 @@ class ControllerTest {
                         drawClasses(firstClickedClassDiagramCanvas, "Test");
                         clickOn("#normalButtonInCD");
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
-                        write("- longAttribution1 : int");
+                        write("- longAttribute1 : int");
                         clickOn(okButtonOnDialogBox);
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         clickOn(addMenu);
-                        write("- longAttribution2 : double");
+                        write("- longAttribute2 : double");
                         clickOn(okButtonOnDialogBox);
                         rightClickOn(firstClickedClassDiagramCanvas);
                         moveTo(classOperationMenu);
@@ -732,15 +732,15 @@ class ControllerTest {
                         clickOn(okButtonOnDialogBox);
 
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         moveTo(addMenu);
                         moveTo(checkMenu);
-                        clickOn("- longAttribution1 : int");
+                        clickOn("- longAttribute1 : int");
                         rightClickOn(firstClickedClassDiagramCanvas);
-                        moveTo(classAttributionMenu);
+                        moveTo(classAttributeMenu);
                         moveTo(addMenu);
                         moveTo(checkMenu);
-                        clickOn("- longAttribution2 : double");
+                        clickOn("- longAttribute2 : double");
                         rightClickOn(firstClickedClassDiagramCanvas);
                         moveTo(classOperationMenu);
                         moveTo(addMenu);

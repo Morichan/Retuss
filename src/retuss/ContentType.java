@@ -12,7 +12,7 @@ public enum ContentType {
     Title,
     Class,
     Note,
-    Attribution,
+    Attribute,
     Operation,
     Indication,
     Visibility,
