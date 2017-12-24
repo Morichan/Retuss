@@ -34,38 +34,38 @@
  * chapter 19.
  *
  * NOTE: This grammar results in a generated parser that is much slower
- *       than the Java 7 grammar in the grammars-v4/java directory. This
+ *       than the Java 7 grammar in the grammars-v4/java9 directory. This
  *     one is, however, extremely close to the spec.
  *
  * You can test with
  *
  *  $ antlr4 Java9.g4
- *  $ javac *.java
- *  $ grun Java9 compilationUnit *.java
+ *  $ javac *.java9
+ *  $ grun Java9 compilationUnit *.java9
  *
  * Or,
-~/antlr/code/grammars-v4/java9 $ java Test .
-/Users/parrt/antlr/code/grammars-v4/java9/./Java9BaseListener.java
-/Users/parrt/antlr/code/grammars-v4/java9/./Java9Lexer.java
-/Users/parrt/antlr/code/grammars-v4/java9/./Java9Listener.java
-/Users/parrt/antlr/code/grammars-v4/java9/./Java9Parser.java
-/Users/parrt/antlr/code/grammars-v4/java9/./Test.java
+~/antlr/code/grammars-v4/java9 $ java9 Test .
+/Users/parrt/antlr/code/grammars-v4/java9/./Java9BaseListener.java9
+/Users/parrt/antlr/code/grammars-v4/java9/./Java9Lexer.java9
+/Users/parrt/antlr/code/grammars-v4/java9/./Java9Listener.java9
+/Users/parrt/antlr/code/grammars-v4/java9/./Java9Parser.java9
+/Users/parrt/antlr/code/grammars-v4/java9/./Test.java9
 Total lexer+parser time 30844ms.
-~/antlr/code/grammars-v4/java9 $ java Test examples/module-info.java
-/home/kwong/projects/grammars-v4/java9/examples/module-info.java
+~/antlr/code/grammars-v4/java9 $ java9 Test examples/module-info.java9
+/home/kwong/projects/grammars-v4/java9/examples/module-info.java9
 Total lexer+parser time 914ms.
-~/antlr/code/grammars-v4/java9 $ java Test examples/TryWithResourceDemo.java
-/home/kwong/projects/grammars-v4/java9/examples/TryWithResourceDemo.java
+~/antlr/code/grammars-v4/java9 $ java9 Test examples/TryWithResourceDemo.java9
+/home/kwong/projects/grammars-v4/java9/examples/TryWithResourceDemo.java9
 Total lexer+parser time 3634ms.
-~/antlr/code/grammars-v4/java9 $ java Test examples/helloworld.java
-/home/kwong/projects/grammars-v4/java9/examples/helloworld.java
+~/antlr/code/grammars-v4/java9 $ java9 Test examples/helloworld.java9
+/home/kwong/projects/grammars-v4/java9/examples/helloworld.java9
 Total lexer+parser time 2497ms.
 
  */
 grammar Java9;
 
 /*
- * Productions from ﾂｧ3 (Lexical Structure)
+ * Productions from §3 (Lexical Structure)
  */
 
 literal
@@ -78,7 +78,7 @@ literal
 	;
 
 /*
- * Productions from ﾂｧ4 (Types, Values, and Variables)
+ * Productions from §4 (Types, Values, and Variables)
  */
 
 type
@@ -208,7 +208,7 @@ wildcardBounds
 	;
 
 /*
- * Productions from ﾂｧ6 (Names)
+ * Productions from §6 (Names)
  */
 
 moduleName
@@ -246,7 +246,7 @@ ambiguousName
 	;
 
 /*
- * Productions from ﾂｧ7 (Packages)
+ * Productions from §7 (Packages)
  */
 
 compilationUnit
@@ -317,7 +317,7 @@ requiresModifier
 	;
 
 /*
- * Productions from ﾂｧ8 (Classes)
+ * Productions from §8 (Classes)
  */
 
 classDeclaration
@@ -618,7 +618,7 @@ enumBodyDeclarations
 	;
 
 /*
- * Productions from ﾂｧ9 (Interfaces)
+ * Productions from §9 (Interfaces)
  */
 
 interfaceDeclaration
@@ -752,7 +752,7 @@ singleElementAnnotation
 	;
 
 /*
- * Productions from ﾂｧ10 (Arrays)
+ * Productions from §10 (Arrays)
  */
 
 arrayInitializer
@@ -764,7 +764,7 @@ variableInitializerList
 	;
 
 /*
- * Productions from ﾂｧ14 (Blocks and Statements)
+ * Productions from §14 (Blocks and Statements)
  */
 
 block
@@ -1010,7 +1010,7 @@ variableAccess
 	;
 
 /*
- * Productions from ﾂｧ15 (Expressions)
+ * Productions from §15 (Expressions)
  */
 
 /*primary
@@ -1429,7 +1429,7 @@ castExpression
 
 // LEXER
 
-// ﾂｧ3.9 Keywords
+// §3.9 Keywords
 
 ABSTRACT : 'abstract';
 ASSERT : 'assert';
@@ -1483,7 +1483,7 @@ VOLATILE : 'volatile';
 WHILE : 'while';
 UNDER_SCORE : '_';//Introduced in Java 9
 
-// ﾂｧ3.10.1 Integer Literals
+// §3.10.1 Integer Literals
 
 IntegerLiteral
 	:	DecimalIntegerLiteral
@@ -1633,7 +1633,7 @@ BinaryDigitOrUnderscore
 	|	'_'
 	;
 
-// ﾂｧ3.10.2 Floating-Point Literals
+// §3.10.2 Floating-Point Literals
 
 FloatingPointLiteral
 	:	DecimalFloatingPointLiteral
@@ -1694,14 +1694,14 @@ BinaryExponentIndicator
 	:	[pP]
 	;
 
-// ﾂｧ3.10.3 Boolean Literals
+// §3.10.3 Boolean Literals
 
 BooleanLiteral
 	:	'true'
 	|	'false'
 	;
 
-// ﾂｧ3.10.4 Character Literals
+// §3.10.4 Character Literals
 
 CharacterLiteral
 	:	'\'' SingleCharacter '\''
@@ -1713,7 +1713,7 @@ SingleCharacter
 	:	~['\\\r\n]
 	;
 
-// ﾂｧ3.10.5 String Literals
+// §3.10.5 String Literals
 
 StringLiteral
 	:	'"' StringCharacters? '"'
@@ -1730,7 +1730,7 @@ StringCharacter
 	|	EscapeSequence
 	;
 
-// ﾂｧ3.10.6 Escape Sequences for Character and String Literals
+// §3.10.6 Escape Sequences for Character and String Literals
 
 fragment
 EscapeSequence
@@ -1757,13 +1757,13 @@ UnicodeEscape
     :   '\\' 'u'+ HexDigit HexDigit HexDigit HexDigit
     ;
 
-// ﾂｧ3.10.7 The Null Literal
+// §3.10.7 The Null Literal
 
 NullLiteral
 	:	'null'
 	;
 
-// ﾂｧ3.11 Separators
+// §3.11 Separators
 
 LPAREN : '(';
 RPAREN : ')';
@@ -1779,7 +1779,7 @@ AT : '@';
 COLONCOLON : '::';
 
 
-// ﾂｧ3.12 Operators
+// §3.12 Operators
 
 ASSIGN : '=';
 GT : '>';
@@ -1821,7 +1821,7 @@ LSHIFT_ASSIGN : '<<=';
 RSHIFT_ASSIGN : '>>=';
 URSHIFT_ASSIGN : '>>>=';
 
-// ﾂｧ3.8 Identifiers (must appear after all keywords in the grammar)
+// §3.8 Identifiers (must appear after all keywords in the grammar)
 
 Identifier
 	:	JavaLetter JavaLetterOrDigit*
@@ -1829,7 +1829,7 @@ Identifier
 
 fragment
 JavaLetter
-	:	[a-zA-Z$_] // these are the "java letters" below 0x7F
+	:	[a-zA-Z$_] // these are the "java9 letters" below 0x7F
 	|	// covers all characters above 0x7F which are not a surrogate
 		~[\u0000-\u007F\uD800-\uDBFF]
 		{Character.isJavaIdentifierStart(_input.LA(-1))}?
@@ -1840,7 +1840,7 @@ JavaLetter
 
 fragment
 JavaLetterOrDigit
-	:	[a-zA-Z0-9$_] // these are the "java letters or digits" below 0x7F
+	:	[a-zA-Z0-9$_] // these are the "java9 letters or digits" below 0x7F
 	|	// covers all characters above 0x7F which are not a surrogate
 		~[\u0000-\u007F\uD800-\uDBFF]
 		{Character.isJavaIdentifierPart(_input.LA(-1))}?
