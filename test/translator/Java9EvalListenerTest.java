@@ -39,7 +39,7 @@ class Java9EvalListenerTest {
                 parser = new Java9Parser( tokens );
                 tree = parser.compilationUnit();
                 walker = new ParseTreeWalker();
-                obj = new Java9EvalListener( parser );
+                obj = new Java9EvalListener();
             }
 
             @Disabled("ローカルインタフェースに未対応 : Java9EvalListenerTest#サンプルコードの場合#Java7までのソースコードに関して#構文解析する")
@@ -64,7 +64,7 @@ class Java9EvalListenerTest {
                 parser = new Java9Parser( tokens );
                 tree = parser.compilationUnit();
                 walker = new ParseTreeWalker();
-                obj = new Java9EvalListener( parser );
+                obj = new Java9EvalListener();
             }
 
             @Test
