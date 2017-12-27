@@ -21,5 +21,5 @@ public enum ContentType {
     Derived,
     Composition,
     Generalization,
-    Undefined;
+    Undefined
 }
