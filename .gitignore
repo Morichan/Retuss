@@ -1,0 +1,7 @@
+/.idea/
+/tmp/
+/bin/
+/build/
+*.test
+*.swp
+build.publish.gradle
