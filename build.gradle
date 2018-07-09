@@ -4,7 +4,7 @@ version '0.0.1-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = 'io.github.morichan.retuss.retuss.RetussWindow'
+mainClassName = 'io.github.morichan.window.window.RetussWindow'
 
 sourceCompatibility = 9
 tasks.withType(AbstractCompile)*.options*.encoding =
@@ -23,7 +23,7 @@ buildscript {
 
 
 
-jar.manifest.attributes 'Main-Class': 'io.github.morichan.retuss.retuss.RetussWindow'
+jar.manifest.attributes 'Main-Class': 'io.github.morichan.window.window.RetussWindow'
 
 repositories {
     mavenCentral()
@@ -34,6 +34,8 @@ apply plugin: 'antlr'
 
 dependencies {
     antlr 'org.antlr:antlr4:4+'
+
+    compile 'io.github.morichan:fescue:2.+'
 
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.0-M1'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.0-M1'
@@ -46,10 +48,10 @@ dependencies {
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
 }
 
-ext.antlr = [destinationDir: 'src/main/java/io/github/morichan/retuss/parser/java']
+ext.antlr = [destinationDir: 'src/main/java/io/github/morichan/window/parser/java']
 generateGrammarSource {
     outputDirectory = file(new File("${antlr.destinationDir}"))
-    arguments = ["-package", "io.github.morichan.retuss.parser.java", "-listener", "-no-visitor"].flatten()
+    arguments = ["-package", "io.github.morichan.window.parser.java", "-listener", "-no-visitor"].flatten()
 }
 
 clean {

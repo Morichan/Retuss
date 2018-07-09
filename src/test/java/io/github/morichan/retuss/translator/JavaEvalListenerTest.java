@@ -27,7 +27,7 @@ class JavaEvalListenerTest {
     ParseTree tree;
     ParseTreeWalker walker;
 
-    String code = "package retuss; class TestCode { public int test = 0; }";
+    String code = "package window; class TestCode { public int test = 0; }";
     String dir = "src\\main\\resources\\";
 
     @Nested
