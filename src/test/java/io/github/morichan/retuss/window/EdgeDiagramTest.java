@@ -2,7 +2,7 @@ package io.github.morichan.retuss.window;
 
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.EdgeDiagram;
-import io.github.morichan.retuss.window.diagram.RelationshipAttribute;
+import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
 import javafx.geometry.Point2D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EdgeDiagramTest {
@@ -25,57 +26,52 @@ class EdgeDiagramTest {
     class コンポジションの場合 {
 
         @BeforeEach
-        public void setObj() {
+        void setObj() {
             obj = new EdgeDiagram();
         }
 
         @Test
-        public void 追加する() {
+        void 追加する() {
             String expected = "- composition";
 
             obj.createEdgeText(ContentType.Composition, expected);
-            String actual = obj.getEdgeContentText(ContentType.Composition, 0);
+            String actual = obj.getEdgeContentText(0);
 
             assertThat(actual).isEqualTo(expected);
             assertThat(obj.getCompositionsCount()).isEqualTo(1);
         }
 
         @Test
-        public void 変更する() {
+        void 変更する() {
             String firstInputClassComposition = "- composition";
             String expected = "- changedComposition";
 
             obj.createEdgeText(ContentType.Composition, firstInputClassComposition);
             obj.changeEdgeText(ContentType.Composition, 0, expected);
-            String actual = obj.getEdgeContentText(ContentType.Composition, 0);
+            String actual = obj.getEdgeContentText(0);
 
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
-        public void 削除する() {
+        void 削除する() {
             String composition = "- composition";
 
             obj.createEdgeText(ContentType.Composition, composition);
             obj.deleteEdgeText(ContentType.Composition, 0);
-            String actual = obj.getEdgeContentText(ContentType.Composition, 0);
-
-            assertThat(actual).isEmpty();
+            assertThatThrownBy(() -> obj.getEdgeContentText(0)).isInstanceOf(IndexOutOfBoundsException.class);
         }
 
         @Test
-        public void 空文字を入力した場合は追加しない() {
+        void 空文字を入力した場合は追加しない() {
             String expected = "";
 
             obj.createEdgeText(ContentType.Composition, expected);
-            String actual = obj.getEdgeContentText(ContentType.Composition, 0);
-
-            assertThat(actual).isEqualTo(expected);
-            assertThat(obj.getCompositionsCount()).isEqualTo(0);
+            assertThatThrownBy(() -> obj.getEdgeContentText(0)).isInstanceOf(IndexOutOfBoundsException.class);
         }
 
         @Test
-        public void 関連先を設定する() {
+        void 関連先を設定する() {
             int expected = 1;
             obj.createEdgeText(ContentType.Composition, "- composition");
 
@@ -85,7 +81,7 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 関連元を設定する() {
+        void 関連元を設定する() {
             int expected = 0;
             obj.createEdgeText(ContentType.Composition, "- composition");
 
@@ -95,7 +91,7 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 関係先のポイントを設定する() {
+        void 関係先のポイントを設定する() {
             Point2D expected = new Point2D(100.0, 200.0);
 
             obj.createEdgeText(ContentType.Composition, "- composition");
@@ -106,7 +102,7 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 関係元のポイントを設定する() {
+        void 関係元のポイントを設定する() {
             Point2D expected = new Point2D(300.0, 400.0);
 
             obj.createEdgeText(ContentType.Composition, "- composition");
@@ -117,7 +113,7 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 関係先と関係元のX軸が同じ場合その中間点は関係を描画している() {
+        void 関係先と関係元のX軸が同じ場合その中間点は関係を描画している() {
             firstClassPoint = new Point2D(100.0, 200.0);
             secondClassPoint = new Point2D(100.0, 400.0);
             Point2D checkPoint = new Point2D(firstClassPoint.getX(), secondClassPoint.getY() - (secondClassPoint.getY() - firstClassPoint.getY()) / 2);
@@ -131,7 +127,7 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 関係先と関係元のY軸が同じ場合その中間点は関係を描画している() {
+        void 関係先と関係元のY軸が同じ場合その中間点は関係を描画している() {
             firstClassPoint = new Point2D(100.0, 200.0);
             secondClassPoint = new Point2D(300.0, 200.0);
             Point2D checkPoint = new Point2D(firstClassPoint.getX() + (secondClassPoint.getX() - firstClassPoint.getX()) / 2, firstClassPoint.getY());
@@ -145,7 +141,7 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 関係先と関係元の中間点は関係を描画している() {
+        void 関係先と関係元の中間点は関係を描画している() {
             firstClassPoint = new Point2D(100.0, 200.0);
             secondClassPoint = new Point2D(300.0, 400.0);
             Point2D checkPoint = new Point2D(
@@ -161,7 +157,7 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 関係先と関係元の中間点から余地の長さ以上離れた点は関係を描画していない() {
+        void 関係先と関係元の中間点から余地の長さ以上離れた点は関係を描画していない() {
             firstClassPoint = new Point2D(100.0, 200.0);
             secondClassPoint = new Point2D(300.0, 400.0);
             double beyondMarginLength = 10.0;
@@ -178,7 +174,7 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 複数追加する() {
+        void 複数追加する() {
             String expected1 = "- composition1";
             String expected2 = "- composition2";
             String expected3 = "- composition3";
@@ -186,9 +182,9 @@ class EdgeDiagramTest {
             obj.createEdgeText(ContentType.Composition, expected1);
             obj.createEdgeText(ContentType.Composition, expected2);
             obj.createEdgeText(ContentType.Composition, expected3);
-            String actual1 = obj.getEdgeContentText(ContentType.Composition, 0);
-            String actual2 = obj.getEdgeContentText(ContentType.Composition, 1);
-            String actual3 = obj.getEdgeContentText(ContentType.Composition, 2);
+            String actual1 = obj.getEdgeContentText(0);
+            String actual2 = obj.getEdgeContentText(1);
+            String actual3 = obj.getEdgeContentText(2);
 
             assertThat(actual1).isEqualTo(expected1);
             assertThat(actual2).isEqualTo(expected2);
@@ -201,45 +197,43 @@ class EdgeDiagramTest {
     class 汎化の場合 {
 
         @BeforeEach
-        public void setObj() {
+        void setObj() {
             obj = new EdgeDiagram();
         }
 
         @Test
-        public void 追加する() {
+        void 追加する() {
 
-            obj.createEdgeText( ContentType.Generalization, "" );
-            obj.deleteGeneralizationFromSameRelationSourceNode( 0 );
-            String actual = obj.getEdgeContentText( ContentType.Generalization, 0 );
+            obj.createEdgeText(ContentType.Generalization, "");
+            obj.deleteGeneralizationFromSameRelationSourceNode(0);
+            String actual = obj.getEdgeContentText(0);
 
-            assertThat( actual ).isEmpty();
-            assertThat( obj.getCompositionsCount() ).isEqualTo( 1 );
+            assertThat(actual).isEmpty();
+            assertThat(obj.getCompositionsCount()).isEqualTo(1);
         }
 
         @Test
-        public void 削除する() {
+        void 削除する() {
 
-            obj.createEdgeText( ContentType.Generalization, "" );
-            obj.deleteGeneralizationFromSameRelationSourceNode( 0 );
-            obj.deleteEdgeText( ContentType.Generalization, 0 );
+            obj.createEdgeText(ContentType.Generalization, "");
+            obj.deleteGeneralizationFromSameRelationSourceNode(0);
+            obj.deleteEdgeText(ContentType.Generalization, 0);
 
-            String actual = obj.getEdgeContentText( ContentType.Generalization, 0 );
-
-            assertThat( actual ).isEmpty();
+            assertThatThrownBy(() -> obj.getEdgeContentText(0)).isInstanceOf(IndexOutOfBoundsException.class);
         }
 
         @Test
-        public void 複数追加する際に関係元が同じ場合は最初に記述した汎化を削除する() {
+        void 複数追加する際に関係元が同じ場合は最初に記述した汎化を削除する() {
 
-            obj.createEdgeText( ContentType.Generalization, "" );
-            obj.setRelationSourceId( ContentType.Generalization, 0, 0 );
-            obj.deleteGeneralizationFromSameRelationSourceNode( 0 );
+            obj.createEdgeText(ContentType.Generalization, "");
+            obj.setRelationSourceId(ContentType.Generalization, 0, 0);
+            obj.deleteGeneralizationFromSameRelationSourceNode(0);
 
-            obj.createEdgeText( ContentType.Generalization, "" );
-            obj.setRelationSourceId( ContentType.Generalization, 1, 0 );
-            obj.deleteGeneralizationFromSameRelationSourceNode( 0 );
+            obj.createEdgeText(ContentType.Generalization, "");
+            obj.setRelationSourceId(ContentType.Generalization, 1, 0);
+            obj.deleteGeneralizationFromSameRelationSourceNode(0);
 
-            assertThat( obj.getCompositionsCount() ).isEqualTo( 1 );
+            assertThat(obj.getCompositionsCount()).isEqualTo(1);
         }
     }
 
@@ -256,12 +250,12 @@ class EdgeDiagramTest {
         Point2D upperLeftPoint = new Point2D(0.0, 0.0);
 
         @BeforeEach
-        public void setObj() {
+        void setObj() {
             obj = new EdgeDiagram();
         }
 
         @Test
-        public void 関係元を選択しているかどうかを確認する() {
+        void 関係元を選択しているかどうかを確認する() {
             boolean firstExpected = false;
             boolean secondExpected = true;
             boolean thirdExpected = false;
@@ -278,7 +272,7 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 関係元を選択しているかどうかをリセットする() {
+        void 関係元を選択しているかどうかをリセットする() {
             obj.changeRelationSourceNodeSelectedState();
             obj.resetRelationSourceNodeSelectedState();
 
@@ -288,7 +282,7 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 関係先と関係元のポイントを入れると余地を含んだ右回りで4隅のポイントを持つ範囲を返す() {
+        void 関係先と関係元のポイントを入れると余地を含んだ右回りで4隅のポイントを持つ範囲を返す() {
             double root2 = Math.sqrt(2.0);
             List<Point2D> expected1 = Arrays.asList(
                     new Point2D(98.0, 100.0), new Point2D(98.0, 0.0),
@@ -340,11 +334,11 @@ class EdgeDiagramTest {
                     () -> assertThat(actual5).isEqualTo(expected5),
                     () -> assertThat(actual6).isEqualTo(expected6),
                     () -> assertThat(actual7).isEqualTo(expected7),
-                    () -> assertThat(actual8).isEqualTo(expected8) );
+                    () -> assertThat(actual8).isEqualTo(expected8));
         }
 
         @Test
-        public void 関係先と関係元のポイントを入れると法線の傾きを計算する() {
+        void 関係先と関係元のポイントを入れると法線の傾きを計算する() {
 
             double actual1 = obj.calculateNormalLineInclination(centerPoint, upperPoint); // 北
             double actual2 = obj.calculateNormalLineInclination(centerPoint, righterPoint); // 東
@@ -363,11 +357,11 @@ class EdgeDiagramTest {
                     () -> assertThat(actual5).isEqualTo(-1.0),
                     () -> assertThat(actual6).isEqualTo(1.0),
                     () -> assertThat(actual7).isEqualTo(-1.0),
-                    () -> assertThat(actual8).isEqualTo(1.0) );
+                    () -> assertThat(actual8).isEqualTo(1.0));
         }
 
         @Test
-        public void タイプを返す() {
+        void タイプを返す() {
             ContentType expected1 = ContentType.Composition;
             ContentType expected2 = ContentType.Generalization;
 
@@ -381,22 +375,22 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 内容を返す() {
-            RelationshipAttribute expected = new RelationshipAttribute("- composition");
+        void 内容を返す() {
+            RelationshipAttributeGraphic expected = new RelationshipAttributeGraphic("- composition");
             firstClassPoint = new Point2D(100.0, 200.0);
             secondClassPoint = new Point2D(300.0, 400.0);
 
             obj.createEdgeText(ContentType.Composition, "- composition");
             obj.setRelationPoint(ContentType.Composition, 0, secondClassPoint);
             obj.setRelationSourcePoint(ContentType.Composition, 0, firstClassPoint);
-            RelationshipAttribute actual = obj.searchCurrentRelation(firstClassPoint);
+            RelationshipAttributeGraphic actual = obj.searchCurrentRelation(firstClassPoint);
 
-            assertThat(actual.getName()).isEqualTo(expected.getName());
+            assertThat(actual.getText()).isEqualTo(expected.getText());
         }
 
         @Test
-        public void 内容名を変更する() {
-            RelationshipAttribute expected = new RelationshipAttribute("+ changedComposition");
+        void 内容名を変更する() {
+            RelationshipAttributeGraphic expected = new RelationshipAttributeGraphic("+ changedComposition");
             firstClassPoint = new Point2D(100.0, 200.0);
             secondClassPoint = new Point2D(300.0, 400.0);
             Point2D betweenFirstAndSecondClassPoint = new Point2D(200.0, 300.0);
@@ -405,13 +399,13 @@ class EdgeDiagramTest {
             obj.setRelationPoint(ContentType.Composition, 0, secondClassPoint);
             obj.setRelationSourcePoint(ContentType.Composition, 0, firstClassPoint);
             obj.changeCurrentRelation(betweenFirstAndSecondClassPoint, "+ changedComposition");
-            RelationshipAttribute actual = obj.searchCurrentRelation(betweenFirstAndSecondClassPoint);
+            RelationshipAttributeGraphic actual = obj.searchCurrentRelation(betweenFirstAndSecondClassPoint);
 
-            assertThat(actual.getName()).isEqualTo(expected.getName());
+            assertThat(actual.getText()).isEqualTo(expected.getText());
         }
 
         @Test
-        public void 内容を削除する() {
+        void 内容を削除する() {
             firstClassPoint = new Point2D(100.0, 200.0);
             secondClassPoint = new Point2D(300.0, 400.0);
             Point2D betweenFirstAndSecondClassPoint = new Point2D(200.0, 300.0);
@@ -420,13 +414,13 @@ class EdgeDiagramTest {
             obj.setRelationPoint(ContentType.Composition, 0, secondClassPoint);
             obj.setRelationSourcePoint(ContentType.Composition, 0, firstClassPoint);
             obj.deleteCurrentRelation(betweenFirstAndSecondClassPoint);
-            RelationshipAttribute actual = obj.searchCurrentRelation(betweenFirstAndSecondClassPoint);
+            RelationshipAttributeGraphic actual = obj.searchCurrentRelation(betweenFirstAndSecondClassPoint);
 
             assertThat(actual).isNull();
         }
 
         @Test
-        public void 関係先のポイントと関係元のポイントと関係先の幅を入力すると関係と関係先の側面との接点のポイントを返す() {
+        void 関係先のポイントと関係元のポイントと関係先の幅を入力すると関係と関係先の側面との接点のポイントを返す() {
 
             Point2D actual1 = obj.calculateIntersectionPointLineAndEndNodeSide(upperPoint, centerPoint, 100.0, 80.0);
             Point2D actual2 = obj.calculateIntersectionPointLineAndEndNodeSide(righterPoint, centerPoint, 100.0, 80.0);
@@ -459,11 +453,11 @@ class EdgeDiagramTest {
                     () -> assertThat(actual11).isEqualTo(new Point2D(50.0, 150.0)),
                     () -> assertThat(actual12).isEqualTo(new Point2D(50.0, 50.0)),
                     () -> assertThat(actual13).isEqualTo(new Point2D(150.0, 50.0)),
-                    () -> assertThat(actual14).isEqualTo(new Point2D(50.0, 50.0)) );
+                    () -> assertThat(actual14).isEqualTo(new Point2D(50.0, 50.0)));
         }
 
         @Test
-        public void 関係先のポイントと関係元のポイントを入力すると最初のポイントが高い場合は真を返す() {
+        void 関係先のポイントと関係元のポイントを入力すると最初のポイントが高い場合は真を返す() {
 
             boolean actual1 = obj.isHigherThanSecondNodeThatFirstNode(centerPoint, upperPoint);
             boolean actual2 = obj.isHigherThanSecondNodeThatFirstNode(centerPoint, righterPoint);
@@ -482,11 +476,11 @@ class EdgeDiagramTest {
                     () -> assertThat(actual5).isFalse(),
                     () -> assertThat(actual6).isTrue(),
                     () -> assertThat(actual7).isTrue(),
-                    () -> assertThat(actual8).isFalse() );
+                    () -> assertThat(actual8).isFalse());
         }
 
         @Test
-        public void 関係先のポイントと関係元のポイントを入力すると最初のポイントが左側にある場合は真を返す() {
+        void 関係先のポイントと関係元のポイントを入力すると最初のポイントが左側にある場合は真を返す() {
 
             boolean actual1 = obj.isLefterThanSecondNodeThatFirstNode(centerPoint, upperPoint);
             boolean actual2 = obj.isLefterThanSecondNodeThatFirstNode(centerPoint, righterPoint);
@@ -505,11 +499,11 @@ class EdgeDiagramTest {
                     () -> assertThat(actual5).isTrue(),
                     () -> assertThat(actual6).isTrue(),
                     () -> assertThat(actual7).isFalse(),
-                    () -> assertThat(actual8).isFalse() );
+                    () -> assertThat(actual8).isFalse());
         }
 
         @Test
-        public void 関係先のポイントと関係元のポイントと関係先の幅と関係先の高さを入力すると関係先の上下の側辺と関係の線が交差している場合は真を返す() {
+        void 関係先のポイントと関係元のポイントと関係先の幅と関係先の高さを入力すると関係先の上下の側辺と関係の線が交差している場合は真を返す() {
             double wideWidth = 100.0;
             double narrowWidth = 10.0;
             double highHeight = 100.0;
@@ -557,7 +551,7 @@ class EdgeDiagramTest {
         }
 
         @Test
-        public void 関係元のポイントと関係先のポイントを入力すると関係先における関係の角度を返す() {
+        void 関係元のポイントと関係先のポイントを入力すると関係先における関係の角度を返す() {
 
             double actual1 = obj.calculateDegreeFromStart(centerPoint, upperPoint);
             double actual2 = obj.calculateDegreeFromStart(centerPoint, righterPoint);

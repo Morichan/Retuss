@@ -1,17 +1,15 @@
 package io.github.morichan.retuss.window.diagram;
 
-import io.github.morichan.retuss.window.diagram.Attribute;
-import io.github.morichan.retuss.window.diagram.ContentType;
 import javafx.geometry.Point2D;
 
-public class RelationshipAttribute extends Attribute {
+public class RelationshipAttributeGraphic extends AttributeGraphic {
     private int relationId;
     private int relationSourceId;
     private Point2D relationPoint;
     private Point2D relationSourcePoint;
 
-    public RelationshipAttribute() {
-        name = "";
+    public RelationshipAttributeGraphic() {
+        super.setText("defaultAttribute");
         visibility = "";
         type = ContentType.Undefined;
         isIndicate = true;
@@ -19,8 +17,9 @@ public class RelationshipAttribute extends Attribute {
         relationSourcePoint = new Point2D( 0.0, 0.0 );
     }
 
-    public RelationshipAttribute(String name) {
-        this.name = name;
+    public RelationshipAttributeGraphic(String name) {
+        if (name.length() == 0) name = "defaultAttribute";
+        super.setText(name);
         isIndicate = true;
         relationPoint = new Point2D( 0.0, 0.0 );
         relationSourcePoint = new Point2D( 0.0, 0.0 );

@@ -2,7 +2,7 @@ package io.github.morichan.retuss.window;
 
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.NodeDiagram;
-import io.github.morichan.retuss.window.diagram.RelationshipAttribute;
+import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -216,12 +216,12 @@ public class Controller {
 
             classDiagramScrollPane.setContextMenu( formatContextMenuInCD( contextMenu, nodeDiagram.getNodeType(), mouseX, mouseY ) );
         } else if( currentType == ContentType.Composition ) {
-            RelationshipAttribute relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
-            ContextMenu contextMenu = util.createClassContextMenuInCD( relation.getName(), relation.getType() );
+            RelationshipAttributeGraphic relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
+            ContextMenu contextMenu = util.createClassContextMenuInCD( relation.getText(), relation.getType() );
             classDiagramScrollPane.setContextMenu( formatContextMenuInCD( contextMenu, relation.getType(), mouseX, mouseY ) );
 
         } else if( currentType == ContentType.Generalization ) {
-            RelationshipAttribute relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
+            RelationshipAttributeGraphic relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
             ContextMenu contextMenu = util.createClassContextMenuInCD( "", relation.getType() );
             classDiagramScrollPane.setContextMenu( formatContextMenuInCD( contextMenu, relation.getType(), mouseX, mouseY ) );
         }
@@ -346,8 +346,8 @@ public class Controller {
     private ContextMenu formatCompositionContextMenuInCD(ContextMenu contextMenu, double mouseX, double mouseY) {
         // コンポジション関係の変更
         contextMenu.getItems().get(0).setOnAction(event -> {
-            RelationshipAttribute composition = classDiagramDrawer.searchDrawnEdge(mouseX, mouseY);
-            String compositionName = showChangeCompositionNameInputDialog(composition.getName());
+            RelationshipAttributeGraphic composition = classDiagramDrawer.searchDrawnEdge(mouseX, mouseY);
+            String compositionName = showChangeCompositionNameInputDialog(composition.getText());
             classDiagramDrawer.changeDrawnEdge(mouseX, mouseY, compositionName);
             classDiagramDrawer.allReDrawCanvas();
         } );

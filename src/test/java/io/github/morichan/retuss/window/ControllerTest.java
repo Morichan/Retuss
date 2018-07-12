@@ -27,12 +27,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class ControllerTest {
 
     @AfterAll
-    public static void reset() {
+    static void reset() {
         ClassNodeDiagram.resetNodeCount();
     }
 
     @Nested
-    public class クラス図の場合 extends ApplicationTest {
+    class クラス図の場合 extends ApplicationTest {
         Stage stage;
         Point2D xButtonOnDialogBox;
         String okButtonOnDialogBox;
@@ -52,32 +52,32 @@ class ControllerTest {
         String checkMenu;
 
         @Override
-        public void start( Stage stage ) throws IOException {
+        public void start(Stage stage) throws IOException {
             String fxmlFileName = "/retussMain.fxml";
-            Scene scene = new Scene( FXMLLoader.load( getClass().getResource( fxmlFileName ) ) );
-            stage.setScene( scene );
+            Scene scene = new Scene(FXMLLoader.load(getClass().getResource(fxmlFileName)));
+            stage.setScene(scene);
             stage.show();
             this.stage = stage;
         }
 
         @BeforeEach
-        public void setup() {
-            xButtonOnDialogBox = new Point2D( 1050.0, 350.0 );
+        void setup() {
+            xButtonOnDialogBox = new Point2D(1050.0, 350.0);
             okButtonOnDialogBox = "OK";
-            firstClickedClassDiagramCanvas = new Point2D( 900.0, 600.0 );
-            secondClickedClassDiagramCanvas = new Point2D( 1050.0, 300.0 );
-            thirdClickedClassDiagramCanvas = new Point2D( 800.0, 450.0 );
+            firstClickedClassDiagramCanvas = new Point2D(900.0, 600.0);
+            secondClickedClassDiagramCanvas = new Point2D(1050.0, 300.0);
+            thirdClickedClassDiagramCanvas = new Point2D(800.0, 450.0);
             betweenFirstAndSecondClickedClassDiagramCanvas = new Point2D(
-                    firstClickedClassDiagramCanvas.getX() + ( secondClickedClassDiagramCanvas.getX() - firstClickedClassDiagramCanvas.getX() ) / 2,
-                    firstClickedClassDiagramCanvas.getY() - ( firstClickedClassDiagramCanvas.getY() - secondClickedClassDiagramCanvas.getY() ) / 2
+                    firstClickedClassDiagramCanvas.getX() + (secondClickedClassDiagramCanvas.getX() - firstClickedClassDiagramCanvas.getX()) / 2,
+                    firstClickedClassDiagramCanvas.getY() - (firstClickedClassDiagramCanvas.getY() - secondClickedClassDiagramCanvas.getY()) / 2
             );
             betweenFirstAndThirdClickedClassDiagramCanvas = new Point2D(
-                    firstClickedClassDiagramCanvas.getX() + ( thirdClickedClassDiagramCanvas.getX() - firstClickedClassDiagramCanvas.getX() ) / 2,
-                    firstClickedClassDiagramCanvas.getY() - ( firstClickedClassDiagramCanvas.getY() - thirdClickedClassDiagramCanvas.getY() ) / 2
+                    firstClickedClassDiagramCanvas.getX() + (thirdClickedClassDiagramCanvas.getX() - firstClickedClassDiagramCanvas.getX()) / 2,
+                    firstClickedClassDiagramCanvas.getY() - (firstClickedClassDiagramCanvas.getY() - thirdClickedClassDiagramCanvas.getY()) / 2
             );
             betweenSecondAndThirdClickedClassDiagramCanvas = new Point2D(
-                    thirdClickedClassDiagramCanvas.getX() + ( secondClickedClassDiagramCanvas.getX() - thirdClickedClassDiagramCanvas.getX() ) / 2,
-                    thirdClickedClassDiagramCanvas.getY() - ( thirdClickedClassDiagramCanvas.getY() - secondClickedClassDiagramCanvas.getY() ) / 2
+                    thirdClickedClassDiagramCanvas.getX() + (secondClickedClassDiagramCanvas.getX() - thirdClickedClassDiagramCanvas.getX()) / 2,
+                    thirdClickedClassDiagramCanvas.getY() - (thirdClickedClassDiagramCanvas.getY() - secondClickedClassDiagramCanvas.getY()) / 2
             );
 
             changeClassMenu = "クラスの名前の変更";
@@ -94,12 +94,12 @@ class ControllerTest {
         class ボタンに関して {
 
             @BeforeEach
-            public void reset() {
+            void reset() {
                 ClassNodeDiagram.resetNodeCount();
             }
 
             @Test
-            public void どのボタンもクリックしていない場合はどれも選択していない() {
+            void どのボタンもクリックしていない場合はどれも選択していない() {
                 Button normalButton = (Button) lookup("#normalButtonInCD").query();
                 Button classButton = (Button) lookup("#classButtonInCD").query();
                 Button noteButton = (Button) lookup("#noteButtonInCD").query();
@@ -110,7 +110,7 @@ class ControllerTest {
             }
 
             @Test
-            public void ノーマルボタンをクリックするとノーマルボタンをオンにして他をオフにする() {
+            void ノーマルボタンをクリックするとノーマルボタンをオンにして他をオフにする() {
                 clickOn("#normalButtonInCD");
 
                 Button normalButton = (Button) lookup("#normalButtonInCD").query();
@@ -123,7 +123,7 @@ class ControllerTest {
             }
 
             @Test
-            public void クラスボタンをクリックするとクラスボタンをオンにして他をオフにする() {
+            void クラスボタンをクリックするとクラスボタンをオンにして他をオフにする() {
                 clickOn("#classButtonInCD");
 
                 Button normalButton = (Button) lookup("#normalButtonInCD").query();
@@ -136,7 +136,7 @@ class ControllerTest {
             }
 
             @Test
-            public void ノートボタンをクリックするとノートボタンをオンにして他をオフにする() {
+            void ノートボタンをクリックするとノートボタンをオンにして他をオフにする() {
                 clickOn("#noteButtonInCD");
 
                 Button noteButton = (Button) lookup("#noteButtonInCD").query();
@@ -149,7 +149,7 @@ class ControllerTest {
             }
 
             @Test
-            public void クラスボタンを選択している際にクラスボタンをクリックするとオンにして他をオフにする() {
+            void クラスボタンを選択している際にクラスボタンをクリックするとオンにして他をオフにする() {
                 clickOn("#classButtonInCD");
                 clickOn("#classButtonInCD");
 
@@ -167,7 +167,7 @@ class ControllerTest {
         class キャンバスに関して {
 
             @BeforeEach
-            public void reset() {
+            void reset() {
                 ClassNodeDiagram.resetNodeCount();
             }
 
@@ -175,7 +175,7 @@ class ControllerTest {
             class ノーマルアイコンを選択している際に {
 
                 @BeforeEach
-                public void reset() {
+                void reset() {
                     ClassNodeDiagram.resetNodeCount();
                 }
 
@@ -183,12 +183,12 @@ class ControllerTest {
                 class クラスを1つ記述した状態で {
 
                     @BeforeEach
-                    public void reset() {
+                    void reset() {
                         ClassNodeDiagram.resetNodeCount();
                     }
 
                     @Test
-                    public void 右クリックした場合は変更メニューと削除メニューを表示する() {
+                    void 右クリックした場合は変更メニューと削除メニューを表示する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -201,7 +201,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 削除する() {
+                    void 削除する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -216,7 +216,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 右クリックした後で何も描かれていない箇所を右クリックしても何も表示しない() {
+                    void 右クリックした後で何も描かれていない箇所を右クリックしても何も表示しない() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -229,7 +229,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 変更メニューを選択した場合はクラス名を変更する() {
+                    void 変更メニューを選択した場合はクラス名を変更する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -246,7 +246,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 変更メニューを選択し何も入力しなかった場合はクラス名を変更しない() {
+                    void 変更メニューを選択し何も入力しなかった場合はクラス名を変更しない() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -263,7 +263,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 属性の追加メニューを選択した場合は属性を追加する() {
+                    void 属性の追加メニューを選択した場合は属性を追加する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -288,7 +288,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 追加済みの属性の変更メニューを選択した場合は変更した属性を描画する() {
+                    void 追加済みの属性の変更メニューを選択した場合は変更した属性を描画する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -312,7 +312,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 追加済みの属性の変更メニューを選択した際に何も入力しない場合は属性を変更しない() {
+                    void 追加済みの属性の変更メニューを選択した際に何も入力しない場合は属性を変更しない() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -336,7 +336,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 追加済みの属性の削除メニューを選択した場合は属性を削除する() {
+                    void 追加済みの属性の削除メニューを選択した場合は属性を削除する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -358,7 +358,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 追加済みの属性の表示選択チェックメニューのチェックを外した場合は属性を非表示にする() {
+                    void 追加済みの属性の表示選択チェックメニューのチェックを外した場合は属性を非表示にする() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -384,7 +384,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 追加済みの非表示の属性の表示選択チェックメニューのチェックを付けた場合は属性を表示する() {
+                    void 追加済みの非表示の属性の表示選択チェックメニューのチェックを付けた場合は属性を表示する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -413,7 +413,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 操作の追加メニューを選択した場合は操作を追加する() {
+                    void 操作の追加メニューを選択した場合は操作を追加する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -438,7 +438,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 追加済みの操作の変更メニューを選択した場合は変更した操作を描画する() {
+                    void 追加済みの操作の変更メニューを選択した場合は変更した操作を描画する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -462,7 +462,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 追加済みの操作の削除メニューを選択した場合は操作を削除する() {
+                    void 追加済みの操作の削除メニューを選択した場合は操作を削除する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -484,7 +484,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 追加済みの操作の表示選択チェックメニューのチェックを外した場合は操作を非表示にする() {
+                    void 追加済みの操作の表示選択チェックメニューのチェックを外した場合は操作を非表示にする() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -510,7 +510,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 追加済みの操作の変更メニューを選択した際に何も入力しない場合は操作を変更しない() {
+                    void 追加済みの操作の変更メニューを選択した際に何も入力しない場合は操作を変更しない() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -534,7 +534,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 追加済みの非表示の操作の表示選択チェックメニューのチェックを付けた場合は操作を表示する() {
+                    void 追加済みの非表示の操作の表示選択チェックメニューのチェックを付けた場合は操作を表示する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                         clickOn("#normalButtonInCD");
@@ -563,7 +563,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みのクラスの4隅を右クリックすると各箇所でメニューを表示する() {
+                    void 描画済みのクラスの4隅を右クリックすると各箇所でメニューを表示する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "Test");
                         clickOn("#normalButtonInCD");
@@ -583,7 +583,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みのクラスの4隅より広い8箇所を右クリックしても何も表示しない() {
+                    void 描画済みのクラスの4隅より広い8箇所を右クリックしても何も表示しない() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "Test");
                         clickOn("#normalButtonInCD");
@@ -615,7 +615,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みの属性と操作を2つづつ持つクラスの4隅を右クリックすると各箇所でメニューを表示する() {
+                    void 描画済みの属性と操作を2つづつ持つクラスの4隅を右クリックすると各箇所でメニューを表示する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "Test");
                         clickOn("#normalButtonInCD");
@@ -632,12 +632,12 @@ class ControllerTest {
                         rightClickOn(firstClickedClassDiagramCanvas);
                         moveTo(classOperationMenu);
                         clickOn(addMenu);
-                        write("+ z() : T");
+                        write("+ z() : c");
                         clickOn(okButtonOnDialogBox);
                         rightClickOn(firstClickedClassDiagramCanvas);
                         moveTo(classOperationMenu);
                         clickOn(addMenu);
-                        write("+ w() : T");
+                        write("+ w() : c");
                         clickOn(okButtonOnDialogBox);
 
                         rightClickOn(firstClickedClassDiagramCanvas.getX() + 49, firstClickedClassDiagramCanvas.getY() + 59);
@@ -655,7 +655,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みの属性と操作を2つづつ持つクラスの4隅より広い8箇所を右クリックしても何も表示しない() {
+                    void 描画済みの属性と操作を2つづつ持つクラスの4隅より広い8箇所を右クリックしても何も表示しない() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "Test");
                         clickOn("#normalButtonInCD");
@@ -672,12 +672,12 @@ class ControllerTest {
                         rightClickOn(firstClickedClassDiagramCanvas);
                         moveTo(classOperationMenu);
                         clickOn(addMenu);
-                        write("+ z() : T");
+                        write("+ z() : c");
                         clickOn(okButtonOnDialogBox);
                         rightClickOn(firstClickedClassDiagramCanvas);
                         moveTo(classOperationMenu);
                         clickOn(addMenu);
-                        write("+ w() : T");
+                        write("+ w() : c");
                         clickOn(okButtonOnDialogBox);
 
                         rightClickOn(firstClickedClassDiagramCanvas.getX() + 51, firstClickedClassDiagramCanvas.getY() + 61);
@@ -707,7 +707,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みの非表示の属性と操作を2つづつ持つクラスの4隅を右クリックするとメニューを表示するがそれより広い8箇所を右クリックしても何も表示しない() {
+                    void 描画済みの非表示の属性と操作を2つづつ持つクラスの4隅を右クリックするとメニューを表示するがそれより広い8箇所を右クリックしても何も表示しない() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "Test");
                         clickOn("#normalButtonInCD");
@@ -797,12 +797,12 @@ class ControllerTest {
                 class クラスを複数記述した状態で {
 
                     @BeforeEach
-                    public void reset() {
+                    void reset() {
                         ClassNodeDiagram.resetNodeCount();
                     }
 
                     @Test
-                    public void 描画済みクラス2つの内1つ目のクラスを削除する() {
+                    void 描画済みクラス2つの内1つ目のクラスを削除する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -821,7 +821,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みクラス2つの内1つ目のクラスを削除した後3つ目のクラスを描画する() {
+                    void 描画済みクラス2つの内1つ目のクラスを削除した後3つ目のクラスを描画する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -846,7 +846,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みクラス2つの内1つ目のクラスを削除した後3つ目のクラスを削除した場所に描画する() {
+                    void 描画済みクラス2つの内1つ目のクラスを削除した後3つ目のクラスを削除した場所に描画する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -868,7 +868,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みクラス2つ間の関係属性の範囲外を右クリックしても右クリックメニューは表示しない() {
+                    void 描画済みクラス2つ間の関係属性の範囲外を右クリックしても右クリックメニューは表示しない() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -899,7 +899,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みクラス2つ間の関係属性を右クリックし変更を選択すると変更したコンポジション関係を描画する() {
+                    void 描画済みクラス2つ間の関係属性を右クリックし変更を選択すると変更したコンポジション関係を描画する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -922,7 +922,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みクラス2つ間の関係属性を右クリックし変更を選択し何も記述しなかった場合はコンポジション関係を変更しない() {
+                    void 描画済みクラス2つ間の関係属性を右クリックし変更を選択し何も記述しなかった場合はコンポジション関係を変更しない() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -945,7 +945,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みクラス2つ間の関係属性を右クリックし削除を選択するとコンポジション関係を削除する() {
+                    void 描画済みクラス2つ間の関係属性を右クリックし削除を選択するとコンポジション関係を削除する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -966,7 +966,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みクラス2つ間に関係属性を2つ描画すると右クリックメニュー上では最後に描画したメニュー内容を返す() {
+                    void 描画済みクラス2つ間に関係属性を2つ描画すると右クリックメニュー上では最後に描画したメニュー内容を返す() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -988,7 +988,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みクラス3つ間に関係属性を2つ描画する() {
+                    void 描画済みクラス3つ間に関係属性を2つ描画する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -1015,7 +1015,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みクラス3つ間に関係属性を3つ描画する() {
+                    void 描画済みクラス3つ間に関係属性を3つ描画する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -1050,7 +1050,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みクラス2つ間の汎化関係を右クリックし削除を選択すると汎化関係を削除する() {
+                    void 描画済みクラス2つ間の汎化関係を右クリックし削除を選択すると汎化関係を削除する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -1069,7 +1069,7 @@ class ControllerTest {
                     }
 
                     @Test
-                    public void 描画済みクラス3つ間のうち多重継承の関係属性を2つ描画しようとすると最初に記述した汎化関係を削除する() {
+                    void 描画済みクラス3つ間のうち多重継承の関係属性を2つ描画しようとすると最初に記述した汎化関係を削除する() {
                         clickOn("#classButtonInCD");
                         drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                         drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -1094,7 +1094,7 @@ class ControllerTest {
             }
 
             @Test
-            public void クラスアイコンを選択していない際にキャンバスをクリックしても何も表示しない(@Mocked TextInputDialog mock) {
+            void クラスアイコンを選択していない際にキャンバスをクリックしても何も表示しない(@Mocked TextInputDialog mock) {
                 clickOn("#classDiagramCanvas");
 
                 assertThrows(FxRobotException.class, () -> clickOn(okButtonOnDialogBox));
@@ -1109,12 +1109,12 @@ class ControllerTest {
             class クラスアイコンを選択している際に {
 
                 @BeforeEach
-                public void reset() {
+                void reset() {
                     ClassNodeDiagram.resetNodeCount();
                 }
 
                 @Test
-                public void キャンバスをクリックするとクラス名の入力ウィンドウを表示する(@Mocked TextInputDialog mock) {
+                void キャンバスをクリックするとクラス名の入力ウィンドウを表示する(@Mocked TextInputDialog mock) {
                     clickOn("#classButtonInCD");
                     clickOn("#classDiagramCanvas");
 
@@ -1125,7 +1125,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void キャンバスをクリックしクラス名を入力すると入力したクラス名のクラスを表示する() {
+                void キャンバスをクリックしクラス名を入力すると入力したクラス名のクラスを表示する() {
                     clickOn("#classButtonInCD");
                     clickOn("#classDiagramCanvas");
 
@@ -1148,7 +1148,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void クラスを2つ表示する() {
+                void クラスを2つ表示する() {
                     clickOn("#classButtonInCD");
                     clickOn("#classDiagramCanvas");
 
@@ -1168,7 +1168,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void キャンバスをクリックしクラス名を入力しない場合は何も表示しない() {
+                void キャンバスをクリックしクラス名を入力しない場合は何も表示しない() {
                     clickOn("#classButtonInCD");
                     clickOn("#classDiagramCanvas");
 
@@ -1181,7 +1181,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void 何も描画されていないキャンバスを右クリックした場合は何も表示しない() {
+                void 何も描画されていないキャンバスを右クリックした場合は何も表示しない() {
                     clickOn("#classButtonInCD");
                     rightClickOn("#classDiagramCanvas");
 
@@ -1191,7 +1191,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void キャンバスに描かれているClassNameクラスを右クリックした場合は何も表示しない() {
+                void キャンバスに描かれているClassNameクラスを右クリックした場合は何も表示しない() {
                     clickOn("#classButtonInCD");
                     drawClasses(firstClickedClassDiagramCanvas, "ClassName");
 
@@ -1206,12 +1206,12 @@ class ControllerTest {
             class コンポジションアイコンを選択している際に {
 
                 @BeforeEach
-                public void reset() {
+                void reset() {
                     ClassNodeDiagram.resetNodeCount();
                 }
 
                 @Test
-                public void キャンバスに描かれているClassNameクラスをクリックするとClassNameクラスの縁の色を変更する() {
+                void キャンバスに描かれているClassNameクラスをクリックするとClassNameクラスの縁の色を変更する() {
                     clickOn("#classButtonInCD");
                     drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                     clickOn("#compositionButtonInCD");
@@ -1228,7 +1228,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void キャンバスに描かれているClassNameクラスをクリックした後にクラスを描画していない箇所をクリックするとClassNameクラスの縁の色を元に戻す() {
+                void キャンバスに描かれているClassNameクラスをクリックした後にクラスを描画していない箇所をクリックするとClassNameクラスの縁の色を元に戻す() {
                     clickOn("#classButtonInCD");
                     drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                     clickOn("#compositionButtonInCD");
@@ -1246,7 +1246,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void キャンバスに描かれている2つのクラスをクリックしDialogに関係属性を記述するとコンポジション関係を描画する() {
+                void キャンバスに描かれている2つのクラスをクリックしDialogに関係属性を記述するとコンポジション関係を描画する() {
                     clickOn("#classButtonInCD");
                     drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                     drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -1264,7 +1264,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void キャンバスに描かれている2つのクラスをクリックしDialogに関係属性を記述しなかった場合はコンポジション関係を描画しない() {
+                void キャンバスに描かれている2つのクラスをクリックしDialogに関係属性を記述しなかった場合はコンポジション関係を描画しない() {
                     clickOn("#classButtonInCD");
                     drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                     drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -1282,7 +1282,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void キャンバスに描かれているFirstClassNameクラスをクリックし描画されていない箇所をクリックした後でFirstClassNameクラスをクリックすると縁の色を変更するがDialogは表示しない() {
+                void キャンバスに描かれているFirstClassNameクラスをクリックし描画されていない箇所をクリックした後でFirstClassNameクラスをクリックすると縁の色を変更するがDialogは表示しない() {
                     clickOn("#classButtonInCD");
                     drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
 
@@ -1302,12 +1302,12 @@ class ControllerTest {
             class 汎化アイコンを選択している際に {
 
                 @BeforeEach
-                public void reset() {
+                void reset() {
                     ClassNodeDiagram.resetNodeCount();
                 }
 
                 @Test
-                public void キャンバスに描かれているClassNameクラスをクリックするとClassNameクラスの縁の色を変更する() {
+                void キャンバスに描かれているClassNameクラスをクリックするとClassNameクラスの縁の色を変更する() {
                     clickOn("#classButtonInCD");
                     drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                     clickOn("#generalizationButtonInCD");
@@ -1324,7 +1324,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void キャンバスに描かれているClassNameクラスをクリックした後にクラスを描画していない箇所をクリックするとClassNameクラスの縁の色を元に戻す() {
+                void キャンバスに描かれているClassNameクラスをクリックした後にクラスを描画していない箇所をクリックするとClassNameクラスの縁の色を元に戻す() {
                     clickOn("#classButtonInCD");
                     drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                     clickOn("#generalizationButtonInCD");
@@ -1342,7 +1342,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void キャンバスに描かれている2つのクラスをクリックしDialogに関係属性を記述すると汎化関係を描画する() {
+                void キャンバスに描かれている2つのクラスをクリックしDialogに関係属性を記述すると汎化関係を描画する() {
                     clickOn("#classButtonInCD");
                     drawClasses(firstClickedClassDiagramCanvas, "FirstClassName");
                     drawClasses(secondClickedClassDiagramCanvas, "SecondClassName");
@@ -1358,7 +1358,7 @@ class ControllerTest {
                 }
 
                 @Test
-                public void キャンバスに描かれているFirstClassNameクラスをクリックし描画されていない箇所をクリックした後でFirstClassNameクラスをクリックすると縁の色を変更する() {
+                void キャンバスに描かれているFirstClassNameクラスをクリックし描画されていない箇所をクリックした後でFirstClassNameクラスをクリックすると縁の色を変更する() {
                     clickOn("#classButtonInCD");
                     drawClasses(firstClickedClassDiagramCanvas, "ClassName");
 
@@ -1377,42 +1377,42 @@ class ControllerTest {
 
         /**
          * クラス図キャンバス直下に存在するスクロールパネルを取得する。
-         *
+         * <p>
          * 具体的には、ステージ上のボーダーパネル上のアンカーパネル上のスプリットパネル上の2つ目のアンカーパネル上の
          * タブパネル上のアンカーパネル上のボーダーパネル上のセンターのアンカーパネル上のスクロールパネルを取得する。
-         *
+         * <p>
          * 右クリックメニューを表示する大元のパネルがこのスクロールパネルであるため、主に右クリックメニューのテストに利用する。
          *
          * @return クラス図キャンバス直下のスクロールパネル FXMLファイルを書き換えるか実行中にどこかのパネルを消さない限り{@code null}になる可能性はない
          */
         private ScrollPane getScrollPaneBelowClassDiagramCanvas() {
-            BorderPane borderPaneOnStage = ( BorderPane ) stage.getScene().getRoot().getChildrenUnmodifiable().get( 0 );
-            AnchorPane anchorPaneOnBorderPane = ( AnchorPane ) borderPaneOnStage.getCenter();
-            SplitPane splitPaneOnAnchorPaneOnBorderPane = ( SplitPane ) anchorPaneOnBorderPane.getChildren().get( 0 );
-            AnchorPane anchorPaneOnSplitPane = ( AnchorPane ) splitPaneOnAnchorPaneOnBorderPane.getItems().get( 1 );
-            TabPane tabPaneOnAnchorPaneOnSplitPane = ( TabPane ) anchorPaneOnSplitPane.getChildren().get( 0 );
-            AnchorPane anchorPaneOnTabPane = ( AnchorPane ) tabPaneOnAnchorPaneOnSplitPane.getTabs().get( 0 ).getContent();
-            BorderPane borderPaneOnAnchorPaneOnTabPane = ( BorderPane ) anchorPaneOnTabPane.getChildren().get( 0 );
-            AnchorPane anchorPaneOnVBox = ( AnchorPane ) borderPaneOnAnchorPaneOnTabPane.getCenter();
-            return ( ScrollPane ) anchorPaneOnVBox.getChildren().get( 0 );
+            BorderPane borderPaneOnStage = (BorderPane) stage.getScene().getRoot().getChildrenUnmodifiable().get(0);
+            AnchorPane anchorPaneOnBorderPane = (AnchorPane) borderPaneOnStage.getCenter();
+            SplitPane splitPaneOnAnchorPaneOnBorderPane = (SplitPane) anchorPaneOnBorderPane.getChildren().get(0);
+            AnchorPane anchorPaneOnSplitPane = (AnchorPane) splitPaneOnAnchorPaneOnBorderPane.getItems().get(1);
+            TabPane tabPaneOnAnchorPaneOnSplitPane = (TabPane) anchorPaneOnSplitPane.getChildren().get(0);
+            AnchorPane anchorPaneOnTabPane = (AnchorPane) tabPaneOnAnchorPaneOnSplitPane.getTabs().get(0).getContent();
+            BorderPane borderPaneOnAnchorPaneOnTabPane = (BorderPane) anchorPaneOnTabPane.getChildren().get(0);
+            AnchorPane anchorPaneOnVBox = (AnchorPane) borderPaneOnAnchorPaneOnTabPane.getCenter();
+            return (ScrollPane) anchorPaneOnVBox.getChildren().get(0);
         }
 
         /**
          * クラス図キャンバスのグラフィックスコンテキストを取得する。
          * getScrollPaneBelowClassDiagramCanvasに依存する。
-         *
+         * <p>
          * クラス図のグラフィックをセットする際の色などを取得するために用いる。
          *
          * @return クラス図キャンバスのグラフィックスコンテキスト FXMLファイルを書き換えるか実行中にどこかのパネルを消さない限り{@code null}になる可能性はない
          */
         private GraphicsContext getGraphicsContext() {
             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
-            AnchorPane anchorPane = ( AnchorPane ) scrollPane.getContent();
-            Canvas canvas = ( Canvas ) anchorPane.getChildren().get( 0 );
+            AnchorPane anchorPane = (AnchorPane) scrollPane.getContent();
+            Canvas canvas = (Canvas) anchorPane.getChildren().get(0);
             return canvas.getGraphicsContext2D();
         }
 
-        private void drawClasses( Point2D canvasPoint, String className ) {
+        private void drawClasses(Point2D canvasPoint, String className) {
             clickOn(canvasPoint);
             write(className);
             clickOn(okButtonOnDialogBox);

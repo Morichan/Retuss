@@ -392,8 +392,8 @@ public class ClassDiagramDrawer {
      * @param mouseY キャンバス上の任意のポイントのY軸
      * @return キャンバス上の任意のポイントにおける描画済みのエッジのインスタンス <br> キャンバス上の任意のポイントに何も描画していない場合は {@code null} を返す。
      */
-    public RelationshipAttribute searchDrawnEdge(double mouseX, double mouseY) {
-        RelationshipAttribute relation = relations.searchCurrentRelation(new Point2D(mouseX, mouseY));
+    public RelationshipAttributeGraphic searchDrawnEdge(double mouseX, double mouseY) {
+        RelationshipAttributeGraphic relation = relations.searchCurrentRelation(new Point2D(mouseX, mouseY));
         return relation;
     }
 

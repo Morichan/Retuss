@@ -27,7 +27,7 @@ class JavaEvalListenerTest {
     ParseTree tree;
     ParseTreeWalker walker;
 
-    String code = "package window; class TestCode { public int test = 0; }";
+    String code = "package window; class TestCode { int test = 0; }";
     String dir = "src\\main\\resources\\";
 
     @Nested
@@ -37,21 +37,21 @@ class JavaEvalListenerTest {
         class Java7までのソースコードの場合 {
 
             @BeforeEach
-            public void setup() throws IOException {
+            void setup() throws IOException {
                 String file = dir + "AllInOne7.java";
                 lexer = new JavaLexer(CharStreams.fromFileName(file));
-                tokens = new CommonTokenStream( lexer );
-                parser = new JavaParser( tokens );
+                tokens = new CommonTokenStream(lexer);
+                parser = new JavaParser(tokens);
                 tree = parser.compilationUnit();
                 walker = new ParseTreeWalker();
                 obj = new JavaEvalListener();
             }
 
             @Test
-            public void 構文解析時にエラーが出ないか確認する() {
+            void 構文解析時にエラーが出ないか確認する() {
                 try {
-                    walker.walk( obj, tree );
-                } catch ( NullPointerException e ) {
+                    walker.walk(obj, tree);
+                } catch (NullPointerException e) {
                     fail("ParseTreeObjectNullError");
                 }
             }
@@ -61,21 +61,21 @@ class JavaEvalListenerTest {
         class Java8のソースコードの場合 {
 
             @BeforeEach
-            public void setup() throws IOException {
+            void setup() throws IOException {
                 String file = dir + "AllInOne8.java";
                 lexer = new JavaLexer(CharStreams.fromFileName(file));
-                tokens = new CommonTokenStream( lexer );
-                parser = new JavaParser( tokens );
+                tokens = new CommonTokenStream(lexer);
+                parser = new JavaParser(tokens);
                 tree = parser.compilationUnit();
                 walker = new ParseTreeWalker();
                 obj = new JavaEvalListener();
             }
 
             @Test
-            public void 構文解析時にエラーが出ないか確認する() {
+            void 構文解析時にエラーが出ないか確認する() {
                 try {
-                    walker.walk( obj, tree );
-                } catch ( NullPointerException e ) {
+                    walker.walk(obj, tree);
+                } catch (NullPointerException e) {
                     fail("ParseTreeObjectNullError");
                 }
             }
@@ -90,7 +90,7 @@ class JavaEvalListenerTest {
         List<JavaParser.TypeDeclarationContext> typeDeclarations;
 
         @BeforeEach
-        public void setup() throws IOException {
+        void setup() throws IOException {
             String file = dir + "AllInOne7.java";
             lexer = new JavaLexer(CharStreams.fromFileName(file));
             tokens = new CommonTokenStream(lexer);
@@ -98,7 +98,7 @@ class JavaEvalListenerTest {
             tree = parser.compilationUnit();
             walker = new ParseTreeWalker();
             obj = new JavaEvalListener();
-            walker.walk( obj, tree );
+            walker.walk(obj, tree);
 
             packageDeclaration = obj.getPackageDeclaration();
             importDeclarations = obj.getImportDeclarations();
@@ -107,7 +107,7 @@ class JavaEvalListenerTest {
         }
 
         @Test
-        public void パッケージ名を取得する() throws NullPointerException {
+        void パッケージ名を取得する() throws NullPointerException {
             JavaParser.QualifiedNameContext ctx = null;
             String actual = "";
             String expected = "myapplication.mylibrary";
@@ -126,12 +126,12 @@ class JavaEvalListenerTest {
         }
 
         @Test
-        public void インポート文は5つある() {
+        void インポート文は5つある() {
             assertThat(importDeclarations.size()).isEqualTo(5);
         }
 
         @Test
-        public void クラス宣言は35個ある() {
+        void クラス宣言は35個ある() {
 
             // TypeDeclarationContext内には、何も存在しない";"も1つのインスタンスとして生成するため、それを削除する
             for (int i = 0; i < typeDeclarations.size(); i++) {

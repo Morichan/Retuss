@@ -1,25 +1,20 @@
 package io.github.morichan.retuss.window.diagram;
 
 /**
- * <p> クラスのデータに関するクラス </p>
+ * <p> クラス図グラフィックに関するクラス </p>
  *
  * <p>
- *     このクラスは、クラス図におけるクラスのデータに関するクラスです。
- *     次の属性を持ちます。
+ * このクラスは、クラス図における図としての形式に関するクラスです。
+ * 次の属性を持ちます。
  * </p>
  *
  * <ul>
- *     <li> 名前 </li>
- *     <li> 種類 </li>
- *     <li> 可視性 </li>
- *     <li> 表示しているか否か </li>
+ * <li> 種類 </li>
+ * <li> 可視性 </li>
+ * <li> 表示しているか否か </li>
  * </ul>
  */
-public class ClassData {
-    /**
-     * データの名前
-     */
-    protected String name = "";
+abstract public class ClassDiagramGraphic {
 
     /**
      * データの可視性
@@ -37,29 +32,25 @@ public class ClassData {
     protected boolean isIndicate = true;
 
     /**
-     * データの名前を入力する。
+     * データのテキストを入力する。
      *
-     * @param name データの名前
+     * @param text データの名前
      */
-    public void setName( String name ) {
-        this.name = name;
-    }
+    abstract public void setText(String text);
 
     /**
-     * データの名前を取得する。
+     * データのテキストを取得する。
      *
      * @return データの名前 <br> 入力していない場合は空文字を返す。
      */
-    public String getName() {
-        return name;
-    }
+    abstract public String getText();
 
     /**
      * データを図中に表示しているか否かを設定する。
      *
      * @param isIndicate データの表示非表示の設定 <br> 真の場合は表示している。
      */
-    public void setIndication( boolean isIndicate ) {
+    public void setIndication(boolean isIndicate) {
         this.isIndicate = isIndicate;
     }
 
@@ -77,7 +68,7 @@ public class ClassData {
      *
      * @param type データの種類
      */
-    public void setType( ContentType type ) {
+    public void setType(ContentType type) {
         this.type = type;
     }
 

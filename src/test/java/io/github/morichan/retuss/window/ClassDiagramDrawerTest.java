@@ -3,7 +3,7 @@ package io.github.morichan.retuss.window;
 import io.github.morichan.retuss.window.diagram.ClassNodeDiagram;
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.NoteNodeDiagram;
-import io.github.morichan.retuss.window.diagram.RelationshipAttribute;
+import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
@@ -20,15 +20,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ClassDiagramDrawerTest {
 
     @AfterAll
-    public static void resetClassCount() {
+    static void resetClassCount() {
         ClassNodeDiagram.resetNodeCount();
     }
 
     @Nested
-    public class クラスアイコンを選択している場合 extends ApplicationTest {
+    class クラスアイコンを選択している場合 extends ApplicationTest {
         ClassDiagramDrawer cdd;
 
-        List< Button > buttons = new ArrayList<>();
+        List<Button> buttons = new ArrayList<>();
         Button normalButton;
         Button classButton;
         Button noteButton;
@@ -36,28 +36,28 @@ class ClassDiagramDrawerTest {
         UtilityJavaFXComponent util;
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             cdd = new ClassDiagramDrawer();
-            normalButton = new Button( "Normal" );
-            classButton = new Button( "Class" );
-            noteButton = new Button( "Note" );
-            buttons = Arrays.asList( normalButton, classButton, noteButton );
+            normalButton = new Button("Normal");
+            classButton = new Button("Class");
+            noteButton = new Button("Note");
+            buttons = Arrays.asList(normalButton, classButton, noteButton);
 
             util = new UtilityJavaFXComponent();
 
-            buttons = util.bindAllButtonsFalseWithout( buttons, classButton );
+            buttons = util.bindAllButtonsFalseWithout(buttons, classButton);
         }
 
         @Nested
         class クラスに関して {
 
             @BeforeEach
-            public void resetCount() {
+            void resetCount() {
                 ClassNodeDiagram.resetNodeCount();
             }
 
             @Test
-            public void キャンバスをクリックすると描画する() {
+            void キャンバスをクリックすると描画する() {
                 cdd.setNodeText("ClassName");
 
                 cdd.addDrawnNode(buttons);
@@ -67,7 +67,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void キャンバスを2回クリックすると2回描画する() {
+            void キャンバスを2回クリックすると2回描画する() {
                 cdd.setNodeText("ClassName");
 
                 cdd.addDrawnNode(buttons);
@@ -79,7 +79,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 削除する() {
+            void 削除する() {
                 cdd.setNodeText("ClassName");
                 cdd.addDrawnNode(buttons);
 
@@ -90,7 +90,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 描画済み2つの内1つ目を削除する() {
+            void 描画済み2つの内1つ目を削除する() {
                 // Arrange
                 createClasses(cdd, buttons, 0, "FirstClassName", new Point2D(100.0, 200.0));
                 createClasses(cdd, buttons, 1, "SecondClassName", new Point2D(500.0, 600.0));
@@ -108,7 +108,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 描画済み2つの内2つ目を削除する() {
+            void 描画済み2つの内2つ目を削除する() {
                 // Arrange
                 createClasses(cdd, buttons, 0, "FirstClassName", new Point2D(100.0, 200.0));
                 createClasses(cdd, buttons, 1, "SecondClassName", new Point2D(500.0, 600.0));
@@ -126,7 +126,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 描画済み2つの内2つ目を削除した後3つ目を描画する() {
+            void 描画済み2つの内2つ目を削除した後3つ目を描画する() {
                 // Arrange
                 createClasses(cdd, buttons, 0, "FirstClassName", new Point2D(100.0, 200.0));
                 createClasses(cdd, buttons, 1, "SecondClassName", new Point2D(500.0, 600.0));
@@ -148,7 +148,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 描画済み3つの内2つ目を削除する() {
+            void 描画済み3つの内2つ目を削除する() {
                 // Arrange
                 createClasses(cdd, buttons, 0, "FirstClassName", new Point2D(100.0, 200.0));
                 createClasses(cdd, buttons, 1, "SecondClassName", new Point2D(300.0, 400.0));
@@ -168,7 +168,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 描画済み3つの内2つ目を削除した後4つ目を描画する() {
+            void 描画済み3つの内2つ目を削除した後4つ目を描画する() {
                 createClasses(cdd, buttons, 0, "FirstClassName", new Point2D(100.0, 200.0));
                 createClasses(cdd, buttons, 1, "SecondClassName", new Point2D(300.0, 400.0));
                 createClasses(cdd, buttons, 2, "ThirdClassName", new Point2D(500.0, 600.0));
@@ -185,7 +185,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 追加する際に空文字を入力した場合は追加しない(@Mocked ClassNodeDiagram mock) {
+            void 追加する際に空文字を入力した場合は追加しない(@Mocked ClassNodeDiagram mock) {
                 cdd.setNodeText("");
                 cdd.setMouseCoordinates(100.0, 200.0);
                 cdd.addDrawnNode(buttons);
@@ -200,7 +200,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void クラス名を変更する() {
+            void クラス名を変更する() {
                 cdd.setNodeText("ClassName");
                 cdd.addDrawnNode(buttons);
 
@@ -211,7 +211,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void クラス名を変更する際に空文字を入力した場合は変更しない() {
+            void クラス名を変更する際に空文字を入力した場合は変更しない() {
                 createClasses(cdd, buttons, 0, "NotChangedClassName", new Point2D(100.0, 200.0));
 
                 cdd.getNodeDiagramId(100.0, 200.0);
@@ -222,7 +222,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 描画済み2つの内1つ目のクラス名を変更する() {
+            void 描画済み2つの内1つ目のクラス名を変更する() {
                 // Arrange
                 createClasses(cdd, buttons, 0, "ClassName", new Point2D(100.0, 200.0));
                 createClasses(cdd, buttons, 1, "NotChangingClassName", new Point2D(500.0, 600.0));
@@ -242,7 +242,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 幅と高さを返す() {
+            void 幅と高さを返す() {
                 double expectedWidth = 100.0;
                 double expectedHeight = 80.0;
                 createClasses(cdd, buttons, 0, "ClassName", new Point2D(100.0, 200.0));
@@ -259,17 +259,17 @@ class ClassDiagramDrawerTest {
         class クラスの属性に関して {
 
             @BeforeEach
-            public void resetCount() {
+            void resetCount() {
                 ClassNodeDiagram.resetNodeCount();
             }
 
             @BeforeEach
-            public void setUp() {
+            void setUp() {
                 createClasses(cdd, buttons, 0, "ClassName", new Point2D(100.0, 200.0));
             }
 
             @Test
-            public void 追加する() {
+            void 追加する() {
                 // Arrange
                 int id = -1;
                 List<String> attributes = Arrays.asList(
@@ -296,7 +296,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 追加する際に空文字を入力した場合は追加しない() {
+            void 追加する際に空文字を入力した場合は追加しない() {
                 String attribute = "";
 
                 int id = cdd.getNodeDiagramId(100.0, 200.0);
@@ -311,7 +311,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void リストを取得する() {
+            void リストを取得する() {
 
                 int id = cdd.getNodeDiagramId(100.0, 200.0);
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "- content : int");
@@ -325,7 +325,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 変更する() {
+            void 変更する() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "- content : int");
@@ -341,7 +341,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 変更する際に空文字を入力した場合は変更しない() {
+            void 変更する際に空文字を入力した場合は変更しない() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "- content : int");
@@ -357,7 +357,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 削除する() {
+            void 削除する() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "- content : int");
@@ -373,7 +373,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 非表示にする() {
+            void 非表示にする() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "- content1 : int");
@@ -397,20 +397,20 @@ class ClassDiagramDrawerTest {
         class クラスの操作に関して {
 
             @BeforeEach
-            public void resetCount() {
+            void resetCount() {
                 ClassNodeDiagram.resetNodeCount();
             }
 
             @BeforeEach
-            public void setUp() {
+            void setUp() {
                 createClasses(cdd, buttons, 0, "ClassName", new Point2D(100.0, 200.0));
             }
 
             @Test
-            public void 追加する() {
+            void 追加する() {
                 // Arrange
                 int id = -1;
-                List<String> operations = Arrays.asList("- content1 : int", "- content2 : double", "- content3 : char");
+                List<String> operations = Arrays.asList("+ content1() : int", "+ content2() : double", "+ content3() : char");
 
                 // Act
                 for (String operation : operations) {
@@ -431,7 +431,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 追加する際に空文字を入力した場合は追加しない() {
+            void 追加する際に空文字を入力した場合は追加しない() {
                 String attribute = "";
 
                 int id = cdd.getNodeDiagramId(100.0, 200.0);
@@ -446,7 +446,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 変更する() {
+            void 変更する() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Operation, "+ content() : int");
@@ -462,7 +462,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 変更する際に空文字を入力した場合は変更しない() {
+            void 変更する際に空文字を入力した場合は変更しない() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Operation, "+ content() : int");
@@ -478,7 +478,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 削除する() {
+            void 削除する() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Operation, "- content() : int");
@@ -494,7 +494,7 @@ class ClassDiagramDrawerTest {
             }
 
             @Test
-            public void 非表示にする() {
+            void 非表示にする() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Operation, "- content1() : int");
@@ -516,51 +516,7 @@ class ClassDiagramDrawerTest {
     }
 
     @Nested
-    public class ノートアイコンを選択している場合 extends ApplicationTest {
-        @Tested
-        ClassDiagramDrawer cdd;
-
-        List< Button > buttons = new ArrayList<>();
-        Button normalButton;
-        Button classButton;
-        Button noteButton;
-
-        UtilityJavaFXComponent util;
-
-        @BeforeEach
-        public void setUp() {
-            cdd = new ClassDiagramDrawer();
-            normalButton = new Button( "Normal" );
-            classButton = new Button( "Class" );
-            noteButton = new Button( "Note" );
-            buttons = Arrays.asList( normalButton, classButton, noteButton );
-
-            util = new UtilityJavaFXComponent();
-
-            buttons = util.bindAllButtonsFalseWithout( buttons, noteButton );
-        }
-
-        @Test
-        public void キャンバスをクリックするとノートを描画する( @Mocked NoteNodeDiagram mock ) {
-            // Arrange
-            cdd.setNodeText( "Note" );
-            cdd.addDrawnNode( buttons );
-
-            // Act
-            cdd.allReDrawNode();
-
-            // Assert
-            assertThat( cdd.getNodes().size() ).isOne();
-
-            new Verifications() {{
-                mock.draw();
-                times = 1;
-            }};
-        }
-    }
-
-    @Nested
-    public class ノーマルアイコンを選択している場合 extends ApplicationTest {
+    class ノートアイコンを選択している場合 extends ApplicationTest {
         @Tested
         ClassDiagramDrawer cdd;
 
@@ -572,28 +528,72 @@ class ClassDiagramDrawerTest {
         UtilityJavaFXComponent util;
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             cdd = new ClassDiagramDrawer();
-            normalButton = new Button( "Normal" );
-            classButton = new Button( "Class" );
-            noteButton = new Button( "Note" );
-            buttons = Arrays.asList( normalButton, classButton, noteButton );
+            normalButton = new Button("Normal");
+            classButton = new Button("Class");
+            noteButton = new Button("Note");
+            buttons = Arrays.asList(normalButton, classButton, noteButton);
 
             util = new UtilityJavaFXComponent();
 
-            buttons = util.bindAllButtonsFalseWithout( buttons, normalButton );
+            buttons = util.bindAllButtonsFalseWithout(buttons, noteButton);
         }
 
         @Test
-        public void キャンバスをクリックしても何も描画しない( @Mocked ClassNodeDiagram classNodeDiagram, @Mocked NoteNodeDiagram noteNodeDiagram ) {
+        void キャンバスをクリックするとノートを描画する(@Mocked NoteNodeDiagram mock) {
             // Arrange
-            cdd.setNodeText( "Item" );
+            cdd.setNodeText("Note");
+            cdd.addDrawnNode(buttons);
 
             // Act
-            cdd.addDrawnNode( buttons );
+            cdd.allReDrawNode();
+
+            // Assert
+            assertThat(cdd.getNodes().size()).isOne();
+
+            new Verifications() {{
+                mock.draw();
+                times = 1;
+            }};
+        }
+    }
+
+    @Nested
+    class ノーマルアイコンを選択している場合 extends ApplicationTest {
+        @Tested
+        ClassDiagramDrawer cdd;
+
+        List<Button> buttons = new ArrayList<>();
+        Button normalButton;
+        Button classButton;
+        Button noteButton;
+
+        UtilityJavaFXComponent util;
+
+        @BeforeEach
+        void setUp() {
+            cdd = new ClassDiagramDrawer();
+            normalButton = new Button("Normal");
+            classButton = new Button("Class");
+            noteButton = new Button("Note");
+            buttons = Arrays.asList(normalButton, classButton, noteButton);
+
+            util = new UtilityJavaFXComponent();
+
+            buttons = util.bindAllButtonsFalseWithout(buttons, normalButton);
+        }
+
+        @Test
+        void キャンバスをクリックしても何も描画しない(@Mocked ClassNodeDiagram classNodeDiagram, @Mocked NoteNodeDiagram noteNodeDiagram) {
+            // Arrange
+            cdd.setNodeText("Item");
+
+            // Act
+            cdd.addDrawnNode(buttons);
 
             // Arrange
-            assertThat( cdd.getNodes().size() ).isZero();
+            assertThat(cdd.getNodes().size()).isZero();
 
             new Verifications() {{
                 classNodeDiagram.draw();
@@ -605,7 +605,7 @@ class ClassDiagramDrawerTest {
     }
 
     @Nested
-    public class コンポジションアイコンを選択している場合 extends ApplicationTest {
+    class コンポジションアイコンを選択している場合 extends ApplicationTest {
         @Tested
         ClassDiagramDrawer cdd;
 
@@ -618,7 +618,7 @@ class ClassDiagramDrawerTest {
         UtilityJavaFXComponent util;
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             cdd = new ClassDiagramDrawer();
             normalButton = new Button("Normal");
             classButton = new Button("Class");
@@ -632,11 +632,11 @@ class ClassDiagramDrawerTest {
         }
 
         @Test
-        public void キャンバスをクリックしても何も描画しない( @Mocked ClassNodeDiagram classNodeDiagram, @Mocked NoteNodeDiagram noteNodeDiagram ) {
-            cdd.setNodeText( "Item" );
-            cdd.addDrawnNode( buttons );
+        void キャンバスをクリックしても何も描画しない(@Mocked ClassNodeDiagram classNodeDiagram, @Mocked NoteNodeDiagram noteNodeDiagram) {
+            cdd.setNodeText("Item");
+            cdd.addDrawnNode(buttons);
 
-            assertThat( cdd.getNodes().size() ).isZero();
+            assertThat(cdd.getNodes().size()).isZero();
 
             new Verifications() {{
                 classNodeDiagram.draw();
@@ -648,11 +648,11 @@ class ClassDiagramDrawerTest {
     }
 
     @Nested
-    public class クラスを3つ記述後にコンポジションアイコンを選択している場合 extends ApplicationTest {
+    class クラスを3つ記述後にコンポジションアイコンを選択している場合 extends ApplicationTest {
         @Tested
         ClassDiagramDrawer cdd;
 
-        List< Button > buttons = new ArrayList<>();
+        List<Button> buttons = new ArrayList<>();
         Button normalButton;
         Button classButton;
         Button noteButton;
@@ -666,7 +666,7 @@ class ClassDiagramDrawerTest {
         UtilityJavaFXComponent util;
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             cdd = new ClassDiagramDrawer();
             normalButton = new Button("Normal");
             classButton = new Button("Class");
@@ -685,227 +685,227 @@ class ClassDiagramDrawerTest {
             ClassNodeDiagram.resetNodeCount();
 
             cdd.setNodeText("FirstClassName");
-            createClasses( cdd, buttons, 0, "FirstClassName", firstClass );
-            createClasses( cdd, buttons, 1, "SecondClassName", secondClass );
-            createClasses( cdd, buttons, 2, "ThirdClassName", thirdClass );
+            createClasses(cdd, buttons, 0, "FirstClassName", firstClass);
+            createClasses(cdd, buttons, 1, "SecondClassName", secondClass);
+            createClasses(cdd, buttons, 2, "ThirdClassName", thirdClass);
             buttons = util.bindAllButtonsFalseWithout(buttons, compositionButton);
         }
 
         @Test
-        public void 描画済みクラスの1つ目をクリックするとコンポジションの描画を待機し正規ノードを待機していなかったとする() {
+        void 描画済みクラスの1つ目をクリックするとコンポジションの描画を待機し正規ノードを待機していなかったとする() {
 
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
 
-            assertThat( actual ).isFalse();
-            assertThat( cdd.getNowStateType() ).isEqualByComparingTo( ContentType.Composition );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            assertThat(actual).isFalse();
+            assertThat(cdd.getNowStateType()).isEqualByComparingTo(ContentType.Composition);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
         }
 
         @Test
-        public void 描画済みクラスの1つ目をクリックした後に2つ目をクリックするとコンポジションの描画待機を解除し正規ノードを待機していたとする() {
+        void 描画済みクラスの1つ目をクリックした後に2つ目をクリックするとコンポジションの描画待機を解除し正規ノードを待機していたとする() {
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
 
-            assertThat( actual ).isTrue();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Undefined );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            assertThat(actual).isTrue();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Undefined);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
         }
 
         @Test
-        public void 描画済みクラスの1つ目をクリックした後にクラスを描画していない箇所をクリックするとコンポジションの描画待機を解除し正規ノードを待機していなかったとする() {
+        void 描画済みクラスの1つ目をクリックした後にクラスを描画していない箇所をクリックするとコンポジションの描画待機を解除し正規ノードを待機していなかったとする() {
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX() + 100.0, secondClass.getY() + 100.0 );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX() + 100.0, secondClass.getY() + 100.0);
 
-            assertThat( actual ).isFalse();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Undefined );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            assertThat(actual).isFalse();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Undefined);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
         }
 
         @Test
-        public void 描画済みクラスの1つ目をクリックした後に1つ目をクリックするとコンポジションの描画待機を解除し正規ノードを待機していたとする() {
+        void 描画済みクラスの1つ目をクリックした後に1つ目をクリックするとコンポジションの描画待機を解除し正規ノードを待機していたとする() {
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
 
-            assertThat( actual ).isTrue();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Undefined );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            assertThat(actual).isTrue();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Undefined);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
         }
 
         @Test
-        public void 描画済みクラスの1つ目をコンポジションとしてクリックした後に2つ目を汎化としてクリックすると汎化の描画を待機し正規ノードを待機していたとする() {
+        void 描画済みクラスの1つ目をコンポジションとしてクリックした後に2つ目を汎化としてクリックすると汎化の描画を待機し正規ノードを待機していたとする() {
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, secondClass.getX(), secondClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, secondClass.getX(), secondClass.getY());
 
-            assertThat( actual ).isTrue();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Generalization );
-            assertThat( cdd.getCurrentNodeNumber() ).isOne();
+            assertThat(actual).isTrue();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Generalization);
+            assertThat(cdd.getCurrentNodeNumber()).isOne();
         }
 
         @Test
-        public void 描画済みクラスの1つ目をコンポジションとしてクリックして2つ目を汎化としてクリックした後に3回目と4回目をコンポジションとしてクリックするとコンポジションの描画待機を解除し正規ノードを待機していたとする() {
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, secondClass.getX(), secondClass.getY() );
+        void 描画済みクラスの1つ目をコンポジションとしてクリックして2つ目を汎化としてクリックした後に3回目と4回目をコンポジションとしてクリックするとコンポジションの描画待機を解除し正規ノードを待機していたとする() {
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, secondClass.getX(), secondClass.getY());
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
 
-            assertThat( actual ).isTrue();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Undefined );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            assertThat(actual).isTrue();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Undefined);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
         }
 
         @Test
-        public void 描画済みクラスの1つ目をコンポジションとしてクリックした後に2回目と3回目を汎化としてクリックすると汎化の描画を待機し正規ノードを待機していたとする() {
+        void 描画済みクラスの1つ目をコンポジションとしてクリックした後に2回目と3回目を汎化としてクリックすると汎化の描画を待機し正規ノードを待機していたとする() {
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
-            assertThat( actual ).isTrue();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Generalization );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
+            assertThat(actual).isTrue();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Generalization);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
 
-            actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, secondClass.getX(), secondClass.getY() );
-            assertThat( actual ).isTrue();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Undefined );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, secondClass.getX(), secondClass.getY());
+            assertThat(actual).isTrue();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Undefined);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
         }
 
         @Test
-        public void 描画済みクラスの2つクリックするとコンポジション関係を描画する() {
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
+        void 描画済みクラスの2つクリックするとコンポジション関係を描画する() {
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
-            cdd.addDrawnEdge( buttons, "- composition", secondClass.getX(), secondClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "- composition", secondClass.getX(), secondClass.getY());
 
-            assertThat( cdd.getCurrentNodeNumber() ).isOne();
-            assertThat( cdd.getEdgeDiagram().getEdgeContentText( ContentType.Composition, 0 ) ).isEqualTo( "- composition" );
-            assertThat( cdd.getEdgeDiagram().getRelationId( ContentType.Composition, 0 ) ).isOne();
-            assertThat( cdd.getEdgeDiagram().getRelationSourceId( ContentType.Composition, 0 ) ).isZero();
+            assertThat(cdd.getCurrentNodeNumber()).isOne();
+            assertThat(cdd.getEdgeDiagram().getEdgeContentText(0)).isEqualTo("- composition");
+            assertThat(cdd.getEdgeDiagram().getRelationId(ContentType.Composition, 0)).isOne();
+            assertThat(cdd.getEdgeDiagram().getRelationSourceId(ContentType.Composition, 0)).isZero();
         }
 
         @Test
-        public void 描画済みクラスの2つのクラス間をクリックすると真を返すがそれ以外の箇所では偽を返す() {
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
-            cdd.addDrawnEdge( buttons, "- composition", secondClass.getX(), secondClass.getY() );
+        void 描画済みクラスの2つのクラス間をクリックすると真を返すがそれ以外の箇所では偽を返す() {
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "- composition", secondClass.getX(), secondClass.getY());
 
-            boolean actualTrue = cdd.isAlreadyDrawnAnyDiagram( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
-            boolean actualFalse = cdd.isAlreadyDrawnAnyDiagram( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() + 100.0 );
+            boolean actualTrue = cdd.isAlreadyDrawnAnyDiagram(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY());
+            boolean actualFalse = cdd.isAlreadyDrawnAnyDiagram(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() + 100.0);
 
-            assertThat( actualTrue ).isTrue();
-            assertThat( actualFalse ).isFalse();
+            assertThat(actualTrue).isTrue();
+            assertThat(actualFalse).isFalse();
         }
 
         @Test
-        public void キャンバスに描画している一番上の関係の内容を返す() {
-            RelationshipAttribute expected = new RelationshipAttribute( "- composition" );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
-            cdd.addDrawnEdge( buttons, "- composition", secondClass.getX(), secondClass.getY() );
-            cdd.searchDrawnAnyDiagramType( secondClass.getX(), secondClass.getY() );
+        void キャンバスに描画している一番上の関係の内容を返す() {
+            RelationshipAttributeGraphic expected = new RelationshipAttributeGraphic("- composition");
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "- composition", secondClass.getX(), secondClass.getY());
+            cdd.searchDrawnAnyDiagramType(secondClass.getX(), secondClass.getY());
 
-            RelationshipAttribute actual = cdd.searchDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
+            RelationshipAttributeGraphic actual = cdd.searchDrawnEdge(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY());
 
-            assertThat( actual.getName() ).isEqualTo( expected.getName() );
+            assertThat(actual.getText()).isEqualTo(expected.getText());
         }
 
         @Test
-        public void キャンバスに描画している一番上の関係の内容を変更する() {
-            RelationshipAttribute expected = new RelationshipAttribute( "- changedComposition" );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
-            cdd.addDrawnEdge( buttons, "- composition", secondClass.getX(), secondClass.getY() );
-            cdd.searchDrawnAnyDiagramType( secondClass.getX(), secondClass.getY() );
+        void キャンバスに描画している一番上の関係の内容を変更する() {
+            RelationshipAttributeGraphic expected = new RelationshipAttributeGraphic("- changedComposition");
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "- composition", secondClass.getX(), secondClass.getY());
+            cdd.searchDrawnAnyDiagramType(secondClass.getX(), secondClass.getY());
 
-            cdd.changeDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY(), expected.getName() );
-            RelationshipAttribute actual = cdd.searchDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
+            cdd.changeDrawnEdge(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY(), expected.getText());
+            RelationshipAttributeGraphic actual = cdd.searchDrawnEdge(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY());
 
-            assertThat( actual.getName() ).isEqualTo( expected.getName() );
+            assertThat(actual.getText()).isEqualTo(expected.getText());
         }
 
         @Test
-        public void キャンバスに描画している一番上の関係の内容を削除する() {
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
-            cdd.addDrawnEdge( buttons, "- composition", secondClass.getX(), secondClass.getY() );
-            cdd.searchDrawnAnyDiagramType( secondClass.getX(), secondClass.getY() );
+        void キャンバスに描画している一番上の関係の内容を削除する() {
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "- composition", secondClass.getX(), secondClass.getY());
+            cdd.searchDrawnAnyDiagramType(secondClass.getX(), secondClass.getY());
 
-            cdd.deleteDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
-            RelationshipAttribute actual = cdd.searchDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
+            cdd.deleteDrawnEdge(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY());
+            RelationshipAttributeGraphic actual = cdd.searchDrawnEdge(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY());
 
-            assertThat( actual ).isNull();
+            assertThat(actual).isNull();
         }
 
         @Test
-        public void キャンバスに描画しているクラス2つのコンポジション関係を複数描画する() {
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
-            cdd.addDrawnEdge( buttons, "- composition1", secondClass.getX(), secondClass.getY() );
+        void キャンバスに描画しているクラス2つのコンポジション関係を複数描画する() {
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "- composition1", secondClass.getX(), secondClass.getY());
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
-            cdd.addDrawnEdge( buttons, "- composition2", secondClass.getX(), secondClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "- composition2", secondClass.getX(), secondClass.getY());
 
-            assertThat( cdd.getEdgeDiagram().getEdgeContentText( ContentType.Composition, 0 ) ).isEqualTo( "- composition1" );
-            assertThat( cdd.getEdgeDiagram().getRelationId( ContentType.Composition, 0 ) ).isOne();
-            assertThat( cdd.getEdgeDiagram().getRelationSourceId( ContentType.Composition, 0 ) ).isZero();
-            assertThat( cdd.getEdgeDiagram().getEdgeContentText( ContentType.Composition, 1 ) ).isEqualTo( "- composition2" );
-            assertThat( cdd.getEdgeDiagram().getRelationId( ContentType.Composition, 1 ) ).isOne();
-            assertThat( cdd.getEdgeDiagram().getRelationSourceId( ContentType.Composition, 1 ) ).isZero();
+            assertThat(cdd.getEdgeDiagram().getEdgeContentText(0)).isEqualTo("- composition1");
+            assertThat(cdd.getEdgeDiagram().getRelationId(ContentType.Composition, 0)).isOne();
+            assertThat(cdd.getEdgeDiagram().getRelationSourceId(ContentType.Composition, 0)).isZero();
+            assertThat(cdd.getEdgeDiagram().getEdgeContentText(1)).isEqualTo("- composition2");
+            assertThat(cdd.getEdgeDiagram().getRelationId(ContentType.Composition, 1)).isOne();
+            assertThat(cdd.getEdgeDiagram().getRelationSourceId(ContentType.Composition, 1)).isZero();
         }
 
         @Test
-        public void キャンバスに描画しているクラス2つのコンポジション関係を描画する途中で一度描画していない箇所を選択してから描画する() {
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
-            cdd.setMouseCoordinates( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
+        void キャンバスに描画しているクラス2つのコンポジション関係を描画する途中で一度描画していない箇所を選択してから描画する() {
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY());
+            cdd.setMouseCoordinates(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY());
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
-            cdd.addDrawnEdge( buttons, "- composition", secondClass.getX(), secondClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "- composition", secondClass.getX(), secondClass.getY());
 
-            assertThat( cdd.getEdgeDiagram().getEdgeContentText( ContentType.Composition, 0 ) ).isEqualTo( "- composition" );
-            assertThat( cdd.getEdgeDiagram().getRelationId( ContentType.Composition, 0 ) ).isOne();
-            assertThat( cdd.getEdgeDiagram().getRelationSourceId( ContentType.Composition, 0 ) ).isZero();
+            assertThat(cdd.getEdgeDiagram().getEdgeContentText(0)).isEqualTo("- composition");
+            assertThat(cdd.getEdgeDiagram().getRelationId(ContentType.Composition, 0)).isOne();
+            assertThat(cdd.getEdgeDiagram().getRelationSourceId(ContentType.Composition, 0)).isZero();
         }
 
         @Test
-        public void キャンバスに描画しているクラス3つのコンポジション関係を2つ描画する() {
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
-            cdd.addDrawnEdge( buttons, "- composition1", secondClass.getX(), secondClass.getY() );
+        void キャンバスに描画しているクラス3つのコンポジション関係を2つ描画する() {
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "- composition1", secondClass.getX(), secondClass.getY());
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, thirdClass.getX(), thirdClass.getY() );
-            cdd.addDrawnEdge( buttons, "- composition2", thirdClass.getX(), thirdClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, thirdClass.getX(), thirdClass.getY());
+            cdd.addDrawnEdge(buttons, "- composition2", thirdClass.getX(), thirdClass.getY());
 
-            assertThat( cdd.getEdgeDiagram().getEdgeContentText( ContentType.Composition, 0 ) ).isEqualTo( "- composition1" );
-            assertThat( cdd.getEdgeDiagram().getRelationId( ContentType.Composition, 0 ) ).isOne();
-            assertThat( cdd.getEdgeDiagram().getRelationSourceId( ContentType.Composition, 0 ) ).isZero();
-            assertThat( cdd.getEdgeDiagram().getEdgeContentText( ContentType.Composition, 1 ) ).isEqualTo( "- composition2" );
-            assertThat( cdd.getEdgeDiagram().getRelationId( ContentType.Composition, 1 ) ).isEqualTo( 2 );
-            assertThat( cdd.getEdgeDiagram().getRelationSourceId( ContentType.Composition, 1 ) ).isZero();
-            assertThat( cdd.searchDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() ).getName() ).isEqualTo( "- composition1" );
-            assertThat( cdd.searchDrawnEdge( betweenFirstAndThirdClass.getX(), betweenFirstAndThirdClass.getY() ).getName() ).isEqualTo( "- composition2" );
+            assertThat(cdd.getEdgeDiagram().getEdgeContentText(0)).isEqualTo("- composition1");
+            assertThat(cdd.getEdgeDiagram().getRelationId(ContentType.Composition, 0)).isOne();
+            assertThat(cdd.getEdgeDiagram().getRelationSourceId(ContentType.Composition, 0)).isZero();
+            assertThat(cdd.getEdgeDiagram().getEdgeContentText(1)).isEqualTo("- composition2");
+            assertThat(cdd.getEdgeDiagram().getRelationId(ContentType.Composition, 1)).isEqualTo(2);
+            assertThat(cdd.getEdgeDiagram().getRelationSourceId(ContentType.Composition, 1)).isZero();
+            assertThat(cdd.searchDrawnEdge(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY()).getText()).isEqualTo("- composition1");
+            assertThat(cdd.searchDrawnEdge(betweenFirstAndThirdClass.getX(), betweenFirstAndThirdClass.getY()).getText()).isEqualTo("- composition2");
         }
     }
 
     @Nested
-    public class クラスを3つ記述後に汎化アイコンを選択している場合 extends ApplicationTest {
+    class クラスを3つ記述後に汎化アイコンを選択している場合 extends ApplicationTest {
         @Tested
         ClassDiagramDrawer cdd;
 
@@ -923,7 +923,7 @@ class ClassDiagramDrawerTest {
         UtilityJavaFXComponent util;
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             cdd = new ClassDiagramDrawer();
             normalButton = new Button("Normal");
             classButton = new Button("Class");
@@ -941,112 +941,112 @@ class ClassDiagramDrawerTest {
 
             ClassNodeDiagram.resetNodeCount();
 
-            createClasses( cdd, buttons, 0, "FirstClassName", firstClass );
-            createClasses( cdd, buttons, 1, "SecondClassName", secondClass );
-            createClasses( cdd, buttons, 2, "ThirdClassName", thirdClass );
+            createClasses(cdd, buttons, 0, "FirstClassName", firstClass);
+            createClasses(cdd, buttons, 1, "SecondClassName", secondClass);
+            createClasses(cdd, buttons, 2, "ThirdClassName", thirdClass);
             buttons = util.bindAllButtonsFalseWithout(buttons, generalizationButton);
         }
 
         @Test
-        public void キャンバスに描画しているクラスの1つ目をクリックすると汎化の描画を待機し正規ノードを待機していなかったとする() {
+        void キャンバスに描画しているクラスの1つ目をクリックすると汎化の描画を待機し正規ノードを待機していなかったとする() {
 
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
 
-            assertThat( actual ).isFalse();
-            assertThat( cdd.getNowStateType() ).isEqualByComparingTo( ContentType.Generalization );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            assertThat(actual).isFalse();
+            assertThat(cdd.getNowStateType()).isEqualByComparingTo(ContentType.Generalization);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
         }
 
         @Test
-        public void キャンバスに描画しているクラスの1つ目をクリックした後に2つ目をクリックすると汎化の描画待機を解除し正規ノードを待機していたとする() {
+        void キャンバスに描画しているクラスの1つ目をクリックした後に2つ目をクリックすると汎化の描画待機を解除し正規ノードを待機していたとする() {
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, secondClass.getX(), secondClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, secondClass.getX(), secondClass.getY());
 
-            assertThat( actual ).isTrue();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Undefined );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            assertThat(actual).isTrue();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Undefined);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
         }
 
         @Test
-        public void キャンバスに描画しているクラスの1つ目をクリックした後にクラスを描画していない箇所をクリックすると汎化の描画待機を解除し正規ノードを待機していなかったとする() {
+        void キャンバスに描画しているクラスの1つ目をクリックした後にクラスを描画していない箇所をクリックすると汎化の描画待機を解除し正規ノードを待機していなかったとする() {
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, secondClass.getX() + 100.0, secondClass.getY() + 100.0 );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, secondClass.getX() + 100.0, secondClass.getY() + 100.0);
 
-            assertThat( actual ).isFalse();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Undefined );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            assertThat(actual).isFalse();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Undefined);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
         }
 
         @Test
-        public void キャンバスに描画しているクラスの1つ目をクリックした後に1つ目をクリックすると汎化の描画待機を解除し正規ノードを待機していたとする() {
+        void キャンバスに描画しているクラスの1つ目をクリックした後に1つ目をクリックすると汎化の描画待機を解除し正規ノードを待機していたとする() {
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
 
-            assertThat( actual ).isTrue();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Undefined );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            assertThat(actual).isTrue();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Undefined);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
         }
 
         @Test
-        public void キャンバスに描画しているクラスの1つ目を汎化としてクリックした後に2つ目を汎化としてクリックするとコンポジションの描画を待機し正規ノードを待機していたとする() {
+        void キャンバスに描画しているクラスの1つ目を汎化としてクリックした後に2つ目を汎化としてクリックするとコンポジションの描画を待機し正規ノードを待機していたとする() {
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
 
-            assertThat( actual ).isTrue();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Composition );
-            assertThat( cdd.getCurrentNodeNumber() ).isOne();
+            assertThat(actual).isTrue();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Composition);
+            assertThat(cdd.getCurrentNodeNumber()).isOne();
         }
 
         @Test
-        public void キャンバスに描画しているクラスの1つ目を汎化としてクリックして2つ目をコンポジションとしてクリックした後に3回目と4回目を汎化としてクリックすると汎化の描画待機を解除し正規ノードを待機していたとする() {
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
+        void キャンバスに描画しているクラスの1つ目を汎化としてクリックして2つ目をコンポジションとしてクリックした後に3回目と4回目を汎化としてクリックすると汎化の描画待機を解除し正規ノードを待機していたとする() {
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
-            boolean actual = cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
+            boolean actual = cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
 
-            assertThat( actual ).isTrue();
-            assertThat( cdd.getNowStateType() ).isEqualTo( ContentType.Undefined );
-            assertThat( cdd.getCurrentNodeNumber() ).isZero();
+            assertThat(actual).isTrue();
+            assertThat(cdd.getNowStateType()).isEqualTo(ContentType.Undefined);
+            assertThat(cdd.getCurrentNodeNumber()).isZero();
         }
 
         @Test
-        public void キャンバスに描画しているクラスを2つクリックすると汎化関係を描画する() {
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
+        void キャンバスに描画しているクラスを2つクリックすると汎化関係を描画する() {
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
 
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, secondClass.getX(), secondClass.getY() );
-            cdd.addDrawnEdge( buttons, "", secondClass.getX(), secondClass.getY() );
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "", secondClass.getX(), secondClass.getY());
 
-            assertThat( cdd.getCurrentNodeNumber() ).isOne();
-            assertThat( cdd.getEdgeDiagram().getEdgeContentText( ContentType.Composition, 0 ) ).isEqualTo( "" );
-            assertThat( cdd.getEdgeDiagram().getRelationId( ContentType.Composition, 0 ) ).isOne();
-            assertThat( cdd.getEdgeDiagram().getRelationSourceId( ContentType.Composition, 0 ) ).isZero();
+            assertThat(cdd.getCurrentNodeNumber()).isOne();
+            assertThat(cdd.getEdgeDiagram().getEdgeContentText(0)).isEmpty();
+            assertThat(cdd.getEdgeDiagram().getRelationId(ContentType.Composition, 0)).isOne();
+            assertThat(cdd.getEdgeDiagram().getRelationSourceId(ContentType.Composition, 0)).isZero();
         }
 
         @Test
-        public void キャンバスに関係を描画している2つのクラス間をクリックすると真を返すがそれ以外の箇所では偽を返す() {
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, firstClass.getX(), firstClass.getY() );
-            cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
-            cdd.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, secondClass.getX(), secondClass.getY() );
-            cdd.addDrawnEdge( buttons, "", secondClass.getX(), secondClass.getY() );
+        void キャンバスに関係を描画している2つのクラス間をクリックすると真を返すがそれ以外の箇所では偽を返す() {
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "attribute", secondClass.getX(), secondClass.getY());
 
-            boolean actualTrue = cdd.isAlreadyDrawnAnyDiagram( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
-            boolean actualFalse = cdd.isAlreadyDrawnAnyDiagram( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() + 100.0 );
+            boolean actualTrue = cdd.isAlreadyDrawnAnyDiagram(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY());
+            boolean actualFalse = cdd.isAlreadyDrawnAnyDiagram(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() + 100.0);
 
-            assertThat( actualTrue ).isTrue();
-            assertThat( actualFalse ).isFalse();
+            assertThat(actualTrue).isTrue();
+            assertThat(actualFalse).isFalse();
         }
     }
 
-    private void createClasses( ClassDiagramDrawer cdd, List<Button> buttons, int classCount, String className, Point2D classPosition ) {
-        cdd.setNodeText( className );
-        cdd.setMouseCoordinates( classPosition.getX(), classPosition.getY() );
-        cdd.addDrawnNode( buttons );
-        ( ( ClassNodeDiagram ) cdd.getNodes().get( classCount ) ).calculateWidthAndHeight( 100.0, 80.0 );
+    private void createClasses(ClassDiagramDrawer cdd, List<Button> buttons, int classCount, String className, Point2D classPosition) {
+        cdd.setNodeText(className);
+        cdd.setMouseCoordinates(classPosition.getX(), classPosition.getY());
+        cdd.addDrawnNode(buttons);
+        ((ClassNodeDiagram) cdd.getNodes().get(classCount)).calculateWidthAndHeight(100.0, 80.0);
     }
 }

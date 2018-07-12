@@ -15,12 +15,12 @@ class JavaLanguageTest {
     class 正しいソースコードの場合 {
 
         @BeforeEach
-        public void setup() {
+        void setup() {
             obj = new JavaLanguage();
         }
 
         @Test
-        public void クラス名を抽出する() {
+        void クラス名を抽出する() {
             String code = "class ClassName {}";
             String expected = "ClassName";
 
@@ -31,7 +31,7 @@ class JavaLanguageTest {
         }
 
         @Test
-        public void 継承先クラス名を抽出する() {
+        void 継承先クラス名を抽出する() {
             String code = "class ClassName extends ExtendedClassName {}";
             String expected = "ExtendedClassName";
 
@@ -42,7 +42,7 @@ class JavaLanguageTest {
         }
 
         @Test
-        public void ドットを挟んだ継承先クラス名を抽出する() {
+        void ドットを挟んだ継承先クラス名を抽出する() {
             String code = "class ClassName extends Extended.ClassName {}";
             String expected = "Extended.ClassName";
 

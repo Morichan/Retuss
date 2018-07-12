@@ -19,7 +19,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
     UtilityJavaFXComponent util;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         util = new UtilityJavaFXComponent();
     }
 
@@ -27,12 +27,12 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
     class ボタンに関して {
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             util = new UtilityJavaFXComponent();
         }
 
         @Test
-        public void リストに1つ存在するボタンをtrueにする() {
+        void リストに1つ存在するボタンをtrueにする() {
             Button normalButton = new Button();
             List<Button> buttons = new ArrayList<>();
             buttons.add(normalButton);
@@ -43,7 +43,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void リストに2つ存在するボタンの内1つ目をtrueにする() {
+        void リストに2つ存在するボタンの内1つ目をtrueにする() {
             Button normalButton = new Button();
             Button classButton = new Button();
             List<Button> buttons;
@@ -56,7 +56,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void リストに3つ存在するボタンの内2つ目をtrueにする() {
+        void リストに3つ存在するボタンの内2つ目をtrueにする() {
             Button normalButton = new Button();
             Button classButton = new Button();
             Button noteButton = new Button();
@@ -71,7 +71,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void リストに3つ存在するボタンの内3つ目をtrueにする() {
+        void リストに3つ存在するボタンの内3つ目をtrueにする() {
             Button normalButton = new Button();
             Button classButton = new Button();
             Button noteButton = new Button();
@@ -86,7 +86,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void リストに2つ存在するボタンの内1つ目をtrueにした後2つ目をtrueにする() {
+        void リストに2つ存在するボタンの内1つ目をtrueにした後2つ目をtrueにする() {
             Button normalButton = new Button();
             Button classButton = new Button();
             List<Button> buttons;
@@ -100,7 +100,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void リストに2つ存在するボタンの内trueになっている1つ目のボタンを返す() {
+        void リストに2つ存在するボタンの内trueになっている1つ目のボタンを返す() {
             Button normalButton = new Button();
             Button classButton = new Button();
             List<Button> buttons;
@@ -113,7 +113,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void リストに2つ存在するボタンの内trueになっている2つ目のボタンを返す() {
+        void リストに2つ存在するボタンの内trueになっている2つ目のボタンを返す() {
             Button normalButton = new Button();
             Button classButton = new Button();
             List<Button> buttons;
@@ -130,12 +130,12 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
     class 右クリックに関して {
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             util = new UtilityJavaFXComponent();
         }
 
         @Test
-        public void クラスの右クリックメニューを整形する() {
+        void クラスの右クリックメニューを整形する() {
             String className = "ClassName";
 
             ContextMenu expected = new ContextMenu();
@@ -234,7 +234,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void クラスの右クリックメニューにおいて属性や操作が空の場合はなしと表示し操作もできない() {
+        void クラスの右クリックメニューにおいて属性や操作が空の場合はなしと表示し操作もできない() {
             String className = "ClassName";
 
             ContextMenu expected = new ContextMenu();
@@ -291,7 +291,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void コンポジション関係の右クリックメニューを整形する() {
+        void コンポジション関係の右クリックメニューを整形する() {
             String composition = "- composition";
 
             ContextMenu expected = new ContextMenu();
@@ -309,7 +309,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void 汎化関係の右クリックメニューを整形する() {
+        void 汎化関係の右クリックメニューを整形する() {
 
             ContextMenu expected = new ContextMenu();
 
@@ -327,12 +327,12 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
     class 多角形における内外判定に関して {
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             util = new UtilityJavaFXComponent();
         }
 
         @Test
-        public void 旧版_角が複数存在する多角形の内側に点が存在するか否かを確認する() {
+        void 旧版_角が複数存在する多角形の内側に点が存在するか否かを確認する() {
             List<Point2D> quadrangle1 = Arrays.asList(
                     new Point2D(100.0, 100.0), new Point2D(100.0, 500.0),
                     new Point2D(200.0, 500.0), new Point2D(200.0, 100.0));
@@ -368,7 +368,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void 角が複数存在する多角形の内側に点が存在するか否かを確認する() {
+        void 角が複数存在する多角形の内側に点が存在するか否かを確認する() {
             List<Point2D> quadrangle1 = Arrays.asList(
                     new Point2D(100.0, 100.0), new Point2D(100.0, 500.0),
                     new Point2D(200.0, 500.0), new Point2D(200.0, 100.0));
@@ -417,7 +417,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void ノードの中央のポイントと幅と高さを入力するとその頂点のリストを返す() {
+        void ノードの中央のポイントと幅と高さを入力するとその頂点のリストを返す() {
             List<Point2D> expected = Arrays.asList(
                     new Point2D(150.0, 60.0), new Point2D(150.0, 140.0),
                     new Point2D(50.0, 140.0), new Point2D(50.0, 60.0)
@@ -432,7 +432,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void 線分の始点と終点を2つ入力すると線分の交点が存在するか否かを確認する() {
+        void 線分の始点と終点を2つ入力すると線分の交点が存在するか否かを確認する() {
             Point2D line1S = new Point2D(100.0, 100.0);
             Point2D line1E = new Point2D(200.0, 200.0);
             Point2D line2S = new Point2D(200.0, 100.0);
@@ -468,7 +468,7 @@ class UtilityJavaFXComponentTest extends ApplicationTest {
         }
 
         @Test
-        public void 線分の始点と終点を2つ入力すると交点が存在する場合は線分の交点を返し存在しない場合はnullを返す() {
+        void 線分の始点と終点を2つ入力すると交点が存在する場合は線分の交点を返し存在しない場合はnullを返す() {
             Point2D line1S = new Point2D(100.0, 100.0);
             Point2D line1E = new Point2D(200.0, 200.0);
             Point2D line2S = new Point2D(200.0, 100.0);

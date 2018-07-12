@@ -1,6 +1,6 @@
 package io.github.morichan.retuss.window.diagram;
 
-import io.github.morichan.retuss.window.*;
+import io.github.morichan.retuss.window.ClassDiagramDrawer;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
@@ -35,8 +35,8 @@ public class ClassNodeDiagram extends NodeDiagram {
     private final double classNameSpace = 20.0;
     private final double leftSpace = 5.0;
 
-    private List<ClassData> attributes = new ArrayList<>();
-    private List<ClassData> operations = new ArrayList<>();
+    private List<ClassDiagramGraphic> attributes = new ArrayList<>();
+    private List<ClassDiagramGraphic> operations = new ArrayList<>();
 
     private int attributeNotVisibilityCount = 0;
 
@@ -94,9 +94,9 @@ public class ClassNodeDiagram extends NodeDiagram {
         if (type == ContentType.Title) {
             nodeText = text;
         } else if (type == ContentType.Attribute) {
-            attributes.add(new Attribute(text));
+            attributes.add(new AttributeGraphic(text));
         } else if (type == ContentType.Operation) {
-            operations.add(new Operation(text));
+            operations.add(new OperationGraphic(text));
         }
     }
 
@@ -112,9 +112,9 @@ public class ClassNodeDiagram extends NodeDiagram {
         if (type == ContentType.Title) {
             nodeText = text;
         } else if (type == ContentType.Attribute) {
-            attributes.get(number).setName(text);
+            attributes.get(number).setText(text);
         } else if (type == ContentType.Operation) {
-            operations.get(number).setName(text);
+            operations.get(number).setText(text);
         }
     }
 
@@ -149,9 +149,9 @@ public class ClassNodeDiagram extends NodeDiagram {
         String content;
 
         if (type == ContentType.Attribute) {
-            content = attributes.get(number).getName();
+            content = attributes.get(number).getText();
         } else if (type == ContentType.Operation) {
-            content = operations.get(number).getName();
+            content = operations.get(number).getText();
         } else {
             content = "";
         }
@@ -168,12 +168,12 @@ public class ClassNodeDiagram extends NodeDiagram {
     public List<String> getNodeContents(ContentType type) {
         List<String> list = new ArrayList<>();
         if (type == ContentType.Attribute) {
-            for (ClassData attribute : attributes) {
-                list.add(attribute.getName());
+            for (ClassDiagramGraphic attribute : attributes) {
+                list.add(attribute.getText());
             }
         } else if (type == ContentType.Operation) {
-            for (ClassData operation : operations) {
-                list.add(operation.getName());
+            for (ClassDiagramGraphic operation : operations) {
+                list.add(operation.getText());
             }
         } else {
             list = null;
@@ -222,11 +222,11 @@ public class ClassNodeDiagram extends NodeDiagram {
     public List<Boolean> getNodeContentsBoolean(ContentType type, ContentType subtype) {
         List<Boolean> list = new ArrayList<>();
         if (type == ContentType.Attribute) {
-            for (ClassData attribute : attributes) {
+            for (ClassDiagramGraphic attribute : attributes) {
                 list.add(attribute.isIndicate());
             }
         } else if (type == ContentType.Operation) {
-            for (ClassData operation : operations) {
+            for (ClassDiagramGraphic operation : operations) {
                 list.add(operation.isIndicate());
             }
         } else {
@@ -252,13 +252,13 @@ public class ClassNodeDiagram extends NodeDiagram {
         classNameText.setFont(Font.font(diagramFont, FontWeight.BOLD, classNameFontSize));
         List<Text> attributesText = new ArrayList<>();
         List<Text> operationsText = new ArrayList<>();
-        for (ClassData attribute : attributes) {
-            Text text = new Text(attribute.getName());
+        for (ClassDiagramGraphic attribute : attributes) {
+            Text text = new Text(attribute.getText());
             text.setFont(Font.font(diagramFont, FontWeight.LIGHT, classAttributeFontSize));
             attributesText.add(text);
         }
-        for (ClassData operation : operations) {
-            Text text = new Text(operation.getName());
+        for (ClassDiagramGraphic operation : operations) {
+            Text text = new Text(operation.getText());
             text.setFont(Font.font(diagramFont, FontWeight.LIGHT, classOperationFontSize));
             operationsText.add(text);
         }
@@ -405,7 +405,7 @@ public class ClassNodeDiagram extends NodeDiagram {
      * @param attributes クラス属性のリスト
      * @return クラス属性の箇所の高さ
      */
-    public double calculateMaxAttributeHeight(List<ClassData> attributes) {
+    public double calculateMaxAttributeHeight(List<ClassDiagramGraphic> attributes) {
         double height = defaultAttributeHeight;
         attributeNotVisibilityCount = countNotBooleanContents(attributes);
 
@@ -434,7 +434,7 @@ public class ClassNodeDiagram extends NodeDiagram {
      * @param attributes クラス属性のリスト
      * @return クラス操作を描画開始する高さ
      */
-    public double calculateStartOperationHeight(List<ClassData> attributes) {
+    public double calculateStartOperationHeight(List<ClassDiagramGraphic> attributes) {
         double height = 20.0;
 
         if (attributes.size() > 0) {
@@ -463,7 +463,7 @@ public class ClassNodeDiagram extends NodeDiagram {
      * @param operations クラス操作のリスト
      * @return クラス操作の箇所の高さ
      */
-    public double calculateMaxOperationHeight(List<ClassData> operations) {
+    public double calculateMaxOperationHeight(List<ClassDiagramGraphic> operations) {
         double height = defaultOperationHeight;
         operationNotVisibilityCount = countNotBooleanContents(operations);
 
@@ -487,9 +487,9 @@ public class ClassNodeDiagram extends NodeDiagram {
      * @param data クラス属性または操作
      * @return 描画しないクラス属性または操作の数
      */
-    public int countNotBooleanContents(List<ClassData> data) {
+    public int countNotBooleanContents(List<ClassDiagramGraphic> data) {
         int count = 0;
-        for (ClassData datum : data) {
+        for (ClassDiagramGraphic datum : data) {
             if (!datum.isIndicate()) count++;
         }
         return count;
