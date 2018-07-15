@@ -1,5 +1,6 @@
 package io.github.morichan.retuss.language.java;
 
+import org.antlr.v4.parse.ANTLRParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,25 @@ class FieldTest {
             @BeforeEach
             void setup() {
                 obj = new Field();
+            }
+
+            @Test
+            void デフォルトの型を返す() {
+                Type expected = new Type("int");
+
+                Type actual = obj.getType();
+
+                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+            }
+
+            @Test
+            void 設定した型を返す() {
+                Type expected = new Type("double");
+
+                obj.setType(new Type("double"));
+                Type actual = obj.getType();
+
+                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
             }
 
             @Test
@@ -113,6 +133,39 @@ class FieldTest {
 
                 assertThat(actual).isEqualTo(expected);
             }
+
+            @Test
+            void 設定した空文字を含むフィールドを返す() {
+                String expected = "String nullText = \"\";";
+
+                obj.setType(new Type("String"));
+                obj.setName("nullText");
+                obj.setValue("\"\"");
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 設定したnullを含むフィールドを返す() {
+                String expected = "String nullText = null;";
+
+                obj.setType(new Type("String"));
+                obj.setName("nullText");
+                obj.setValue("null");
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void nullを設定した場合はnullを返す() {
+
+                obj.setValue(null);
+                String actual = obj.getValue();
+
+                assertThat(actual).isNull();
+            }
         }
     }
 
@@ -127,6 +180,16 @@ class FieldTest {
         @Test
         void 名前にnullを設定したら例外を投げる() {
             assertThatThrownBy(() -> obj.setName(null)).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 名前に空文字を設定したら例外を投げる() {
+            assertThatThrownBy(() -> obj.setName("")).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 型にnullを設定したら例外を投げる() {
+            assertThatThrownBy(() -> obj.setType(null)).isInstanceOf(IllegalArgumentException.class);
         }
     }
 }
