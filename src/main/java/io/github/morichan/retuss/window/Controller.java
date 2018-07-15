@@ -21,17 +21,24 @@ import java.util.Optional;
  * <p> RETUSSウィンドウの動作管理クラス </p>
  *
  * <p>
- *     {@link RetussWindow}クラスで用いているFXMLファイルにおけるシグナルハンドラを扱います。
+ * {@link RetussWindow}クラスで用いているFXMLファイルにおけるシグナルハンドラを扱います。
  * </p>
  */
 public class Controller {
-    @FXML private Button normalButtonInCD;
-    @FXML private Button classButtonInCD;
-    @FXML private Button noteButtonInCD;
-    @FXML private Button compositionButtonInCD;
-    @FXML private Button generalizationButtonInCD;
-    @FXML private ScrollPane classDiagramScrollPane;
-    @FXML private Canvas classDiagramCanvas;
+    @FXML
+    private Button normalButtonInCD;
+    @FXML
+    private Button classButtonInCD;
+    @FXML
+    private Button noteButtonInCD;
+    @FXML
+    private Button compositionButtonInCD;
+    @FXML
+    private Button generalizationButtonInCD;
+    @FXML
+    private ScrollPane classDiagramScrollPane;
+    @FXML
+    private Canvas classDiagramCanvas;
     private List<Button> buttonsInCD = new ArrayList<>();
 
     private TextInputDialog classNameInputDialog;
@@ -45,7 +52,7 @@ public class Controller {
      * <p> コンストラクタ </p>
      *
      * <p>
-     *     Javaにおける通常のコンストラクタ（ {@code Controller()} メソッド）は使えないため、initializeメソッドをFXML経由で読み込む仕様になっています。
+     * Javaにおける通常のコンストラクタ（ {@code Controller()} メソッド）は使えないため、initializeメソッドをFXML経由で読み込む仕様になっています。
      * </p>
      */
     @FXML
@@ -55,28 +62,33 @@ public class Controller {
             // retussCode.FXMLファイルの読み込み時にclassDiagramCanvasが設定されていないためNullPointerExceptionを投げるのを防ぐ
             gc = classDiagramCanvas.getGraphicsContext2D();
             classDiagramDrawer.setGraphicsContext(gc);
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
     }
 
     @FXML
     private void selectNormalInCD() {
-        buttonsInCD = util.bindAllButtonsFalseWithout( buttonsInCD, normalButtonInCD );
+        buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, normalButtonInCD);
     }
+
     @FXML
     private void selectClassInCD() {
-        buttonsInCD = util.bindAllButtonsFalseWithout( buttonsInCD, classButtonInCD );
+        buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, classButtonInCD);
     }
+
     @FXML
     private void selectNoteInCD() {
-        buttonsInCD = util.bindAllButtonsFalseWithout( buttonsInCD, noteButtonInCD );
+        buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, noteButtonInCD);
     }
+
     @FXML
     private void selectCompositionInCD() {
-        buttonsInCD = util.bindAllButtonsFalseWithout( buttonsInCD, compositionButtonInCD );
+        buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, compositionButtonInCD);
     }
+
     @FXML
     private void selectGeneralizationInCD() {
-        buttonsInCD = util.bindAllButtonsFalseWithout( buttonsInCD, generalizationButtonInCD );
+        buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, generalizationButtonInCD);
     }
 
     @FXML
@@ -96,95 +108,101 @@ public class Controller {
      * <p> クラス図キャンバス上で（通常）左クリックした際に実行します </p>
      *
      * <p>
-     *     操作ボタンにより動作が異なるが、通常操作以外は描画のみを行います。
-     *     また、通常操作時は何も動作しません。
+     * 操作ボタンにより動作が異なるが、通常操作以外は描画のみを行います。
+     * また、通常操作時は何も動作しません。
      * </p>
      *
      * @param mouseX 左クリック時のマウス位置のX軸
      * @param mouseY 左クリック時のマウス位置のY軸
      */
     private void clickedCanvasByPrimaryButtonInCD(double mouseX, double mouseY) {
-        if( classDiagramDrawer.isAlreadyDrawnAnyDiagram( mouseX, mouseY ) ) {
-            if( util.searchSelectedButtonIn( buttonsInCD ) == compositionButtonInCD ) {
-                if( ! classDiagramDrawer.hasWaitedCorrectDrawnDiagram( ContentType.Composition, mouseX, mouseY ) ) {
-                    classDiagramDrawer.setMouseCoordinates( mouseX, mouseY );
+        if (classDiagramDrawer.isAlreadyDrawnAnyDiagram(mouseX, mouseY)) {
+            if (util.searchSelectedButtonIn(buttonsInCD) == compositionButtonInCD) {
+                if (!classDiagramDrawer.hasWaitedCorrectDrawnDiagram(ContentType.Composition, mouseX, mouseY)) {
+                    classDiagramDrawer.setMouseCoordinates(mouseX, mouseY);
                     classDiagramDrawer.allReDrawCanvas();
                 } else {
                     String compositionName = showCreateCompositionNameInputDialog();
-                    classDiagramDrawer.addDrawnEdge( buttonsInCD, compositionName, mouseX, mouseY );
+                    classDiagramDrawer.addDrawnEdge(buttonsInCD, compositionName, mouseX, mouseY);
                     classDiagramDrawer.allReDrawCanvas();
                 }
-            } else if( util.searchSelectedButtonIn( buttonsInCD ) == generalizationButtonInCD ) {
-                if( ! classDiagramDrawer.hasWaitedCorrectDrawnDiagram( ContentType.Generalization, mouseX, mouseY ) ) {
-                    classDiagramDrawer.setMouseCoordinates( mouseX, mouseY );
+            } else if (util.searchSelectedButtonIn(buttonsInCD) == generalizationButtonInCD) {
+                if (!classDiagramDrawer.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, mouseX, mouseY)) {
+                    classDiagramDrawer.setMouseCoordinates(mouseX, mouseY);
                     classDiagramDrawer.allReDrawCanvas();
                 } else {
-                    classDiagramDrawer.addDrawnEdge( buttonsInCD, "", mouseX, mouseY );
+                    classDiagramDrawer.addDrawnEdge(buttonsInCD, "", mouseX, mouseY);
                     classDiagramDrawer.allReDrawCanvas();
                 }
             }
         } else {
-            classDiagramDrawer.setMouseCoordinates( mouseX, mouseY );
-            if( util.searchSelectedButtonIn( buttonsInCD ) == classButtonInCD ) {
+            classDiagramDrawer.setMouseCoordinates(mouseX, mouseY);
+            if (util.searchSelectedButtonIn(buttonsInCD) == classButtonInCD) {
                 String className = showCreateClassNameInputDialog();
-                classDiagramDrawer.setNodeText( className );
-                classDiagramDrawer.addDrawnNode( buttonsInCD );
+                classDiagramDrawer.setNodeText(className);
+                classDiagramDrawer.addDrawnNode(buttonsInCD);
                 classDiagramDrawer.allReDrawCanvas();
-            } else if( util.searchSelectedButtonIn( buttonsInCD ) == compositionButtonInCD ) {
-                classDiagramDrawer.resetNodeChosen( classDiagramDrawer.getCurrentNodeNumber() );
+            } else if (util.searchSelectedButtonIn(buttonsInCD) == compositionButtonInCD) {
+                classDiagramDrawer.resetNodeChosen(classDiagramDrawer.getCurrentNodeNumber());
                 classDiagramDrawer.allReDrawCanvas();
-            } else if( util.searchSelectedButtonIn( buttonsInCD ) == generalizationButtonInCD ) {
-                classDiagramDrawer.resetNodeChosen( classDiagramDrawer.getCurrentNodeNumber() );
+            } else if (util.searchSelectedButtonIn(buttonsInCD) == generalizationButtonInCD) {
+                classDiagramDrawer.resetNodeChosen(classDiagramDrawer.getCurrentNodeNumber());
                 classDiagramDrawer.allReDrawCanvas();
             }
         }
     }
 
     private String showCreateClassNameInputDialog() {
-        return showClassDiagramInputDialog( "クラスの追加", "追加するクラスのクラス名を入力してください。", "" );
+        return showClassDiagramInputDialog("クラスの追加", "追加するクラスのクラス名を入力してください。", "");
     }
-    private String showChangeClassNameInputDialog( String className ) {
-        return showClassDiagramInputDialog( "クラス名の変更", "変更後のクラス名を入力してください。", className );
+
+    private String showChangeClassNameInputDialog(String className) {
+        return showClassDiagramInputDialog("クラス名の変更", "変更後のクラス名を入力してください。", className);
     }
+
     private String showAddClassAttributeInputDialog() {
-        return showClassDiagramInputDialog( "属性の追加", "追加する属性を入力してください。", "" );
+        return showClassDiagramInputDialog("属性の追加", "追加する属性を入力してください。", "");
     }
-    private String showChangeClassAttributeInputDialog(String attribute ) {
-        return showClassDiagramInputDialog( "属性の変更", "変更後の属性を入力してください。", attribute );
+
+    private String showChangeClassAttributeInputDialog(String attribute) {
+        return showClassDiagramInputDialog("属性の変更", "変更後の属性を入力してください。", attribute);
     }
+
     private String showAddClassOperationInputDialog() {
-        return showClassDiagramInputDialog( "操作の追加", "追加する操作を入力してください。", "" );
+        return showClassDiagramInputDialog("操作の追加", "追加する操作を入力してください。", "");
     }
-    private String showChangeClassOperationInputDialog( String operation ) {
-        return showClassDiagramInputDialog( "操作の変更", "変更後の操作を入力してください。", operation );
+
+    private String showChangeClassOperationInputDialog(String operation) {
+        return showClassDiagramInputDialog("操作の変更", "変更後の操作を入力してください。", operation);
     }
+
     private String showCreateCompositionNameInputDialog() {
-        return showClassDiagramInputDialog( "コンポジションの追加", "コンポジション先の関連端名を入力してください。", "" );
+        return showClassDiagramInputDialog("コンポジションの追加", "コンポジション先の関連端名を入力してください。", "");
     }
-    private String showChangeCompositionNameInputDialog( String composition ) {
-        return showClassDiagramInputDialog( "コンポジションの変更", "変更後のコンポジション先の関連端名を入力してください。", composition );
+
+    private String showChangeCompositionNameInputDialog(String composition) {
+        return showClassDiagramInputDialog("コンポジションの変更", "変更後のコンポジション先の関連端名を入力してください。", composition);
     }
 
     /**
      * <p> クラス図のテキスト入力ダイアログを表示します </p>
      *
      * <p>
-     *     入力ダイアログ表示中は、ダイアログ以外の本機能における他ウィンドウは入力を受付ません。
-     *     テキスト入力ダイアログを消去または入力を受付た場合は、他ウィンドウの入力受付を再開します。
+     * 入力ダイアログ表示中は、ダイアログ以外の本機能における他ウィンドウは入力を受付ません。
+     * テキスト入力ダイアログを消去または入力を受付た場合は、他ウィンドウの入力受付を再開します。
      * </p>
      *
-     *
-     * @param title テキスト入力ダイアログのタイトル
+     * @param title      テキスト入力ダイアログのタイトル
      * @param headerText テキスト入力ダイアログのヘッダーテキスト
      * @return 入力された文字列 入力せずにOKボタンを押した場合やxボタンを押した場合は空文字を返します。
      */
-    private String showClassDiagramInputDialog( String title, String headerText, String contentText ) {
-        classNameInputDialog = new TextInputDialog( contentText );
-        classNameInputDialog.setTitle( title );
-        classNameInputDialog.setHeaderText( headerText );
-        Optional< String > result = classNameInputDialog.showAndWait();
+    private String showClassDiagramInputDialog(String title, String headerText, String contentText) {
+        classNameInputDialog = new TextInputDialog(contentText);
+        classNameInputDialog.setTitle(title);
+        classNameInputDialog.setHeaderText(headerText);
+        Optional<String> result = classNameInputDialog.showAndWait();
 
-        if( result.isPresent() ) {
+        if (result.isPresent()) {
             return classNameInputDialog.getEditor().getText();
         } else {
             return "";
@@ -195,39 +213,39 @@ public class Controller {
      * <p> クラス図キャンバス上で（通常）右クリックした際に実行します </p>
      *
      * <p>
-     *     通常操作時のみ動作します。
-     *     メニュー表示を行うが、右クリックしたキャンバス上の位置により動作は異なります。
+     * 通常操作時のみ動作します。
+     * メニュー表示を行うが、右クリックしたキャンバス上の位置により動作は異なります。
      * </p>
      *
      * @param mouseX 右クリック時のマウス位置のX軸
      * @param mouseY 右クリック時のマウス位置のY軸
      */
-    private void clickedCanvasBySecondaryButtonInCD( double mouseX, double mouseY ) {
-        classDiagramScrollPane.setContextMenu( null );
+    private void clickedCanvasBySecondaryButtonInCD(double mouseX, double mouseY) {
+        classDiagramScrollPane.setContextMenu(null);
 
-        ContentType currentType = classDiagramDrawer.searchDrawnAnyDiagramType( mouseX, mouseY );
+        ContentType currentType = classDiagramDrawer.searchDrawnAnyDiagramType(mouseX, mouseY);
 
-        if( currentType == ContentType.Undefined ) return;
-        if( util.searchSelectedButtonIn( buttonsInCD ) != normalButtonInCD ) return;
+        if (currentType == ContentType.Undefined) return;
+        if (util.searchSelectedButtonIn(buttonsInCD) != normalButtonInCD) return;
 
-        if( currentType == ContentType.Class ) {
-            NodeDiagram nodeDiagram = classDiagramDrawer.findNodeDiagram( mouseX, mouseY );
-            ContextMenu contextMenu = util.createClassContextMenuInCD( nodeDiagram.getNodeText(), nodeDiagram.getNodeType(),
-                    classDiagramDrawer.getDrawnNodeTextList( classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute),
-                    classDiagramDrawer.getDrawnNodeTextList( classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation ),
-                    classDiagramDrawer.getDrawnNodeContentsBooleanList( classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, ContentType.Indication ),
-                    classDiagramDrawer.getDrawnNodeContentsBooleanList( classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, ContentType.Indication ) );
+        if (currentType == ContentType.Class) {
+            NodeDiagram nodeDiagram = classDiagramDrawer.findNodeDiagram(mouseX, mouseY);
+            ContextMenu contextMenu = util.createClassContextMenuInCD(nodeDiagram.getNodeText(), nodeDiagram.getNodeType(),
+                    classDiagramDrawer.getDrawnNodeTextList(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute),
+                    classDiagramDrawer.getDrawnNodeTextList(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation),
+                    classDiagramDrawer.getDrawnNodeContentsBooleanList(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, ContentType.Indication),
+                    classDiagramDrawer.getDrawnNodeContentsBooleanList(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, ContentType.Indication));
 
-            classDiagramScrollPane.setContextMenu( formatContextMenuInCD( contextMenu, nodeDiagram.getNodeType(), mouseX, mouseY ) );
-        } else if( currentType == ContentType.Composition ) {
-            RelationshipAttributeGraphic relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
-            ContextMenu contextMenu = util.createClassContextMenuInCD( relation.getText(), relation.getType() );
-            classDiagramScrollPane.setContextMenu( formatContextMenuInCD( contextMenu, relation.getType(), mouseX, mouseY ) );
+            classDiagramScrollPane.setContextMenu(formatContextMenuInCD(contextMenu, nodeDiagram.getNodeType(), mouseX, mouseY));
+        } else if (currentType == ContentType.Composition) {
+            RelationshipAttributeGraphic relation = classDiagramDrawer.searchDrawnEdge(mouseX, mouseY);
+            ContextMenu contextMenu = util.createClassContextMenuInCD(relation.getText(), relation.getType());
+            classDiagramScrollPane.setContextMenu(formatContextMenuInCD(contextMenu, relation.getType(), mouseX, mouseY));
 
-        } else if( currentType == ContentType.Generalization ) {
-            RelationshipAttributeGraphic relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
-            ContextMenu contextMenu = util.createClassContextMenuInCD( "", relation.getType() );
-            classDiagramScrollPane.setContextMenu( formatContextMenuInCD( contextMenu, relation.getType(), mouseX, mouseY ) );
+        } else if (currentType == ContentType.Generalization) {
+            RelationshipAttributeGraphic relation = classDiagramDrawer.searchDrawnEdge(mouseX, mouseY);
+            ContextMenu contextMenu = util.createClassContextMenuInCD("", relation.getType());
+            classDiagramScrollPane.setContextMenu(formatContextMenuInCD(contextMenu, relation.getType(), mouseX, mouseY));
         }
     }
 
@@ -235,15 +253,15 @@ public class Controller {
      * <p> クラス図キャンバス上での右クリックメニューの各メニューアイテムの動作を整形します </p>
      *
      * <p>
-     *     名前の変更と内容の追加と内容の変更メニューではテキスト入力ダイアログを表示しますが、
-     *     それ以外ではメニューアイテムの選択直後にキャンバスを再描画します。
+     * 名前の変更と内容の追加と内容の変更メニューではテキスト入力ダイアログを表示しますが、
+     * それ以外ではメニューアイテムの選択直後にキャンバスを再描画します。
      * </p>
      *
      * @param contextMenu 右クリックメニューの見た目が整形済みの右クリックメニュー <br>
-     *     {@link UtilityJavaFXComponent#createClassContextMenuInCD(String, ContentType)} メソッドで取得したインスタンスを入れる必要がある。
-     * @param type 右クリックした要素の種類
+     *                    {@link UtilityJavaFXComponent#createClassContextMenuInCD(String, ContentType)} メソッドで取得したインスタンスを入れる必要がある。
+     * @param type        右クリックした要素の種類
      * @return 動作整形済みの右クリックメニュー <br>
-     *     {@link UtilityJavaFXComponent} クラスで整形していないメニューや未分類の要素の種類を{@code contextMenu}や{@code type}に入れた場合は{@code null}を返す。
+     * {@link UtilityJavaFXComponent} クラスで整形していないメニューや未分類の要素の種類を{@code contextMenu}や{@code type}に入れた場合は{@code null}を返す。
      */
     private ContextMenu formatContextMenuInCD(ContextMenu contextMenu, ContentType type, double mouseX, double mouseY) {
         if (type == ContentType.Class) {
@@ -354,22 +372,22 @@ public class Controller {
             String compositionName = showChangeCompositionNameInputDialog(composition.getText());
             classDiagramDrawer.changeDrawnEdge(mouseX, mouseY, compositionName);
             classDiagramDrawer.allReDrawCanvas();
-        } );
+        });
         // コンポジション関係の削除
-        contextMenu.getItems().get(1).setOnAction( event -> {
+        contextMenu.getItems().get(1).setOnAction(event -> {
             classDiagramDrawer.deleteDrawnEdge(mouseX, mouseY);
             classDiagramDrawer.allReDrawCanvas();
-        } );
+        });
 
         return contextMenu;
     }
 
-    private ContextMenu formatGeneralizationContextMenuInCD( ContextMenu contextMenu, double mouseX, double mouseY ) {
+    private ContextMenu formatGeneralizationContextMenuInCD(ContextMenu contextMenu, double mouseX, double mouseY) {
         // 汎化関係の削除
-        contextMenu.getItems().get(0).setOnAction( event -> {
+        contextMenu.getItems().get(0).setOnAction(event -> {
             classDiagramDrawer.deleteDrawnEdge(mouseX, mouseY);
             classDiagramDrawer.allReDrawCanvas();
-        } );
+        });
 
         return contextMenu;
     }
