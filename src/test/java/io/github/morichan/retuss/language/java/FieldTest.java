@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FieldTest {
@@ -68,6 +69,64 @@ class FieldTest {
 
                 assertThat(actual).isEqualTo(expected);
             }
+        }
+
+        @Nested
+        class 既定値を持つ場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new Field();
+            }
+
+            @Test
+            void 設定した数値を含むフィールドを返す() {
+                String expected = "int number = 0;";
+
+                obj.setName("number");
+                obj.setValue("0");
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 設定した文字を含むフィールドを返す() {
+                String expected = "char chara = 't';";
+
+                obj.setType(new Type("char"));
+                obj.setName("chara");
+                obj.setValue("'t'");
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 設定した文字列を含むフィールドを返す() {
+                String expected = "String text = \"This is string.\";";
+
+                obj.setType(new Type("String"));
+                obj.setName("text");
+                obj.setValue("\"This is string.\"");
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
+    }
+
+    @Nested
+    class 正しい使い方で使っていない場合 {
+
+        @BeforeEach
+        void setup() {
+            obj = new Field();
+        }
+
+        @Test
+        void 名前にnullを設定したら例外を投げる() {
+            assertThatThrownBy(() -> obj.setName(null)).isInstanceOf(IllegalArgumentException.class);
         }
     }
 }

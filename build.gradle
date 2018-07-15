@@ -23,7 +23,7 @@ buildscript {
 
 
 
-jar.manifest.attributes 'Main-Class': 'io.github.morichan.window.window.RetussWindow'
+jar.manifest.attributes 'Main-Class': 'io.github.morichan.retuss.window.RetussWindow'
 
 repositories {
     mavenCentral()
@@ -48,10 +48,10 @@ dependencies {
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
 }
 
-ext.antlr = [destinationDir: 'src/main/java/io/github/morichan/window/parser/java']
+ext.antlr = [destinationDir: 'src/main/java/io/github/morichan/retuss/parser/java']
 generateGrammarSource {
     outputDirectory = file(new File("${antlr.destinationDir}"))
-    arguments = ["-package", "io.github.morichan.window.parser.java", "-listener", "-no-visitor"].flatten()
+    arguments = ["-package", "io.github.morichan.retuss.parser.java", "-listener", "-no-visitor"].flatten()
 }
 
 clean {

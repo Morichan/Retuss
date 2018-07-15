@@ -7,9 +7,15 @@ public class Field {
 
     private Type type = new Type();
     private String name = "field";
-    private String variable;
+    private String value;
 
+    /**
+     * <p> フィールド名を設定します </p>
+     *
+     * @param name フィールド名 <br> {@code null} 不可
+     */
     public void setName(String name) {
+        if (name == null) throw new IllegalArgumentException();
         this.name = name;
     }
 
@@ -21,6 +27,10 @@ public class Field {
         this.type = type;
     }
 
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -29,6 +39,11 @@ public class Field {
         sb.append(" ");
 
         sb.append(name);
+
+        if (value != null) {
+            sb.append(" = ");
+            sb.append(value);
+        }
 
         sb.append(";");
 

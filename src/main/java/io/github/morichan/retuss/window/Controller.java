@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,8 +51,11 @@ public class Controller {
     @FXML
     private void initialize() {
         buttonsInCD.addAll(Arrays.asList(normalButtonInCD, classButtonInCD, noteButtonInCD, compositionButtonInCD, generalizationButtonInCD));
-        gc = classDiagramCanvas.getGraphicsContext2D();
-        classDiagramDrawer.setGraphicsContext( gc );
+        try {
+            // retussCode.FXMLファイルの読み込み時にclassDiagramCanvasが設定されていないためNullPointerExceptionを投げるのを防ぐ
+            gc = classDiagramCanvas.getGraphicsContext2D();
+            classDiagramDrawer.setGraphicsContext(gc);
+        } catch (NullPointerException e) {}
     }
 
     @FXML
