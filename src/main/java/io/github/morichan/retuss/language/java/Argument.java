@@ -8,14 +8,27 @@ public class Argument {
     private Type type;
     private String name;
 
+    /**
+     * <p> デフォルトコンストラクタ </p>
+     *
+     * <p>
+     *     型は {@code int} 、引数名は {@code argument} として設定します。
+     * </p>
+     */
     public Argument() {
         type = new Type("int");
         name = "argument";
     }
 
+    /**
+     * <p> 型と引数名を設定するコンストラクタ </p>
+     *
+     * @param type 型 <br> {@link #setType(Type)} を利用
+     * @param name 引数名 <br> {@link #setName(String)} を利用
+     */
     public Argument(Type type, String name) {
-        this.type = type;
-        this.name = name;
+        setType(type);
+        setName(name);
     }
 
     /**

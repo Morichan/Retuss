@@ -10,22 +10,43 @@ public class Method {
     private String name;
     private List<Argument> arguments;
 
+    /**
+     * <p> デフォルトコンストラクタ </p>
+     *
+     * <p>
+     *     型は {@code void} 、メソッド名は {@code method} 、引数なしで設定します。
+     * </p>
+     */
     public Method() {
         type = new Type("void");
         name = "method";
         arguments = new ArrayList<>();
     }
 
+    /**
+     * <p> 型とメソッド名を設定するコンストラクタ </p>
+     *
+     * @param type 型 <br> {@link #setType(Type)} を利用します
+     * @param name メソッド名 <br> {@link #setName(String)} を利用します
+     */
     public Method(Type type, String name) {
-        this.type = type;
-        this.name = name;
+        setType(type);
+        setName(name);
         arguments = new ArrayList<>();
     }
 
+    /**
+     * <p> 型とメソッド名と引数を設定するコンストラクタ </p>
+     *
+     * @param type 型 <br> {@link #setType(Type)} を利用します
+     * @param name メソッド名 <br> {@link #setName(String)} を利用します
+     * @param arguments 複数の引数 <br> {@link #setArguments(List)} を利用します
+     */
     public Method(Type type, String name, Argument... arguments) {
-        this.type = type;
-        this.name = name;
-        this.arguments = new ArrayList<>(Arrays.asList(arguments));
+        setType(type);
+        setName(name);
+        this.arguments = new ArrayList<>();
+        setArguments(new ArrayList<>(Arrays.asList(arguments)));
     }
 
     /**

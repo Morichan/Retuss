@@ -13,14 +13,26 @@ public class Class {
     private List<Field> fields;
     private List<Method> methods;
 
+    /**
+     * <p> デフォルトコンストラクタ </p>
+     *
+     * <p>
+     *     クラス名は {@code ClassName} として設定します。
+     * </p>
+     */
     public Class() {
         name = "ClassName";
         fields = new ArrayList<>();
         methods = new ArrayList<>();
     }
 
+    /**
+     * <p> クラス名を設定するコンストラクタ </p>
+     *
+     * @param className クラス名 <br> {@link #setName(String)} を利用します
+     */
     public Class(String className) {
-        name = className;
+        setName(className);
         fields = new ArrayList<>();
         methods = new ArrayList<>();
     }

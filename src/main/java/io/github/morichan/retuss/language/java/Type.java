@@ -12,11 +12,19 @@ public class Type {
     private int arrangementCount = 0;
     private List<Type> dataTypes;
 
+    /**
+     * <p> デフォルトコンストラクタ </p>
+     */
     public Type() {
         types = new ArrayList<>();
         dataTypes = new ArrayList<>();
     }
 
+    /**
+     * <p> 型を設定するコンストラクタ </p>
+     *
+     * @param name 型名
+     */
     public Type(String name) {
         types = new ArrayList<>();
         dataTypes = new ArrayList<>();

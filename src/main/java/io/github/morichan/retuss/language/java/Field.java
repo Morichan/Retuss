@@ -9,20 +9,40 @@ public class Field {
     private String name;
     private String value;
 
+    /**
+     * <p> デフォルトコンストラクタ </p>
+     *
+     * <p>
+     *     型は {@code int} 、フィールド名は {@code field} として設定します。
+     * </p>
+     */
     public Field() {
         type = new Type("int");
         name = "field";
     }
 
+    /**
+     * <p> 型とフィールド名を設定するコンストラクタ </p>
+     *
+     * @param type 型 <br> {@link #setType(Type)} を利用
+     * @param name フィールド名 <br> {@link #setName(String)} を利用
+     */
     public Field(Type type, String name) {
-        this.type = type;
-        this.name = name;
+        setType(type);
+        setName(name);
     }
 
+    /**
+     * <p> 型とフィールド名と既定値を設定するコンストラクタ </p>
+     *
+     * @param type 型 <br> {@link #setType(Type)} を利用
+     * @param name フィールド名 <br> {@link #setName(String)} を利用
+     * @param defaultValue 既定値 <br> {@link #setValue(String)} を利用
+     */
     public Field(Type type, String name, String defaultValue) {
-        this.type = type;
-        this.name = name;
-        value = defaultValue;
+        setType(type);
+        setName(name);
+        setValue(defaultValue);
     }
 
     /**
