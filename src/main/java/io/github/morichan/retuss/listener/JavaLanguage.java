@@ -1,4 +1,4 @@
-package io.github.morichan.retuss.translator;
+package io.github.morichan.retuss.listener;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -37,8 +37,8 @@ public class JavaLanguage {
      * <p> クラス名を探索する。 </p>
      *
      * <p>
-     *     事前に{@link #walk(String)}を実行する必要がある。
-     *     走査後、最初に見つけたクラスのクラス名を抽出する。
+     * 事前に{@link #walk(String)}を実行する必要がある。
+     * 走査後、最初に見つけたクラスのクラス名を抽出する。
      * </p>
      *
      * @return 最初に見つけたクラスのクラス名
@@ -60,9 +60,9 @@ public class JavaLanguage {
      * <p> 継承先クラス名を探索する。 </p>
      *
      * <p>
-     *     事前に{@link #walk(String)}を実行する必要がある。
-     *     走査後、予約語 "extends" 以降 "implements" または "{" 以前の文字列を抽出する。
-     *     その際に、実際に文法的に使えるかどうかはともかく、間のスペースやアノテーション、カギ括弧 "[]" は無視する。
+     * 事前に{@link #walk(String)}を実行する必要がある。
+     * 走査後、予約語 "extends" 以降 "implements" または "{" 以前の文字列を抽出する。
+     * その際に、実際に文法的に使えるかどうかはともかく、間のスペースやアノテーション、カギ括弧 "[]" は無視する。
      * </p>
      *
      * @return 予約語 "extends" 以降 "implements" または "{" 以前の文字列（間のスペース、アノテーションおよびカギ括弧 "[]" は無視）
@@ -97,8 +97,8 @@ public class JavaLanguage {
      * <p> コードを走査する。 </p>
      *
      * <p>
-     *     引数として受け取った文字列をレキサ、パーサにかける。
-     *     もし正しいコードでなかった場合は標準出力にその旨を表示するが、エラーとして出力するわけではないことに注意する必要がある。
+     * 引数として受け取った文字列をレキサ、パーサにかける。
+     * もし正しいコードでなかった場合は標準出力にその旨を表示するが、エラーとして出力するわけではないことに注意する必要がある。
      * </p>
      *
      * @param code 構文解析したいコードの文字列
@@ -110,6 +110,6 @@ public class JavaLanguage {
         tree = parser.compilationUnit();
         walker = new ParseTreeWalker();
         java = new JavaEvalListener();
-        walker.walk( java, tree );
+        walker.walk(java, tree);
     }
 }

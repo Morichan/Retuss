@@ -10,6 +10,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -39,7 +42,11 @@ public class Controller {
     private ScrollPane classDiagramScrollPane;
     @FXML
     private Canvas classDiagramCanvas;
+
     private List<Button> buttonsInCD = new ArrayList<>();
+
+    @FXML
+    private TabPane codeTabPane;
 
     private TextInputDialog classNameInputDialog;
 
@@ -49,10 +56,11 @@ public class Controller {
     private GraphicsContext gc = null;
 
     /**
-     * <p> コンストラクタ </p>
+     * <p> JavaFXにおけるデフォルトコンストラクタ </p>
      *
      * <p>
-     * Javaにおける通常のコンストラクタ（ {@code Controller()} メソッド）は使えないため、initializeメソッドをFXML経由で読み込む仕様になっています。
+     * Javaにおける通常のコンストラクタ（ {@code Controller()} メソッド）は使えないため、
+     * {@link RetussWindow} クラス内でのFXMLファイル読込み時に {@link #initialize()} メソッドを呼び出す仕様になっています。
      * </p>
      */
     @FXML
@@ -63,34 +71,66 @@ public class Controller {
             gc = classDiagramCanvas.getGraphicsContext2D();
             classDiagramDrawer.setGraphicsContext(gc);
         } catch (NullPointerException e) {
+            // 間接的にこちらはretussCode.FXMLに関する変数を設定することになる
+            codeTabPane.getTabs().add(createCodeTab("Java"));
         }
     }
 
+    /**
+     * <p> Normalボタン選択時のシグナルハンドラ </p>
+     *
+     * <p> ClassDiagramTabにおけるToolBar内のNormalボタンで参照 </p>
+     */
     @FXML
     private void selectNormalInCD() {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, normalButtonInCD);
     }
 
+    /**
+     * <p> Classボタン選択時のシグナルハンドラ </p>
+     *
+     * <p> ClassDiagramTabにおけるToolBar内のClassボタンで参照 </p>
+     */
     @FXML
     private void selectClassInCD() {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, classButtonInCD);
     }
 
+    /**
+     * <p> Noteボタン選択時のシグナルハンドラ </p>
+     *
+     * <p> ClassDiagramTabにおけるToolBar内のNoteボタンで参照 </p>
+     */
     @FXML
     private void selectNoteInCD() {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, noteButtonInCD);
     }
 
+    /**
+     * <p> Compositionボタン選択時のシグナルハンドラ </p>
+     *
+     * <p> ClassDiagramTabにおけるToolBar内のCompositionボタンで参照 </p>
+     */
     @FXML
     private void selectCompositionInCD() {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, compositionButtonInCD);
     }
 
+    /**
+     * <p> Generalizationボタン選択時のシグナルハンドラ </p>
+     *
+     * <p> ClassDiagramTabにおけるToolBar内のGeneralizationボタンで参照 </p>
+     */
     @FXML
     private void selectGeneralizationInCD() {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, generalizationButtonInCD);
     }
 
+    /**
+     * <p> Canvasクリック時のシグナルハンドラ </p>
+     *
+     * <p> ClassDiagramTabにおけるScrollPane内のCanvas（ {@link #classDiagramCanvas} ）で参照 </p>
+     */
     @FXML
     private void clickedCanvasInCD(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
@@ -100,9 +140,9 @@ public class Controller {
         }
     }
 
-    //--------------------------//
-    // シグナルハンドラここまで //
-    //--------------------------//
+    //
+    // シグナルハンドラここまで
+    //
 
     /**
      * <p> クラス図キャンバス上で（通常）左クリックした際に実行します </p>
@@ -390,5 +430,22 @@ public class Controller {
         });
 
         return contextMenu;
+    }
+
+    private Tab createCodeTab(String tabName) {
+        CodeArea codeArea = new CodeArea();
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+
+        AnchorPane anchor = new AnchorPane(codeArea);
+        AnchorPane.setBottomAnchor(codeArea, 0.0);
+        AnchorPane.setTopAnchor(codeArea, 0.0);
+        AnchorPane.setLeftAnchor(codeArea, 0.0);
+        AnchorPane.setRightAnchor(codeArea, 0.0);
+
+        Tab codeTab = new Tab();
+        codeTab.setContent(anchor);
+        codeTab.setText(tabName);
+
+        return codeTab;
     }
 }

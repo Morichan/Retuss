@@ -1,22 +1,19 @@
-package io.github.morichan.retuss.translator;
+package io.github.morichan.retuss.listener;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import io.github.morichan.retuss.parser.java.JavaLexer;
 import io.github.morichan.retuss.parser.java.JavaParser;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.*;
 
 class JavaEvalListenerTest {
     JavaEvalListener obj;

@@ -1,4 +1,4 @@
-package io.github.morichan.retuss.translator;
+package io.github.morichan.retuss.listener;
 
 import io.github.morichan.retuss.parser.java.JavaParser;
 import io.github.morichan.retuss.parser.java.JavaParserBaseListener;
