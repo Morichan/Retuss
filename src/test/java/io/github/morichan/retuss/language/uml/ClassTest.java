@@ -51,6 +51,44 @@ class ClassTest {
         }
 
         @Nested
+        class 汎化クラス名について {
+
+            @BeforeEach
+            void setup() {
+                obj = new Class();
+            }
+
+            @Test
+            void デフォルトとしてnullを返す() {
+
+                Class actual = obj.getGeneralizationClass();
+
+                assertThat(actual).isNull();
+            }
+
+            @Test
+            void 設定した汎化クラスを返す() {
+                Class expected = new Class("GeneralizationClass");
+
+                obj.setName("SetClassName");
+                obj.setGeneralizationClass(expected);
+                Class actual = obj.getGeneralizationClass();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void nullを設定するとnullを返す() {
+
+                obj.setGeneralizationClass(new Class("VanishingGeneralizationClass"));
+                obj.setGeneralizationClass(null);
+                Class actual = obj.getGeneralizationClass();
+
+                assertThat(actual).isNull();
+            }
+        }
+
+        @Nested
         class 属性について {
 
             @BeforeEach

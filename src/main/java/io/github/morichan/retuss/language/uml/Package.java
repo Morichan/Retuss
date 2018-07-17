@@ -25,6 +25,20 @@ public class Package {
     }
 
     /**
+     * <p> パッケージ名を設定するコンストラクタ </p>
+     *
+     * <p>
+     *     {@link #setName(String)} を利用しています。
+     * </p>
+     *
+     * @param name パッケージ名
+     */
+    public Package(String name) {
+        setName(name);
+        classes = new ArrayList<>();
+    }
+
+    /**
      * <p> パッケージ名を設定します </p>
      *
      * <p>
@@ -40,6 +54,8 @@ public class Package {
 
     /**
      * <p> パッケージ名を取得します </p>
+     *
+     * @return パッケージ名
      */
     public String getName() {
         return name;

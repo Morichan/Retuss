@@ -12,6 +12,7 @@ import java.util.List;
 public class Class {
 
     private String name;
+    private Class generalizationClass;
     private List<Attribute> attributes;
     private List<Operation> operations;
 
@@ -60,6 +61,32 @@ public class Class {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * <p> 汎化クラスを設定します </p>
+     *
+     * <p>
+     *     {@code null} は汎化クラス無しとして定義します。
+     * </p>
+     *
+     * @param generalizationClass 汎化クラス <br> {@code null} 可
+     */
+    public void setGeneralizationClass(Class generalizationClass) {
+        this.generalizationClass = generalizationClass;
+    }
+
+    /**
+     * <p> 汎化クラスを取得します </p>
+     *
+     * <p>
+     *     汎化クラスが存在しない場合は {@code null} を返します。
+     * </p>
+     *
+     * @return 汎化クラス <br> {@code null} の可能性あり
+     */
+    public Class getGeneralizationClass() {
+        return generalizationClass;
     }
 
     /**
