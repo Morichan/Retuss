@@ -3,8 +3,10 @@ version '0.0.1-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'spring-boot'
 
-mainClassName = 'io.github.morichan.window.window.RetussWindow'
+// SpringBoot pluginを利用することで邪魔になったため除外
+// mainClassName = 'io.github.morichan.window.window.RetussWindow'
 
 sourceCompatibility = 9
 tasks.withType(AbstractCompile)*.options*.encoding =
@@ -18,12 +20,11 @@ buildscript {
     }
     dependencies {
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.+'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.+'
     }
 }
 
 
-
-jar.manifest.attributes 'Main-Class': 'io.github.morichan.retuss.window.RetussWindow'
 
 repositories {
     mavenCentral()
@@ -75,6 +76,12 @@ task sourcesJar(type: Jar) {
 }
 artifacts {
     archives javadocJar, sourcesJar
+}
+
+jar {
+    // SpringBoot pluginを利用することで邪魔になったため除外
+    // manifest.attributes 'Main-Class': 'io.github.morichan.retuss.window.RetussWindow'
+    jar.into('') from configurations.runtime
 }
 
 
