@@ -29,7 +29,7 @@ class MethodTest {
 
             @Test
             void デフォルトの型と名前を返す() {
-                String expected = "void method() {}";
+                String expected = "public void method() {}";
 
                 String actual = obj.toString();
 
@@ -38,7 +38,7 @@ class MethodTest {
 
             @Test
             void 設定した型と名前を返す() {
-                String expected = "double method() {}";
+                String expected = "public double method() {}";
 
                 obj.setType(new Type("double"));
                 String actual = obj.toString();
@@ -57,7 +57,7 @@ class MethodTest {
 
             @Test
             void 引数が1つのメソッドを返す() {
-                String expected = "void method(int argument) {}";
+                String expected = "public void method(int argument) {}";
 
                 obj.addArgument(new Argument(new Type("int"), "argument"));
                 String actual = obj.toString();
@@ -67,7 +67,7 @@ class MethodTest {
 
             @Test
             void 引数が3つのメソッドを返す() {
-                String expected = "int calculate(double x, double y, float pi) {}";
+                String expected = "public int calculate(double x, double y, float pi) {}";
 
                 obj.setType(new Type("int"));
                 obj.setName("calculate");
@@ -75,6 +75,37 @@ class MethodTest {
                         new Argument(new Type("double"), "x"),
                         new Argument(new Type("double"), "y"),
                         new Argument(new Type("float"), "pi")));
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
+
+        @Nested
+        class アクセス修飾子を変更する場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new Method();
+            }
+
+            @Test
+            void プロテクテッドなメソッドを返す() {
+                String expected = "protected void method(int argument) {}";
+
+                obj.setAccessModifier(AccessModifier.Protected);
+                obj.addArgument(new Argument(new Type("int"), "argument"));
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void パッケージなメソッドを返す() {
+                String expected = "void method(int argument) {}";
+
+                obj.setAccessModifier(AccessModifier.choose(""));
+                obj.addArgument(new Argument(new Type("int"), "argument"));
                 String actual = obj.toString();
 
                 assertThat(actual).isEqualTo(expected);
@@ -198,6 +229,34 @@ class MethodTest {
                 assertThat(actual).isEmpty();
             }
         }
+
+        @Nested
+        class アクセス修飾子を持つ場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new Method();
+            }
+
+            @Test
+            void デフォルトのアクセス修飾子を返す() {
+                AccessModifier expected = AccessModifier.Public;
+
+                AccessModifier actual = obj.getAccessModifier();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 設定したアクセス修飾子を返す() {
+                AccessModifier expected = AccessModifier.Private;
+
+                obj.setAccessModifier(AccessModifier.Private);
+                AccessModifier actual = obj.getAccessModifier();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
     }
 
     @Nested
@@ -250,6 +309,20 @@ class MethodTest {
                 List<Argument> actual = obj.getArguments();
 
                 assertThat(actual).doesNotContainNull();
+            }
+        }
+
+        @Nested
+        class アクセス修飾子の場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new Method();
+            }
+
+            @Test
+            void nullを入力すると例外を投げる() {
+                assertThatThrownBy(() -> obj.setAccessModifier(null)).isInstanceOf(IllegalArgumentException.class);
             }
         }
     }

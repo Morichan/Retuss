@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Method {
 
+    private AccessModifier accessModifier;
     private Type type;
     private String name;
     private List<Argument> arguments;
@@ -14,10 +15,11 @@ public class Method {
      * <p> デフォルトコンストラクタ </p>
      *
      * <p>
-     *     型は {@code void} 、メソッド名は {@code method} 、引数なしで設定します。
+     *     アクセス修飾子は {@link AccessModifier#Public} 、型は {@code void} 、メソッド名は {@code method} 、引数なしで設定します。
      * </p>
      */
     public Method() {
+        accessModifier = AccessModifier.Public;
         type = new Type("void");
         name = "method";
         arguments = new ArrayList<>();
@@ -30,6 +32,7 @@ public class Method {
      * @param name メソッド名 <br> {@link #setName(String)} を利用します
      */
     public Method(Type type, String name) {
+        accessModifier = AccessModifier.Public;
         setType(type);
         setName(name);
         arguments = new ArrayList<>();
@@ -43,10 +46,34 @@ public class Method {
      * @param arguments 複数の引数 <br> {@link #setArguments(List)} を利用します
      */
     public Method(Type type, String name, Argument... arguments) {
+        accessModifier = AccessModifier.Public;
         setType(type);
         setName(name);
         this.arguments = new ArrayList<>();
         setArguments(new ArrayList<>(Arrays.asList(arguments)));
+    }
+
+    /**
+     * <p> アクセス修飾子を設定します </p>
+     *
+     * <p>
+     *     {@code null} を設定しようとすると {@link IllegalArgumentException} を投げます。
+     * </p>
+     *
+     * @param accessModifier アクセス修飾子 <br> {@code null} 不可
+     */
+    public void setAccessModifier(AccessModifier accessModifier) {
+        if (accessModifier == null) throw new IllegalArgumentException();
+        this.accessModifier = accessModifier;
+    }
+
+    /**
+     * <p> アクセス修飾子を取得します </p>
+     *
+     * @return アクセス修飾子 <br> {@code null} の可能性なし
+     */
+    public AccessModifier getAccessModifier() {
+        return accessModifier;
     }
 
     /**
@@ -147,6 +174,11 @@ public class Method {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+
+        if (!accessModifier.is(AccessModifier.Package.toString())) {
+            sb.append(accessModifier);
+            sb.append(" ");
+        }
 
         sb.append(type);
         sb.append(" ");

@@ -86,7 +86,7 @@ class ClassTest {
 
             @Test
             void フィールドが1つのコードを返す() {
-                String expected = "class ClassName {\n    String text = \"\";\n}\n";
+                String expected = "class ClassName {\n    private String text = \"\";\n}\n";
 
                 obj.addField(new Field(new Type("String"), "text", "\"\""));
                 String actual = obj.toString();
@@ -96,7 +96,7 @@ class ClassTest {
 
             @Test
             void フィールドが3つのコードを返す() {
-                String expected = "class SubClass extends SuperClass {\n    int number;\n    double pi = 3.1415926535;\n    String text;\n}\n";
+                String expected = "class SubClass extends SuperClass {\n    private int number;\n    private double pi = 3.1415926535;\n    private String text;\n}\n";
 
                 obj.setName("SubClass");
                 obj.setExtendsClass(new Class("SuperClass"));
@@ -120,7 +120,7 @@ class ClassTest {
 
             @Test
             void メソッドが1つのコードを返す() {
-                String expected = "class ClassName {\n    void method() {}\n}\n";
+                String expected = "class ClassName {\n    public void method() {}\n}\n";
 
                 obj.addMethod(new Method());
                 String actual = obj.toString();
@@ -130,7 +130,7 @@ class ClassTest {
 
             @Test
             void フィールドが3つのコードを返す() {
-                String expected = "class ClassName {\n    double calculate(double x, double y) {}\n    void print() {}\n    String toString() {}\n}\n";
+                String expected = "class ClassName {\n    public double calculate(double x, double y) {}\n    public void print() {}\n    public String toString() {}\n}\n";
 
                 obj.setName("ClassName");
                 obj.setMethod(Arrays.asList(
@@ -155,7 +155,7 @@ class ClassTest {
 
             @Test
             void フィールドとメソッドの間に空行を含むコードを返す() {
-                String expected = "class ClassName {\n    int x;\n    int y;\n\n    void method() {}\n    void print() {}\n}\n";
+                String expected = "class ClassName {\n    private int x;\n    private int y;\n\n    public void method() {}\n    public void print() {}\n}\n";
 
                 obj.setFields(Arrays.asList(new Field(new Type("int"), "x"), new Field(new Type("int"), "y")));
                 obj.setMethod(Arrays.asList(new Method(new Type("void"), "method"), new Method(new Type("void"), "print")));

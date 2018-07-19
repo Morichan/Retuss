@@ -5,6 +5,7 @@ package io.github.morichan.retuss.language.java;
  */
 public class Field {
 
+    private AccessModifier accessModifier;
     private Type type;
     private String name;
     private Value value;
@@ -13,10 +14,11 @@ public class Field {
      * <p> デフォルトコンストラクタ </p>
      *
      * <p>
-     *     型は {@code int} 、フィールド名は {@code field} として設定します。
+     *     アクセス修飾子は {@link AccessModifier#Private} 、 型は {@code int} 、フィールド名は {@code field} として設定します。
      * </p>
      */
     public Field() {
+        accessModifier = AccessModifier.Private;
         type = new Type("int");
         name = "field";
     }
@@ -28,6 +30,7 @@ public class Field {
      * @param name フィールド名 <br> {@link #setName(String)} を利用
      */
     public Field(Type type, String name) {
+        accessModifier = AccessModifier.Private;
         setType(type);
         setName(name);
     }
@@ -40,9 +43,33 @@ public class Field {
      * @param defaultValue 既定値 <br> {@link #setValue(String)} を利用
      */
     public Field(Type type, String name, String defaultValue) {
+        accessModifier = AccessModifier.Private;
         setType(type);
         setName(name);
         setValue(defaultValue);
+    }
+
+    /**
+     * <p> アクセス修飾子を設定します </p>
+     *
+     * <p>
+     *     {@code null} を設定しようとすると {@link IllegalArgumentException} を投げます。
+     * </p>
+     *
+     * @param accessModifier アクセス修飾子 <br> {@code null} 不可
+     */
+    public void setAccessModifier(AccessModifier accessModifier) {
+        if (accessModifier == null) throw new IllegalArgumentException();
+        this.accessModifier = accessModifier;
+    }
+
+    /**
+     * <p> アクセス修飾子を取得します </p>
+     *
+     * @return アクセス修飾子 <br> {@code null} の可能性なし
+     */
+    public AccessModifier getAccessModifier() {
+        return accessModifier;
     }
 
     /**
@@ -125,6 +152,11 @@ public class Field {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+
+        if (!accessModifier.is(AccessModifier.Package.toString())) {
+            sb.append(accessModifier);
+            sb.append(" ");
+        }
 
         sb.append(type);
         sb.append(" ");
