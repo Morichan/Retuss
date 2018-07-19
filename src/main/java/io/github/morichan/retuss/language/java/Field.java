@@ -7,7 +7,7 @@ public class Field {
 
     private Type type;
     private String name;
-    private String value;
+    private Value value;
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -102,7 +102,11 @@ public class Field {
      * @param value 既定値 <br> {@code null} 可
      */
     public void setValue(String value) {
-        this.value = value;
+        if (value == null) {
+            this.value = null;
+        } else {
+            this.value = new Value(value);
+        }
     }
 
     /**
@@ -114,7 +118,7 @@ public class Field {
      *
      * @return 既定値 <br> {@code null} の可能性あり
      */
-    public String getValue() {
+    public Value getValue() {
         return value;
     }
 

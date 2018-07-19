@@ -162,7 +162,7 @@ class FieldTest {
             void nullを設定した場合はnullを返す() {
 
                 obj.setValue(null);
-                String actual = obj.getValue();
+                Value actual = obj.getValue();
 
                 assertThat(actual).isNull();
             }
