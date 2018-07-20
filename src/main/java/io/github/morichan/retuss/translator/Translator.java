@@ -1,6 +1,6 @@
 package io.github.morichan.retuss.translator;
 
-import io.github.morichan.retuss.language.java.*;
+import io.github.morichan.retuss.language.java.Java;
 import io.github.morichan.retuss.language.uml.Package;
 
 /**
@@ -9,12 +9,8 @@ import io.github.morichan.retuss.language.uml.Package;
 public class Translator {
 
     private Package classDiagramPackage = new Package();
-    private Java java = new Java();
-    private JavaTranslator javaTranslator = new JavaTranslator();
 
-    public void setPackage(Package classPackage) {
-        this.classDiagramPackage = classPackage;
-    }
+    private Java java = new Java();
 
     public Package getPackage() {
         return classDiagramPackage;
@@ -26,8 +22,23 @@ public class Translator {
 
     /**
      * <p> クラス図を基に各言語へ翻訳します </p>
+     *
+     * @param classDiagramPackage クラス図のパッケージ
      */
-    public void translateFromClassDiagram() {
-        java = javaTranslator.translate(classDiagramPackage.getClasses());
+    public void translate(Package classDiagramPackage) {
+        JavaTranslator javaTranslator = new JavaTranslator();
+
+        java = javaTranslator.translate(classDiagramPackage);
+    }
+
+    /**
+     * <p> Javaを基にクラス図へ翻訳します </p>
+     *
+     * @param java Javaソースコード
+     */
+    public void translate(Java java) {
+        UMLTranslator umlTranslator = new UMLTranslator();
+
+        classDiagramPackage = umlTranslator.translate(java);
     }
 }

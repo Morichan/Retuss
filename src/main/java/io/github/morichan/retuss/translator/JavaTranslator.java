@@ -5,7 +5,8 @@ import io.github.morichan.fescue.feature.Operation;
 import io.github.morichan.fescue.feature.parameter.Parameter;
 import io.github.morichan.fescue.feature.visibility.Visibility;
 import io.github.morichan.retuss.language.java.*;
-import io.github.morichan.retuss.language.uml.Class;
+import io.github.morichan.retuss.language.java.Class;
+import io.github.morichan.retuss.language.uml.Package;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,25 +19,25 @@ public class JavaTranslator {
     private Java java;
 
     /**
-     * <p> クラス図のクラスリストからJavaへ翻訳します </p>
+     * <p> クラス図のパッケージからJavaに翻訳します </p>
      *
-     * @param classClasses クラス図のクラスリスト
+     * @param classPackage クラス図のクラスリスト
      * @return Javaソースコード
      */
-    public Java translate(List<Class> classClasses) {
+    public Java translate(Package classPackage) {
         java = new Java();
 
-        for (Class cc : classClasses) {
+        for (io.github.morichan.retuss.language.uml.Class cc : classPackage.getClasses()) {
             java.addClass(createJavaClass(cc));
         }
 
-        searchGeneralizationClass(classClasses);
+        searchGeneralizationClass(classPackage.getClasses());
 
         return java;
     }
 
-    private io.github.morichan.retuss.language.java.Class createJavaClass(Class classClass) {
-        io.github.morichan.retuss.language.java.Class javaClass = new io.github.morichan.retuss.language.java.Class(classClass.getName());
+    private Class createJavaClass(io.github.morichan.retuss.language.uml.Class classClass) {
+        Class javaClass = new Class(classClass.getName());
 
         for (Attribute attribute : classClass.getAttributes()) {
             Field field = new Field(new Type(attribute.getType().toString()), attribute.getName().toString());
@@ -89,7 +90,7 @@ public class JavaTranslator {
      * <p> 汎化関係にあたるクラスを {@link #java} から探して {@link #java} の各クラスに格納します </p>
      *
      * <p>
-     *     {@link #translate(List)} 内の最後で用いています。
+     *     {@link #translate(Package)} 内の最後で用いています。
      * </p>
      *
      * <p>
@@ -98,7 +99,7 @@ public class JavaTranslator {
      * </p>
      *
      * <p>
-     *     このメソッドを利用する前には {@link #translate(List)} 内で、
+     *     このメソッドを利用する前には {@link #translate(Package)} 内で、
      *     {@link #java} にそれぞれクラスA、クラスB、クラスCが継承関係なしの状態で格納されています。
      * </p>
      *
@@ -178,7 +179,7 @@ public class JavaTranslator {
      *
      * @param classClasses クラス図のクラスのリスト
      */
-    private void searchGeneralizationClass(List<Class> classClasses) {
+    private void searchGeneralizationClass(List<io.github.morichan.retuss.language.uml.Class> classClasses) {
         for (int i = 0; i < classClasses.size(); i++) {
             if (classClasses.get(i).getGeneralizationClass() != null) {
                 int finalI = i;
