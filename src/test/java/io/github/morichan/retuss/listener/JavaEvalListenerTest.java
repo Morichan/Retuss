@@ -145,4 +145,42 @@ class JavaEvalListenerTest {
             assertThat(typeDeclarations.size()).isEqualTo(35);
         }
     }
+
+    @Nested
+    class Javaインスタンスを生成する場合 {
+
+        @Nested
+        class クラスが1つの際に {
+
+            @Test
+            void クラス名を返す() {
+                init("class JavaClassName {}");
+                String expected = "JavaClassName";
+
+                String actual = obj.getJava().getClasses().get(0).getName();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 継承クラス名を返す() {
+                init("class JavaClassName extends SuperJavaClassName {}");
+                String expected = "SuperJavaClassName";
+
+                String actual = obj.getJava().getClasses().get(0).getExtendsClassName();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
+    }
+
+    private void init(String javaCode) {
+        lexer = new JavaLexer(CharStreams.fromString(javaCode));
+        tokens = new CommonTokenStream(lexer);
+        parser = new JavaParser(tokens);
+        tree = parser.compilationUnit();
+        walker = new ParseTreeWalker();
+        obj = new JavaEvalListener();
+        walker.walk(obj, tree);
+    }
 }
