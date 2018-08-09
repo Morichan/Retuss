@@ -16,7 +16,10 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import mockit.*;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.api.FxRobot;
 import org.testfx.api.FxRobotException;
+import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.framework.junit5.Start;
 
@@ -25,6 +28,7 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(ApplicationExtension.class)
 class ControllerTest {
 
     @AfterAll
@@ -1326,13 +1330,13 @@ class ControllerTest {
                 }
 
                 @Test
-                void キャンバスに描かれているClassNameクラスをクリックした後にクラスを描画していない箇所をクリックするとClassNameクラスの縁の色を元に戻す() {
-                    clickOn("#classButtonInCD");
+                void キャンバスに描かれているClassNameクラスをクリックした後にクラスを描画していない箇所をクリックするとClassNameクラスの縁の色を元に戻す(FxRobot robot) {
+                    robot.clickOn("#classButtonInCD");
                     drawClasses(firstClickedClassDiagramCanvas, "ClassName");
-                    clickOn("#generalizationButtonInCD");
+                    robot.clickOn("#generalizationButtonInCD");
 
-                    clickOn(firstClickedClassDiagramCanvas);
-                    clickOn(secondClickedClassDiagramCanvas);
+                    robot.clickOn(firstClickedClassDiagramCanvas);
+                    robot.clickOn(secondClickedClassDiagramCanvas);
                     GraphicsContext gc = getGraphicsContext();
                     Paint fillColor = gc.getFill();
                     Paint strokeColor = gc.getStroke();
