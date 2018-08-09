@@ -95,6 +95,11 @@ junitPlatformTest {
 
 test {
     systemProperties 'property': 'value'
+    doFirst {
+        allJvmArgs = allJvmArgs.collect { String arg -> // This was the only way to override java.ext.dirs
+            arg.startsWith("-Djava.ext.dirs") ? "${arg}${java.io.File.pathSeparator}${rootProject.file('lib/ext')}" : arg
+        }
+    }
 }
 
 junitPlatform.enableStandardTestTask true
