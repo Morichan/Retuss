@@ -1,3 +1,5 @@
+import javafx.application.ConditionalFeature
+
 group 'io.github.morichan'
 version '0.0.1-SNAPSHOT'
 
@@ -100,6 +102,12 @@ apply plugin: 'jacoco'
 jacoco {
     toolVersion = '0.+'
     applyTo junitPlatformTest
+}
+
+if (ConditionalFeature.CONTROLS) {
+    println("OK")
+} else {
+    println("NG")
 }
 
 junitPlatformTest {
