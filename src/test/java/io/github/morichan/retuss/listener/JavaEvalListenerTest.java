@@ -24,8 +24,7 @@ class JavaEvalListenerTest {
     ParseTree tree;
     ParseTreeWalker walker;
 
-    String code = "package window; class TestCode { int test = 0; }";
-    String dir = "src\\main\\resources\\";
+    String dir = "./src/main/resources/";
 
     @Nested
     class 構文解析機自体に関して {

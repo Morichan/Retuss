@@ -18,13 +18,13 @@ import mockit.*;
 import org.junit.jupiter.api.*;
 import org.testfx.api.FxRobotException;
 import org.testfx.framework.junit5.ApplicationTest;
+import org.testfx.framework.junit5.Start;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
 class ControllerTest {
 
     @AfterAll
@@ -52,7 +52,7 @@ class ControllerTest {
         String deleteMenu;
         String checkMenu;
 
-        @Override
+        @Start
         public void start(Stage stage) throws IOException {
             System.out.println("Open Window!");
             String fxmlFileName = "/retussMain.fxml";
