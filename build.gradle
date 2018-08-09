@@ -104,18 +104,30 @@ jacoco {
     applyTo junitPlatformTest
 }
 
-if (ConditionalFeature.CONTROLS) {
-    println("OK")
-} else {
-    println("NG")
-}
-
 junitPlatformTest {
     jacoco {
         destinationFile = file("${buildDir}/jacoco/test.exec")
     }
 }
 
+if (ConditionalFeature.CONTROLS) println(ConditionalFeature.CONTROLS)
+if (ConditionalFeature.EFFECT) println(ConditionalFeature.EFFECT)
+if (ConditionalFeature.FXML) println(ConditionalFeature.FXML)
+if (ConditionalFeature.GRAPHICS) println(ConditionalFeature.GRAPHICS)
+if (ConditionalFeature.INPUT_METHOD) println(ConditionalFeature.INPUT_METHOD)
+if (ConditionalFeature.INPUT_MULTITOUCH) println(ConditionalFeature.INPUT_MULTITOUCH)
+if (ConditionalFeature.INPUT_POINTER) println(ConditionalFeature.INPUT_POINTER)
+if (ConditionalFeature.INPUT_TOUCH) println(ConditionalFeature.INPUT_TOUCH)
+if (ConditionalFeature.MEDIA) println(ConditionalFeature.MEDIA)
+if (ConditionalFeature.SCENE3D) println(ConditionalFeature.SCENE3D)
+if (ConditionalFeature.SHAPE_CLIP) println(ConditionalFeature.SHAPE_CLIP)
+if (ConditionalFeature.SWING) println(ConditionalFeature.SWING)
+if (ConditionalFeature.SWT) println(ConditionalFeature.SWT)
+if (ConditionalFeature.TRANSPARENT_WINDOW) println(ConditionalFeature.TRANSPARENT_WINDOW)
+if (ConditionalFeature.TWO_LEVEL_FOCUS) println(ConditionalFeature.TWO_LEVEL_FOCUS)
+if (ConditionalFeature.UNIFIED_WINDOW) println(ConditionalFeature.UNIFIED_WINDOW)
+if (ConditionalFeature.VIRTUAL_KEYBOARD) println(ConditionalFeature.VIRTUAL_KEYBOARD)
+if (ConditionalFeature.WEB) println(ConditionalFeature.WEB)
 
 
 jacocoTestReport {
