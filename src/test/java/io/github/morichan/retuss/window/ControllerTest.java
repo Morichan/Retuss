@@ -53,11 +53,13 @@ class ControllerTest {
 
         @Override
         public void start(Stage stage) throws IOException {
+            System.out.println("Open Window!");
             String fxmlFileName = "/retussMain.fxml";
             Scene scene = new Scene(FXMLLoader.load(getClass().getResource(fxmlFileName)));
             stage.setScene(scene);
             stage.show();
             this.stage = stage;
+            System.out.println("Opened Window!");
         }
 
         @BeforeEach

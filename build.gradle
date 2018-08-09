@@ -6,7 +6,7 @@ apply plugin: 'application'
 apply plugin: 'spring-boot'
 
 // SpringBoot pluginを利用することで邪魔になったため除外
-// mainClassName = 'io.github.morichan.window.window.RetussWindow'
+// mainClassName = 'io.github.morichan.retuss.window.RetussWindow'
 
 sourceCompatibility = 9
 tasks.withType(AbstractCompile)*.options*.encoding =
