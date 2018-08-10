@@ -1,8 +1,5 @@
-package io.github.morichan.retuss.window;
+package io.github.morichan.retuss.window.diagram;
 
-import io.github.morichan.retuss.window.diagram.ContentType;
-import io.github.morichan.retuss.window.diagram.EdgeDiagram;
-import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
 import javafx.geometry.Point2D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

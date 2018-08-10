@@ -1,6 +1,5 @@
-package io.github.morichan.retuss.window;
+package io.github.morichan.retuss.window.diagram;
 
-import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

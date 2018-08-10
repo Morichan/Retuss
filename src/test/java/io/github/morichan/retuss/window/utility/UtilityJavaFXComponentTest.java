@@ -1,7 +1,6 @@
-package io.github.morichan.retuss.window;
+package io.github.morichan.retuss.window.utility;
 
 import io.github.morichan.retuss.window.diagram.ContentType;
-import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
 import javafx.geometry.Point2D;
 import javafx.scene.control.*;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,6 +1,5 @@
-package io.github.morichan.retuss.window;
+package io.github.morichan.retuss.window.diagram;
 
-import io.github.morichan.retuss.window.diagram.AttributeGraphic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
