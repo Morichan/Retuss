@@ -1,0 +1,33 @@
+language: java
+
+jdk:
+  - oraclejdk9
+
+sudo: required
+
+# キャッシュを残してTravisCI高速化（体感はあまりない）
+cache: bundler
+bundler_args: --without production --deployment
+
+
+
+# Gradleを最新版へ変更（古い場合はJava9以降に未対応）
+before_install:
+  - travis_retry curl -s api.sdkman.io | bash
+  - travis_retry source /home/travis/.sdkman/bin/sdkman-init.sh # ターミナル上での表示結果を参考
+  - travis_retry sdk list gradle # gradleの利用可能なバージョンの一覧を表示
+  - travis_retry sdk install gradle 4.4.1 # gradle version 4.2.1 以降を使用
+  - travis_retry sdk default gradle 4.4.1
+
+  - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start # 仮想デスクトップXvfbを実行
+  # - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1200x32"
+
+
+
+# Jacocoを含むテストとビルドの実行およびcodecovへJacocoの実行結果送信
+after_success:
+  - pwd
+  - gradle clean jacocoTestReport build
+  - pwd;find . | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g' # 代替treeコマンド (https://qiita.com/yone098@github/items/bba8a42de6b06e40983b)
+  - bash <(curl -s https://codecov.io/bash) # Travisでのディレクトリはローカルと異なる
+  # - gradle coveralls
