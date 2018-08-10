@@ -379,21 +379,21 @@ class EdgeDiagramTest {
 
         @Test
         public void 内容を返す() {
-            RelationshipAttribution expected = new RelationshipAttribution("- composition");
+            RelationshipAttribute expected = new RelationshipAttribute("- composition");
             firstClassPoint = new Point2D(100.0, 200.0);
             secondClassPoint = new Point2D(300.0, 400.0);
 
             obj.createEdgeText(ContentType.Composition, "- composition");
             obj.setRelationPoint(ContentType.Composition, 0, secondClassPoint);
             obj.setRelationSourcePoint(ContentType.Composition, 0, firstClassPoint);
-            RelationshipAttribution actual = obj.searchCurrentRelation(firstClassPoint);
+            RelationshipAttribute actual = obj.searchCurrentRelation(firstClassPoint);
 
             assertThat(actual.getName()).isEqualTo(expected.getName());
         }
 
         @Test
         public void 内容名を変更する() {
-            RelationshipAttribution expected = new RelationshipAttribution("+ changedComposition");
+            RelationshipAttribute expected = new RelationshipAttribute("+ changedComposition");
             firstClassPoint = new Point2D(100.0, 200.0);
             secondClassPoint = new Point2D(300.0, 400.0);
             Point2D betweenFirstAndSecondClassPoint = new Point2D(200.0, 300.0);
@@ -402,7 +402,7 @@ class EdgeDiagramTest {
             obj.setRelationPoint(ContentType.Composition, 0, secondClassPoint);
             obj.setRelationSourcePoint(ContentType.Composition, 0, firstClassPoint);
             obj.changeCurrentRelation(betweenFirstAndSecondClassPoint, "+ changedComposition");
-            RelationshipAttribution actual = obj.searchCurrentRelation(betweenFirstAndSecondClassPoint);
+            RelationshipAttribute actual = obj.searchCurrentRelation(betweenFirstAndSecondClassPoint);
 
             assertThat(actual.getName()).isEqualTo(expected.getName());
         }
@@ -417,7 +417,7 @@ class EdgeDiagramTest {
             obj.setRelationPoint(ContentType.Composition, 0, secondClassPoint);
             obj.setRelationSourcePoint(ContentType.Composition, 0, firstClassPoint);
             obj.deleteCurrentRelation(betweenFirstAndSecondClassPoint);
-            RelationshipAttribution actual = obj.searchCurrentRelation(betweenFirstAndSecondClassPoint);
+            RelationshipAttribute actual = obj.searchCurrentRelation(betweenFirstAndSecondClassPoint);
 
             assertThat(actual).isNull();
         }

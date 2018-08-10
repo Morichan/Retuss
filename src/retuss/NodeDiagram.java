@@ -85,7 +85,7 @@ abstract public class NodeDiagram {
     /**
      * ノードの任意の種類の任意の内容に真偽値を設定する。
      * 正確には、ノードの任意の種類 {@code type} における番号 {@code contentNumber} の内容の種類 {@code subtype} に真偽値 {@code isChecked} を設定する。
-     * 例えば、クラス図の属性の表示しているか否かを設定する場合は、 {@code type} に {@link ContentType#Attribution} 、 {@code subtype} に {@link ContentType#Indication} を引数に入れる。
+     * 例えば、クラス図の属性の表示しているか否かを設定する場合は、 {@code type} に {@link ContentType#Attribute} 、 {@code subtype} に {@link ContentType#Indication} を引数に入れる。
      *
      * @param type ノードの任意の種類
      * @param subtype 内容の種類
@@ -96,7 +96,7 @@ abstract public class NodeDiagram {
 
     /**
      * ノードの任意の種類の任意の内容の真偽値のリストを取得する。
-     * 例えば、クラス図の属性の表示しているか否かのリストを取得する場合は、 {@code type} に {@link ContentType#Attribution} 、 {@code subtype} に {@link ContentType#Indication} を引数に入れる。
+     * 例えば、クラス図の属性の表示しているか否かのリストを取得する場合は、 {@code type} に {@link ContentType#Attribute} 、 {@code subtype} に {@link ContentType#Indication} を引数に入れる。
      *
      * @param type ノードの任意の種類
      * @param subtype 内容の種類

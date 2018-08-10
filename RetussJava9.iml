@@ -7,6 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -20,5 +21,6 @@
     <orderEntry type="library" name="testfx-junit5-4.0.8-alpha" level="project" />
     <orderEntry type="library" name="testfx-core-4.0.8-alpha" level="project" />
     <orderEntry type="library" name="testfx-internal-java9-4.0.8-alpha" level="project" />
+    <orderEntry type="library" name="antlr-4.7.1-complete" level="project" />
   </component>
 </module>

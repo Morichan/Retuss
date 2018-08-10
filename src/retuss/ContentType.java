@@ -12,7 +12,7 @@ public enum ContentType {
     Title,
     Class,
     Note,
-    Attribution,
+    Attribute,
     Operation,
     Indication,
     Visibility,
@@ -21,5 +21,5 @@ public enum ContentType {
     Derived,
     Composition,
     Generalization,
-    Undefined;
+    Undefined
 }

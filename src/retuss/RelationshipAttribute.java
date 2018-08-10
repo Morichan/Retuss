@@ -2,13 +2,13 @@ package retuss;
 
 import javafx.geometry.Point2D;
 
-public class RelationshipAttribution extends Attribution {
+public class RelationshipAttribute extends Attribute {
     private int relationId;
     private int relationSourceId;
     private Point2D relationPoint;
     private Point2D relationSourcePoint;
 
-    RelationshipAttribution() {
+    RelationshipAttribute() {
         name = "";
         visibility = "";
         type = ContentType.Undefined;
@@ -17,7 +17,7 @@ public class RelationshipAttribution extends Attribution {
         relationSourcePoint = new Point2D( 0.0, 0.0 );
     }
 
-    RelationshipAttribution( String name ) {
+    RelationshipAttribute(String name ) {
         this.name = name;
         isIndicate = true;
         relationPoint = new Point2D( 0.0, 0.0 );

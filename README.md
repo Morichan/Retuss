@@ -9,12 +9,13 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 ## 開発環境
 
 * Windows 10 Pro (64 bit) 1703
-* IntelliJ IDEA 2017.3 (Community Edition)
+* IntelliJ IDEA 2017.3.2 (Community Edition)
 * Java9
 * JUnit5 (5.0.1)
 
 ## 依存ライブラリ
 
+* antlr-4.7.1-complete ([ANTLR](http://www.antlr.org/))
 * assertj-core-3.8.0 ([AssertJ](http://joel-costigliola.github.io/assertj/index.html))
 * guava-21.0 ([Guava](https://github.com/google/guava))
 * hamcrest-core-1.3 ([Hamcrest](http://hamcrest.org/))
@@ -28,6 +29,7 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 
 ### 依存関係
 
+* antlr
 * assertj
 * jmockit
 * junit-jupiter

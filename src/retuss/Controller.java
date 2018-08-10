@@ -142,11 +142,11 @@ public class Controller {
     private String showChangeClassNameInputDialog( String className ) {
         return showClassDiagramInputDialog( "クラス名の変更", "変更後のクラス名を入力してください。", className );
     }
-    private String showAddClassAttributionInputDialog() {
+    private String showAddClassAttributeInputDialog() {
         return showClassDiagramInputDialog( "属性の追加", "追加する属性を入力してください。", "" );
     }
-    private String showChangeClassAttributionInputDialog( String attribution ) {
-        return showClassDiagramInputDialog( "属性の変更", "変更後の属性を入力してください。", attribution );
+    private String showChangeClassAttributeInputDialog(String attribute ) {
+        return showClassDiagramInputDialog( "属性の変更", "変更後の属性を入力してください。", attribute );
     }
     private String showAddClassOperationInputDialog() {
         return showClassDiagramInputDialog( "操作の追加", "追加する操作を入力してください。", "" );
@@ -202,19 +202,19 @@ public class Controller {
         if( currentType == ContentType.Class ) {
             NodeDiagram nodeDiagram = classDiagramDrawer.findNodeDiagram( mouseX, mouseY );
             ContextMenu contextMenu = util.getClassContextMenuInCD( nodeDiagram.getNodeText(), nodeDiagram.getNodeType(),
-                    classDiagramDrawer.getDrawnNodeTextList( classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribution ),
+                    classDiagramDrawer.getDrawnNodeTextList( classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute),
                     classDiagramDrawer.getDrawnNodeTextList( classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation ),
-                    classDiagramDrawer.getDrawnNodeContentsBooleanList( classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribution, ContentType.Indication ),
+                    classDiagramDrawer.getDrawnNodeContentsBooleanList( classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, ContentType.Indication ),
                     classDiagramDrawer.getDrawnNodeContentsBooleanList( classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, ContentType.Indication ) );
 
             classDiagramScrollPane.setContextMenu( formatContextMenuInCD( contextMenu, nodeDiagram.getNodeType(), mouseX, mouseY ) );
         } else if( currentType == ContentType.Composition ) {
-            RelationshipAttribution relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
+            RelationshipAttribute relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
             ContextMenu contextMenu = util.getClassContextMenuInCD( relation.getName(), relation.getType() );
             classDiagramScrollPane.setContextMenu( formatContextMenuInCD( contextMenu, relation.getType(), mouseX, mouseY ) );
 
         } else if( currentType == ContentType.Generalization ) {
-            RelationshipAttribution relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
+            RelationshipAttribute relation = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
             ContextMenu contextMenu = util.getClassContextMenuInCD( "", relation.getType() );
             classDiagramScrollPane.setContextMenu( formatContextMenuInCD( contextMenu, relation.getType(), mouseX, mouseY ) );
         }
@@ -262,8 +262,8 @@ public class Controller {
         });
         // クラスの属性の追加
         ((Menu) contextMenu.getItems().get(3)).getItems().get(0).setOnAction(event -> {
-            String addAttribution = showAddClassAttributionInputDialog();
-            classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribution, addAttribution);
+            String addAttribute = showAddClassAttributeInputDialog();
+            classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, addAttribute);
             classDiagramDrawer.allReDrawCanvas();
         });
         // クラスの操作の追加
@@ -272,30 +272,30 @@ public class Controller {
             classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, addOperation);
             classDiagramDrawer.allReDrawCanvas();
         });
-        List<String> attributions = classDiagramDrawer.getDrawnNodeTextList(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribution);
+        List<String> attributes = classDiagramDrawer.getDrawnNodeTextList(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute);
         List<String> operations = classDiagramDrawer.getDrawnNodeTextList(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation);
         // クラスの各属性の変更
-        for (int i = 0; i < attributions.size(); i++) {
+        for (int i = 0; i < attributes.size(); i++) {
             int contentNumber = i;
             ((Menu) ((Menu) contextMenu.getItems().get(3)).getItems().get(1)).getItems().get(i).setOnAction(event -> {
-                String changedAttribution = showChangeClassAttributionInputDialog(attributions.get(contentNumber));
-                classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribution, contentNumber, changedAttribution);
+                String changedAttribute = showChangeClassAttributeInputDialog(attributes.get(contentNumber));
+                classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, contentNumber, changedAttribute);
                 classDiagramDrawer.allReDrawCanvas();
             });
         }
         // クラスの各属性の削除
-        for (int i = 0; i < attributions.size(); i++) {
+        for (int i = 0; i < attributes.size(); i++) {
             int contentNumber = i;
             ((Menu) ((Menu) contextMenu.getItems().get(3)).getItems().get(2)).getItems().get(i).setOnAction(event -> {
-                classDiagramDrawer.deleteDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribution, contentNumber);
+                classDiagramDrawer.deleteDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, contentNumber);
                 classDiagramDrawer.allReDrawCanvas();
             });
         }
         // クラスの各属性の表示選択
-        for (int i = 0; i < attributions.size(); i++) {
+        for (int i = 0; i < attributes.size(); i++) {
             int contentNumber = i;
             ((Menu) ((Menu) contextMenu.getItems().get(3)).getItems().get(3)).getItems().get(i).setOnAction(event -> {
-                classDiagramDrawer.setDrawnNodeContentBoolean(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribution, ContentType.Indication, contentNumber,
+                classDiagramDrawer.setDrawnNodeContentBoolean(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, ContentType.Indication, contentNumber,
                         ((CheckMenuItem) ((Menu) ((Menu) contextMenu.getItems().get(3)).getItems().get(3)).getItems().get(contentNumber)).isSelected());
                 classDiagramDrawer.allReDrawCanvas();
             });
@@ -333,7 +333,7 @@ public class Controller {
     private ContextMenu formatCompositionContextMenuInCD( ContextMenu contextMenu, double mouseX, double mouseY ) {
         // コンポジション関係の変更
         contextMenu.getItems().get(0).setOnAction( event -> {
-            RelationshipAttribution composition = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
+            RelationshipAttribute composition = classDiagramDrawer.searchDrawnEdge( mouseX, mouseY );
             String compositionName = showChangeCompositionNameInputDialog( composition.getName() );
             classDiagramDrawer.changeDrawnEdge( mouseX, mouseY, compositionName );
             classDiagramDrawer.allReDrawCanvas();

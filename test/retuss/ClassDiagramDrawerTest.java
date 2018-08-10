@@ -270,15 +270,15 @@ class ClassDiagramDrawerTest {
             public void 追加する() {
                 // Arrange
                 int id = -1;
-                List<String> attributions = Arrays.asList(
+                List<String> attributes = Arrays.asList(
                         "- content1 : int",
                         "- content2 : double",
                         "- content3 : char");
 
                 // Act
-                for (String attribution : attributions) {
+                for (String attribute : attributes) {
                     id = cdd.getNodeDiagramId(100.0, 200.0);
-                    cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribution, attribution);
+                    cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, attribute);
                 }
 
                 // Assert
@@ -287,107 +287,107 @@ class ClassDiagramDrawerTest {
                 assertThat(cdd.getNodes().size()).isOne();
                 assertThat(cdd.getNodes().get(0).getNodeId()).isZero();
                 assertThat(cdd.getNodes().get(0).getNodeText()).isEqualTo("ClassName");
-                assertThat(cdd.getDrawnNodeTextList(0, ContentType.Attribution).size()).isEqualTo(attributions.size());
-                for (int i = 0; i < attributions.size(); i++) {
-                    assertThat(cdd.getDrawnNodeTextList(0, ContentType.Attribution).get(i)).isEqualTo(attributions.get(i));
+                assertThat(cdd.getDrawnNodeTextList(0, ContentType.Attribute).size()).isEqualTo(attributes.size());
+                for (int i = 0; i < attributes.size(); i++) {
+                    assertThat(cdd.getDrawnNodeTextList(0, ContentType.Attribute).get(i)).isEqualTo(attributes.get(i));
                 }
             }
 
             @Test
             public void 追加する際に空文字を入力した場合は追加しない() {
-                String attribution = "";
+                String attribute = "";
 
                 int id = cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribution, attribution);
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, attribute);
 
                 assertThat(id).isZero();
                 assertThat(cdd.getCurrentNodeNumber()).isZero();
                 assertThat(cdd.getNodes().size()).isOne();
                 assertThat(cdd.getNodes().get(0).getNodeId()).isZero();
                 assertThat(cdd.getNodes().get(0).getNodeText()).isEqualTo("ClassName");
-                assertThat(cdd.getDrawnNodeTextList(0, ContentType.Attribution).size()).isZero();
+                assertThat(cdd.getDrawnNodeTextList(0, ContentType.Attribute).size()).isZero();
             }
 
             @Test
             public void リストを取得する() {
 
                 int id = cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribution, "- content : int");
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "- content : int");
 
                 assertThat(id).isZero();
                 assertThat(cdd.getCurrentNodeNumber()).isZero();
                 assertThat(cdd.getNodes().size()).isOne();
                 assertThat(cdd.getNodes().get(0).getNodeId()).isZero();
                 assertThat(cdd.getNodes().get(0).getNodeText()).isEqualTo("ClassName");
-                assertThat(cdd.getNodes().get(0).getNodeContentText(ContentType.Attribution, 0)).isEqualTo("- content : int");
+                assertThat(cdd.getNodes().get(0).getNodeContentText(ContentType.Attribute, 0)).isEqualTo("- content : int");
             }
 
             @Test
             public void 変更する() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribution, "- content : int");
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "- content : int");
                 int id = cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.changeDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribution, 0, "- content : double");
+                cdd.changeDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, 0, "- content : double");
 
                 assertThat(id).isZero();
                 assertThat(cdd.getCurrentNodeNumber()).isZero();
                 assertThat(cdd.getNodes().size()).isOne();
                 assertThat(cdd.getNodes().get(0).getNodeId()).isZero();
                 assertThat(cdd.getNodes().get(0).getNodeText()).isEqualTo("ClassName");
-                assertThat(cdd.getNodes().get(0).getNodeContentText(ContentType.Attribution, 0)).isEqualTo("- content : double");
+                assertThat(cdd.getNodes().get(0).getNodeContentText(ContentType.Attribute, 0)).isEqualTo("- content : double");
             }
 
             @Test
             public void 変更する際に空文字を入力した場合は変更しない() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribution, "- content : int");
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "- content : int");
                 int id = cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.changeDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribution, 0, "");
+                cdd.changeDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, 0, "");
 
                 assertThat(id).isZero();
                 assertThat(cdd.getCurrentNodeNumber()).isZero();
                 assertThat(cdd.getNodes().size()).isOne();
                 assertThat(cdd.getNodes().get(0).getNodeId()).isZero();
                 assertThat(cdd.getNodes().get(0).getNodeText()).isEqualTo("ClassName");
-                assertThat(cdd.getNodes().get(0).getNodeContentText(ContentType.Attribution, 0)).isEqualTo("- content : int");
+                assertThat(cdd.getNodes().get(0).getNodeContentText(ContentType.Attribute, 0)).isEqualTo("- content : int");
             }
 
             @Test
             public void 削除する() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribution, "- content : int");
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "- content : int");
                 int id = cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.deleteDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribution, 0);
+                cdd.deleteDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, 0);
 
                 assertThat(id).isZero();
                 assertThat(cdd.getCurrentNodeNumber()).isZero();
                 assertThat(cdd.getNodes().size()).isOne();
                 assertThat(cdd.getNodes().get(0).getNodeId()).isZero();
                 assertThat(cdd.getNodes().get(0).getNodeText()).isEqualTo("ClassName");
-                assertThat(cdd.getDrawnNodeTextList(0, ContentType.Attribution).size()).isZero();
+                assertThat(cdd.getDrawnNodeTextList(0, ContentType.Attribute).size()).isZero();
             }
 
             @Test
             public void 非表示にする() {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribution, "- content1 : int");
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "- content1 : int");
                 cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribution, "- content2 : double");
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "- content2 : double");
                 int id = cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.setDrawnNodeContentBoolean(cdd.getCurrentNodeNumber(), ContentType.Attribution, ContentType.Indication, 0, false);
+                cdd.setDrawnNodeContentBoolean(cdd.getCurrentNodeNumber(), ContentType.Attribute, ContentType.Indication, 0, false);
 
                 assertThat(id).isZero();
                 assertThat(cdd.getCurrentNodeNumber()).isZero();
                 assertThat(cdd.getNodes().size()).isOne();
                 assertThat(cdd.getNodes().get(0).getNodeId()).isZero();
                 assertThat(cdd.getNodes().get(0).getNodeText()).isEqualTo("ClassName");
-                assertThat(cdd.getDrawnNodeContentsBooleanList(0, ContentType.Attribution, ContentType.Indication).size()).isEqualTo(2);
-                assertThat(cdd.getDrawnNodeContentsBooleanList(0, ContentType.Attribution, ContentType.Indication).get(0)).isFalse();
-                assertThat(cdd.getDrawnNodeContentsBooleanList(0, ContentType.Attribution, ContentType.Indication).get(1)).isTrue();
+                assertThat(cdd.getDrawnNodeContentsBooleanList(0, ContentType.Attribute, ContentType.Indication).size()).isEqualTo(2);
+                assertThat(cdd.getDrawnNodeContentsBooleanList(0, ContentType.Attribute, ContentType.Indication).get(0)).isFalse();
+                assertThat(cdd.getDrawnNodeContentsBooleanList(0, ContentType.Attribute, ContentType.Indication).get(1)).isTrue();
             }
         }
 
@@ -430,10 +430,10 @@ class ClassDiagramDrawerTest {
 
             @Test
             public void 追加する際に空文字を入力した場合は追加しない() {
-                String attribution = "";
+                String attribute = "";
 
                 int id = cdd.getNodeDiagramId(100.0, 200.0);
-                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Operation, attribution);
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Operation, attribute);
 
                 assertThat(id).isZero();
                 assertThat(cdd.getCurrentNodeNumber()).isZero();
@@ -801,21 +801,21 @@ class ClassDiagramDrawerTest {
 
         @Test
         public void キャンバスに描画している一番上の関係の内容を返す() {
-            RelationshipAttribution expected = new RelationshipAttribution( "- composition" );
+            RelationshipAttribute expected = new RelationshipAttribute( "- composition" );
             cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
             cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
             cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
             cdd.addDrawnEdge( buttons, "- composition", secondClass.getX(), secondClass.getY() );
             cdd.searchDrawnAnyDiagramType( secondClass.getX(), secondClass.getY() );
 
-            RelationshipAttribution actual = cdd.searchDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
+            RelationshipAttribute actual = cdd.searchDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
 
             assertThat( actual.getName() ).isEqualTo( expected.getName() );
         }
 
         @Test
         public void キャンバスに描画している一番上の関係の内容を変更する() {
-            RelationshipAttribution expected = new RelationshipAttribution( "- changedComposition" );
+            RelationshipAttribute expected = new RelationshipAttribute( "- changedComposition" );
             cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, firstClass.getX(), firstClass.getY() );
             cdd.setMouseCoordinates( firstClass.getX(), firstClass.getY() );
             cdd.hasWaitedCorrectDrawnDiagram( ContentType.Composition, secondClass.getX(), secondClass.getY() );
@@ -823,7 +823,7 @@ class ClassDiagramDrawerTest {
             cdd.searchDrawnAnyDiagramType( secondClass.getX(), secondClass.getY() );
 
             cdd.changeDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY(), expected.getName() );
-            RelationshipAttribution actual = cdd.searchDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
+            RelationshipAttribute actual = cdd.searchDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
 
             assertThat( actual.getName() ).isEqualTo( expected.getName() );
         }
@@ -837,7 +837,7 @@ class ClassDiagramDrawerTest {
             cdd.searchDrawnAnyDiagramType( secondClass.getX(), secondClass.getY() );
 
             cdd.deleteDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
-            RelationshipAttribution actual = cdd.searchDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
+            RelationshipAttribute actual = cdd.searchDrawnEdge( betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY() );
 
             assertThat( actual ).isNull();
         }
