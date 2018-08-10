@@ -1,6 +1,26 @@
-# RETUSSについて
+|Main|Develop|
+|:--:|:--:|
+|[![Build Status](https://travis-ci.org/Morichan/Retuss.svg?branch=master)](https://travis-ci.org/Morichan/Retuss)|[![Build Status](https://travis-ci.org/Morichan/Retuss.svg?branch=develop)](https://travis-ci.org/Morichan/Retuss)|
+|[![codecov](https://codecov.io/gh/Morichan/Retuss/branch/master/graph/badge.svg)](https://codecov.io/gh/Morichan/Retuss)|[![codecov](https://codecov.io/gh/Morichan/Retuss/branch/develop/graph/badge.svg)](https://codecov.io/gh/Morichan/Retuss)|
+|![GitHub last commit (master)](https://img.shields.io/github/last-commit/Morichan/Retuss/master.svg)|![GitHub last commit (develop)](https://img.shields.io/github/last-commit/Morichan/Retuss/develop.svg)|
+
+[![license](https://img.shields.io/github/license/Morichan/Retuss.svg)](LICENSE)
+
+[![Java version](https://img.shields.io/badge/java-9+-4c7e9f.svg)](https://www.java.com/en/)
+[![JUnit version](https://img.shields.io/badge/junit-5+-dc524a.svg)](http://junit.org/junit5/)
+[![Gradle version](https://img.shields.io/badge/gradle-4.4+-007042.svg)](https://gradle.org/docs/)
+[![ANTLR version](https://img.shields.io/badge/antlr-4+-ec312e.svg)](http://junit.org/junit5/)
+
+[![GitHub tag](https://img.shields.io/github/tag/Morichan/Retuss.svg)](https://github.com/Morichan/Retuss/tags)
+[![GitHub release](https://img.shields.io/github/release/Morichan/Retuss/all.svg)](https://github.com/Morichan/Retuss/releases)
+[![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/Morichan/Retuss.svg)](https://github.com/Morichan/Retuss/pulls?q=is%3Apr+is%3Aclosed)
+
+
+
+# RETUSS
 
 __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) は、UMLとソースコード間のトレーサビリティをリアルタイムに維持するツールです。
+
 
 ## 言い訳
 
@@ -8,51 +28,16 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 
 ## 開発環境
 
-* Windows 10 Pro (64 bit) 1703
-* IntelliJ IDEA 2017.3.2 (Community Edition)
-* Java9
-* JUnit5 (5.0.1)
-
-## 依存ライブラリ
-
-* antlr-4.7.1-complete ([ANTLR](http://www.antlr.org/))
-* assertj-core-3.8.0 ([AssertJ](http://joel-costigliola.github.io/assertj/index.html))
-* guava-21.0 ([Guava](https://github.com/google/guava))
-* hamcrest-core-1.3 ([Hamcrest](http://hamcrest.org/))
-* jmockit-1.36.1 ([JMockit](http://jmockit.org/))
-* junit-jupiter-api-5.0.1 ([JUnit5](http://junit.org/junit5/))
-* junit-jupiter-engine-5.0.1 (JUnit5)
-* opentest4j-1.0.0 ([Open Test Alliance for the JVM](https://github.com/ota4j-team/opentest4j))
-* testfx-core-4.0.8-alpha ([TestFX](https://github.com/TestFX/TestFX))
-* testfx-internal-java9-4.0.8-alpha (TestFX)
-* testfx-junit5-4.0.8-alpha (TestFX)
-
-### 依存関係
-
-* antlr
-* assertj
-* jmockit
-* junit-jupiter
-  * opentest4j
-* testfx
-  * guava
-  * hamcrest
+* Windows 10 Pro (64 bit) 1803
+* IntelliJ IDEA 2018.1.5 (Community Edition)
 
 ## 注意点
-
-### コンパイル時
 
 * テストコードのコンパイル時には `-Djdk.attach.allowAttachSelf` システムプロパティを追加してください。
 * TestFX内（正確には testfx-core-4.0.8-alpha.jar における `org.testfx.toolkit.impl.ToolkitServiceImpl` メソッド）で `--illegal-access` エラーを起こしますが、2017/11/10現在のJava9では特に問題ありません。
   そのうち使えなくなるかもしれませんが、それより前にTestFXが対応してくれると信じましょう。
+* ビルドする際にTestFXによるGUIテストを実行するため、マウスなどを動かさないようにしてください。
 * JMockitは他のライブラリと比べても、バージョンの違いによる仕様変更が激しいようです。
   そこまで核となるような事はしていないと思いますが、気を付けてください。
-
-### その他
-
 * テストコード内ではHamcrestではなくAssertJのみを使用していますが、TestFXがHamcrestを利用しているため、Hamcrestを除外できません。
   テストコード内ではAssertJのみを使用してもらえると助かります。
-* Gradleに未対応です。
-  本来なら対応したほうがいいとは思いますが、対応の仕方がわかりませんでした。
-  教えていただけるととても嬉しいです！
-  また、自分もちょくちょく勉強していくつもりです。
