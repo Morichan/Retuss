@@ -15,7 +15,9 @@
 [![GitHub release](https://img.shields.io/github/release/Morichan/Retuss/all.svg)](https://github.com/Morichan/Retuss/releases)
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/Morichan/Retuss.svg)](https://github.com/Morichan/Retuss/pulls?q=is%3Apr+is%3Aclosed)
 
-# RETUSSについて
+
+
+# RETUSS
 
 __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) は、UMLとソースコード間のトレーサビリティをリアルタイムに維持するツールです。
 
@@ -25,10 +27,8 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 
 ## 開発環境
 
-* Windows 10 Pro (64 bit) 1703
-* IntelliJ IDEA 2017.3.2 (Community Edition)
-* Java9
-* JUnit (5.0.1)
+* Windows 10 Pro (64 bit) 1803
+* IntelliJ IDEA 2018.1.5 (Community Edition)
 
 ## 注意点
 
