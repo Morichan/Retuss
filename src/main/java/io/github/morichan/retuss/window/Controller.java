@@ -71,7 +71,7 @@ public class Controller {
             gc = classDiagramCanvas.getGraphicsContext2D();
             classDiagramDrawer.setGraphicsContext(gc);
         } catch (NullPointerException e) {
-            // 間接的にこちらはretussCode.FXMLに関する変数を設定することになる
+            // 結果的にこちらはretussCode.FXMLに関する変数を設定することになる
             codeTabPane.getTabs().add(createCodeTab("Java"));
         }
     }
