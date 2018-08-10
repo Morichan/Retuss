@@ -95,24 +95,19 @@ test {
     systemProperties 'property': 'value'
 }
 
-class OSChecker{
-    static String getFamily(){
+// gradleでOSのアーキテクチャ情報を利用する方法を語りき, http://saygox.blogspot.com/2013/08/gradle-os.html
+class OSChecker {
+    static String getFamily() {
         String os=System.getProperty("os.name")
-        if(os==null)
-            return ""
-        else if(os.startsWith("Windows"))
-            return "windows"
-        else if(os.startsWith("Mac OS X"))
-            return "mac"
-        else if(os.startsWith("Linux"))
-            return "unix"
-        return ""
+        if(os!=null && os.startsWith("Windows")) return "windows"
+        else return "not windows"
     }
 }
-println OSChecker.getFamily()
+println ">>> This OS that test runs is " + OSChecker.getFamily()
 
+// OSがWindowsでない場合はTest実行時にGUITestsタグを付けたテストスイートを実行しない
 if (OSChecker.getFamily() != "windows") {
-    test.exclude "io/github/morichan/retuss/window/ControllerTest.class"
+    junitPlatform.filters.tags.exclude "GUITests"
 }
 
 junitPlatform.enableStandardTestTask true
