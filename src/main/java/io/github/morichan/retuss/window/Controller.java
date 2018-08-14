@@ -53,8 +53,6 @@ public class Controller {
     private UtilityJavaFXComponent util = new UtilityJavaFXComponent();
     private ClassDiagramDrawer classDiagramDrawer = new ClassDiagramDrawer();
 
-    private GraphicsContext gc = null;
-
     /**
      * <p> JavaFXにおけるデフォルトコンストラクタ </p>
      *
@@ -68,7 +66,10 @@ public class Controller {
         buttonsInCD.addAll(Arrays.asList(normalButtonInCD, classButtonInCD, noteButtonInCD, compositionButtonInCD, generalizationButtonInCD));
         try {
             // retussCode.FXMLファイルの読み込み時にclassDiagramCanvasが設定されていないためNullPointerExceptionを投げるのを防ぐ
-            gc = classDiagramCanvas.getGraphicsContext2D();
+            GraphicsContext gc = classDiagramCanvas.getGraphicsContext2D();
+            double scrollBarBreadth = 15.0;
+            gc.getCanvas().setWidth(classDiagramScrollPane.getPrefWidth() - scrollBarBreadth);
+            gc.getCanvas().setHeight(classDiagramScrollPane.getPrefHeight() - scrollBarBreadth);
             classDiagramDrawer.setGraphicsContext(gc);
         } catch (NullPointerException e) {
             // 結果的にこちらはretussCode.FXMLに関する変数を設定することになる

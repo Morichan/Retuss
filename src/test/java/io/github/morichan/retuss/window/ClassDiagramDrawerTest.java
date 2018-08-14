@@ -6,6 +6,8 @@ import io.github.morichan.retuss.window.diagram.NoteNodeDiagram;
 import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import mockit.*;
 import org.junit.jupiter.api.*;
@@ -16,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ClassDiagramDrawerTest {
 
@@ -186,6 +190,13 @@ class ClassDiagramDrawerTest {
 
             @Test
             void 追加する際に空文字を入力した場合は追加しない(@Mocked ClassNodeDiagram mock) {
+                GraphicsContext mocked;
+                mocked = mock(GraphicsContext.class);
+                Canvas canvas = new Canvas();
+                canvas.setWidth(1000.0);
+                canvas.setHeight(1000.0);
+                when(mocked.getCanvas()).thenReturn(canvas);
+                cdd.setGraphicsContext(mocked);
                 cdd.setNodeText("");
                 cdd.setMouseCoordinates(100.0, 200.0);
                 cdd.addDrawnNode(buttons);
@@ -252,6 +263,26 @@ class ClassDiagramDrawerTest {
 
                 assertThat(actualWidth).isEqualTo(expectedWidth);
                 assertThat(actualHeight).isEqualTo(expectedHeight);
+            }
+
+            @Test
+            void 位置を返す() {
+                Point2D expected = new Point2D(100.0, 200.0);
+                createClasses(cdd, buttons, 0, "ClassName", new Point2D(100.0, 200.0));
+
+                Point2D actual = cdd.getMouseCoordinates();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void X軸とY軸が共にキャンバスより小さい位置を入力した場合は枠をはみ出さない位置を返す() {
+                Point2D expected = new Point2D(10.0 + (100.0 / 2), 10.0 + (80.0 / 2));
+                createClasses(cdd, buttons, 0, "ClassName", new Point2D(0.0, 0.0));
+
+                Point2D actual = cdd.getOperationalPoint();
+
+                assertThat(actual).isEqualTo(expected);
             }
         }
 
@@ -1044,8 +1075,15 @@ class ClassDiagramDrawerTest {
     }
 
     private void createClasses(ClassDiagramDrawer cdd, List<Button> buttons, int classCount, String className, Point2D classPosition) {
+        GraphicsContext mocked;
+        mocked = mock(GraphicsContext.class);
+        Canvas canvas = new Canvas();
+        canvas.setWidth(1000.0);
+        canvas.setHeight(1000.0);
+        when(mocked.getCanvas()).thenReturn(canvas);
+        cdd.setGraphicsContext(mocked);
         cdd.setNodeText(className);
-        cdd.setMouseCoordinates(classPosition.getX(), classPosition.getY());
+        cdd.setMouseCoordinates(classPosition);
         cdd.addDrawnNode(buttons);
         ((ClassNodeDiagram) cdd.getNodes().get(classCount)).calculateWidthAndHeight(100.0, 80.0);
     }

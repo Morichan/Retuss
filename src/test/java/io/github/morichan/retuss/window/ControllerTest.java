@@ -26,7 +26,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("GUITests")
-class ControllerTest {
+class ControllerTest extends ApplicationTest {
+    Stage stage;
+
+    @Start
+    public void start(Stage stage) throws IOException {
+        String fxmlFileName = "/retussMain.fxml";
+        Scene scene = new Scene(FXMLLoader.load(getClass().getResource(fxmlFileName)));
+        stage.setScene(scene);
+        stage.show();
+        this.stage = stage;
+    }
 
     @AfterAll
     static void reset() {
@@ -34,10 +44,11 @@ class ControllerTest {
     }
 
     @Nested
-    class クラス図の場合 extends ApplicationTest {
-        Stage stage;
+    class クラス図の場合 {
         Point2D xButtonOnDialogBox;
         String okButtonOnDialogBox;
+        Point2D topLeftCorner;
+        Point2D bottomRightCorner;
         Point2D firstClickedClassDiagramCanvas;
         Point2D secondClickedClassDiagramCanvas;
         Point2D thirdClickedClassDiagramCanvas;
@@ -53,17 +64,10 @@ class ControllerTest {
         String deleteMenu;
         String checkMenu;
 
-        @Start
-        public void start(Stage stage) throws IOException {
-            String fxmlFileName = "/retussMain.fxml";
-            Scene scene = new Scene(FXMLLoader.load(getClass().getResource(fxmlFileName)));
-            stage.setScene(scene);
-            stage.show();
-            this.stage = stage;
-        }
-
         @BeforeEach
         void setup() {
+            topLeftCorner = new Point2D(650, 163);
+            bottomRightCorner = new Point2D(1583, 984);
             xButtonOnDialogBox = new Point2D(1050.0, 350.0);
             okButtonOnDialogBox = "OK";
             firstClickedClassDiagramCanvas = new Point2D(900.0, 600.0);
@@ -1200,6 +1204,28 @@ class ControllerTest {
                     rightClickOn(firstClickedClassDiagramCanvas);
                     ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
 
+                    assertThat(scrollPane.getContextMenu()).isNull();
+                }
+
+                @Test
+                void キャンバスの左上隅をクリックすると描画クラスがキャンバス枠を超えない位置に描画する() {
+                    clickOn("#classButtonInCD");
+                    drawClasses(topLeftCorner, "Test");
+                    clickOn("#normalButtonInCD");
+
+                    rightClickOn(topLeftCorner.getX(), topLeftCorner.getY());
+                    ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+                    assertThat(scrollPane.getContextMenu()).isNull();
+                }
+
+                @Test
+                void キャンバスの右下隅をクリックすると描画クラスがキャンバス枠を超えない位置に描画する() {
+                    clickOn("#classButtonInCD");
+                    drawClasses(bottomRightCorner, "Test");
+                    clickOn("#normalButtonInCD");
+
+                    rightClickOn(bottomRightCorner.getX(), bottomRightCorner.getY());
+                    ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
                     assertThat(scrollPane.getContextMenu()).isNull();
                 }
             }

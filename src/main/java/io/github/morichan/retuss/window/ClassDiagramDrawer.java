@@ -18,13 +18,30 @@ import java.util.ArrayList;
  * </p>
  */
 public class ClassDiagramDrawer {
-    GraphicsContext gc;
+    private GraphicsContext gc;
     private List<NodeDiagram> nodes = new ArrayList<>();
     private EdgeDiagram relations = new EdgeDiagram();
 
     private int currentNodeNumber = -1;
-    private double mouseX = 0.0;
-    private double mouseY = 0.0;
+
+    /**
+     * <p> マウスでクリックした座標 </p>
+     *
+     * <p>
+     *     {@link #operationalPoint} との違いについての詳細は {@link #checkPointFromCanvas(Point2D)} を参照してください。
+     * </p>
+     */
+    private Point2D mousePoint = new Point2D(0.0, 0.0);
+
+    /**
+     * <p> キャンバス内での操作対象となる座標 </p>
+     *
+     * <p>
+     *     {@link #mousePoint} との違いについての詳細は {@link #checkPointFromCanvas(Point2D)} を参照してください。
+     * </p>
+     */
+    private Point2D operationalPoint = new Point2D(0.0, 0.0);
+
     private String nodeText = "";
     private ContentType nowStateType = ContentType.Undefined;
 
@@ -56,8 +73,36 @@ public class ClassDiagramDrawer {
      * @param y マウスのY軸
      */
     public void setMouseCoordinates(double x, double y) {
-        mouseX = x;
-        mouseY = y;
+        mousePoint = new Point2D(x, y);
+        operationalPoint = checkPointFromCanvas(mousePoint);
+    }
+
+    /**
+     * クラス図キャンバスにおいて操作しているマウスの位置を受け取る。
+     *
+     * @param mouse マウスのポイント
+     */
+    public void setMouseCoordinates(Point2D mouse) {
+        this.mousePoint = mouse;
+        operationalPoint = checkPointFromCanvas(this.mousePoint);
+    }
+
+    /**
+     * クラス図キャンバスにおいて操作しているマウスの位置を受け取る。
+     *
+     * @return マウスの座標
+     */
+    public Point2D getMouseCoordinates() {
+        return mousePoint;
+    }
+
+    /**
+     * クラス図キャンバスにおいて操作の対象となるマウスの位置を取得する。
+     *
+     * @return 操作対象となる座標
+     */
+    public Point2D getOperationalPoint() {
+        return operationalPoint;
     }
 
     /**
@@ -115,7 +160,7 @@ public class ClassDiagramDrawer {
         if (nodeText.length() <= 0) return;
 
         nodes.get(number).setGraphicsContext(gc);
-        nodes.get(number).setMouseCoordinates(mouseX, mouseY);
+        nodes.get(number).setMouseCoordinates(operationalPoint.getX(), operationalPoint.getY());
         nodes.get(number).createNodeText(ContentType.Title, nodeText);
         nodes.get(number).setChosen(false);
     }
@@ -316,7 +361,7 @@ public class ClassDiagramDrawer {
         if (nodeText.length() <= 0) return;
 
         if (button.getText().equals("Composition")) {
-            getNodeDiagramId(mouseX, mouseY);
+            getNodeDiagramId(operationalPoint.getX(), operationalPoint.getY());
             int fromNodeId = currentNodeNumber;
             getNodeDiagramId(toMouseX, toMouseY);
             int toNodeId = currentNodeNumber;
@@ -329,7 +374,7 @@ public class ClassDiagramDrawer {
             }
 
         } else if (button.getText().equals("Generalization")) {
-            getNodeDiagramId(mouseX, mouseY);
+            getNodeDiagramId(operationalPoint.getX(), operationalPoint.getY());
             int fromNodeId = currentNodeNumber;
             getNodeDiagramId(toMouseX, toMouseY);
             int toNodeId = currentNodeNumber;
@@ -577,6 +622,49 @@ public class ClassDiagramDrawer {
      */
     List<NodeDiagram> getNodes() {
         return nodes;
+    }
+
+    /**
+     * <p> キャンバス内での操作対象となる座標を設定します </p>
+     *
+     * <p>
+     *     例えば、クラスを記述する際にキャンバスの枠外をマウスでクリックしたとします。
+     *     この場合、マウスでクリックした座標とクラスを表示する座標は異なります。
+     *     なぜなら、マウスでクリックした座標 {@code x = 0.0, y = 0.0} にクラスを表示するのではなく、キャンバスの枠に収まるべき {@code x = 60.0, y = 50.0} に表示するからです。
+     * </p>
+     *
+     * <p>
+     *     一方で、マウスをクリックした座標の変数いらなくなるかと言うとそんなことはありません。
+     *     例えば、枠内 {@code x = 60.0, y = 50.0} にクラスを記述している状態で座標 {@code x = 0.0, y = 0.0} を右クリックしたとします。
+     *     この場合、マウスでクリックした座標の変数が存在しなかった場合、キャンバス内での操作対象となる座標を基にクラスを探索し、枠内 {@code x = 60.0, y = 50.0} のクラスのメニューを表示してしまいます。
+     *     しかし、厳密には右クリックした座標 {@code x = 0.0, y = 0.0} には何も表示していないため、メニューを呼び出すべきではありません。
+     * </p>
+     *
+     * <p>
+     *     上記の対応を行うために、このクラスでは、次のように設定しています。
+     * </p>
+     *
+     * <ui>
+     *     <li> {@link #mousePoint} : マウスでクリックした座標 </li>
+     *     <li> {@link #operationalPoint} : キャンバス内での操作対象となる座標 </li>
+     * </ui>
+     *
+     * @param mouse マウスでクリックした座標
+     * @return キャンバス内での操作対象となる座標
+     */
+    private Point2D checkPointFromCanvas(Point2D mouse) {
+        double setPointX = mouse.getX();
+        double setPointY = mouse.getY();
+        double minClassWidth = 10.0 + (100.0 / 2);
+        double minClassHeight = 10.0 + (80.0 / 2);
+
+        if (mouse.getX() < minClassWidth) setPointX = 10.0 + (100.0 / 2);
+        if (mouse.getY() < minClassHeight) setPointY = 10.0 + (80.0 / 2);
+
+        if (mouse.getX() > gc.getCanvas().getWidth() - minClassWidth) setPointX = gc.getCanvas().getWidth() - minClassWidth;
+        if (mouse.getY() > gc.getCanvas().getHeight() - minClassHeight) setPointY = gc.getCanvas().getHeight() - minClassHeight;
+
+        return new Point2D(setPointX, setPointY);
     }
 
     /**
