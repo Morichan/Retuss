@@ -441,6 +441,23 @@ class ClassNodeDiagramTest {
     }
 
     @Test
+    void クラスの位置を移動する() {
+        double clickedX = 100;
+        double clickedY = 200;
+        Point2D moveTo = new Point2D(500.0, 600.0);
+        obj.createNodeText(ContentType.Title, "ClassName");
+        obj.setMouseCoordinates(clickedX, clickedY);
+        obj.moveTo(moveTo);
+        obj.calculateWidthAndHeight(100, 80.0);
+
+        boolean actualFalse = obj.isAlreadyDrawnNode(clickedX, clickedY);
+        boolean actualTrue = obj.isAlreadyDrawnNode(moveTo.getX(), moveTo.getY());
+
+        assertThat(actualFalse).isFalse();
+        assertThat(actualTrue).isTrue();
+    }
+
+    @Test
     void クラス名を取得する() {
         String className = "ClassName";
         obj.createNodeText(ContentType.Title, className);

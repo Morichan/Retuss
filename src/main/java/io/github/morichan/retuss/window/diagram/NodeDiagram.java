@@ -33,6 +33,13 @@ abstract public class NodeDiagram {
     abstract public boolean isAlreadyDrawnNode(double x, double y);
 
     /**
+     * <p> クラス図キャンバスにおける任意の座標に移動します </p>
+     *
+     * @param point 任意の座標
+     */
+    abstract public void moveTo(Point2D point);
+
+    /**
      * <p> クラス図キャンバスにおいてノードを選択している場合は真を返す真偽値を設定します </p>
      *
      * @param isChosen ノードを選択しているか否かの真偽値

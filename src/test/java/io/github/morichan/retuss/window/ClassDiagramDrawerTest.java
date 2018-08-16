@@ -18,8 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ClassDiagramDrawerTest {
 
@@ -190,8 +189,7 @@ class ClassDiagramDrawerTest {
 
             @Test
             void 追加する際に空文字を入力した場合は追加しない(@Mocked ClassNodeDiagram mock) {
-                GraphicsContext mocked;
-                mocked = mock(GraphicsContext.class);
+                GraphicsContext mocked = mock(GraphicsContext.class);
                 Canvas canvas = new Canvas();
                 canvas.setWidth(1000.0);
                 canvas.setHeight(1000.0);
@@ -283,6 +281,24 @@ class ClassDiagramDrawerTest {
                 Point2D actual = cdd.getOperationalPoint();
 
                 assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 描画済み3つの内2つ目の位置を変更する() {
+                // Arrange
+                createClasses(cdd, buttons, 0, "FirstClassName", new Point2D(100.0, 200.0));
+                createClasses(cdd, buttons, 1, "SecondClassName", new Point2D(300.0, 400.0));
+                createClasses(cdd, buttons, 2, "ThirdClassName", new Point2D(500.0, 600.0));
+
+                // Act
+                int beforeId = cdd.getNodeDiagramId(300.0, 400.0);
+                cdd.moveTo(1, new Point2D(100.0, 600.0));
+                int afterId = cdd.getNodeDiagramId(100.0, 600.0);
+
+                // Assert
+                assertThat(beforeId).isOne();
+                assertThat(afterId).isOne();
+                assertThat(cdd.getNodes().size()).isEqualTo(3);
             }
         }
 
@@ -932,6 +948,26 @@ class ClassDiagramDrawerTest {
             assertThat(cdd.getEdgeDiagram().getRelationSourceId(ContentType.Composition, 1)).isZero();
             assertThat(cdd.searchDrawnEdge(betweenFirstAndSecondClass.getX(), betweenFirstAndSecondClass.getY()).getText()).isEqualTo("- composition1");
             assertThat(cdd.searchDrawnEdge(betweenFirstAndThirdClass.getX(), betweenFirstAndThirdClass.getY()).getText()).isEqualTo("- composition2");
+        }
+
+        @Test
+        void 描画済み2つのクラスの内2つ目の位置を移動すると2つ目と3つ目間の関係も同時に移動する() {
+            // Arrange
+            Point2D expected = new Point2D(100.0, 600.0);
+            createClasses(cdd, buttons, 0, "Test1", firstClass);
+            createClasses(cdd, buttons, 1, "Test2", secondClass);
+
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, firstClass.getX(), firstClass.getY());
+            cdd.setMouseCoordinates(firstClass);
+            cdd.hasWaitedCorrectDrawnDiagram(ContentType.Composition, secondClass.getX(), secondClass.getY());
+            cdd.addDrawnEdge(buttons, "- composition", secondClass.getX(), secondClass.getY());
+
+            // Act
+            cdd.moveTo(1, expected);
+            cdd.allReDrawCanvas();
+
+            // Assert
+            assertThat(cdd.getEdgeDiagram().getRelationPoint(ContentType.Composition, 0)).isEqualTo(expected);
         }
     }
 

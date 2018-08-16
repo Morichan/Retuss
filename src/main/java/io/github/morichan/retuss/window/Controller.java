@@ -5,6 +5,7 @@ import io.github.morichan.retuss.window.diagram.NodeDiagram;
 import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -138,6 +139,21 @@ public class Controller {
             clickedCanvasByPrimaryButtonInCD(event.getX(), event.getY());
         } else if (event.getButton() == MouseButton.SECONDARY) {
             clickedCanvasBySecondaryButtonInCD(event.getX(), event.getY());
+        }
+    }
+
+    /**
+     * <p> Canvasドラッグ時のシグナルハンドラ </p>
+     *
+     * <p> ClassDiagramTabにおけるScrollPane内のCanvas（ {@link #classDiagramCanvas} ）で参照 </p>
+     */
+    @FXML
+    private void draggedCanvasInCD(MouseEvent event) {
+        if (util.searchSelectedButtonIn(buttonsInCD) == normalButtonInCD &&
+                classDiagramDrawer.isAlreadyDrawnAnyDiagram(event.getX(), event.getY())) {
+            classDiagramDrawer.setMouseCoordinates(event.getX(), event.getY());
+            classDiagramDrawer.moveTo(classDiagramDrawer.getNodeDiagramId(event.getX(), event.getY()), new Point2D(event.getX(), event.getY()));
+            classDiagramDrawer.allReDrawCanvas();
         }
     }
 

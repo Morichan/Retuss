@@ -1096,6 +1096,48 @@ class ControllerTest extends ApplicationTest {
                         scrollPane = getScrollPaneBelowClassDiagramCanvas();
                         assertThat(scrollPane.getContextMenu().getItems().get(0).getText()).isEqualTo("汎化の削除");
                     }
+
+                    @Test
+                    void 描画したクラスをドラッグするとドラッグしたクラスからの関係も同時に移動する() {
+                        clickOn("#classButtonInCD");
+                        drawClasses(firstClickedClassDiagramCanvas, "Test1");
+                        drawClasses(thirdClickedClassDiagramCanvas, "Test2");
+                        clickOn("#compositionButtonInCD");
+                        clickOn(firstClickedClassDiagramCanvas);
+                        clickOn(thirdClickedClassDiagramCanvas);
+                        write("- composition");
+                        clickOn(okButtonOnDialogBox);
+                        clickOn("#normalButtonInCD");
+                        drag(firstClickedClassDiagramCanvas).dropTo(secondClickedClassDiagramCanvas);
+
+                        rightClickOn(betweenFirstAndThirdClickedClassDiagramCanvas);
+                        ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+                        assertThat(scrollPane.getContextMenu()).isNull();
+                        rightClickOn(betweenSecondAndThirdClickedClassDiagramCanvas);
+                        scrollPane = getScrollPaneBelowClassDiagramCanvas();
+                        assertThat(scrollPane.getContextMenu().getItems().get(0).getText()).startsWith("- composition");
+                    }
+
+                    @Test
+                    void 描画したクラスをドラッグするとドラッグしたクラスへの関係も同時に移動する() {
+                        clickOn("#classButtonInCD");
+                        drawClasses(secondClickedClassDiagramCanvas, "Test1");
+                        drawClasses(thirdClickedClassDiagramCanvas, "Test2");
+                        clickOn("#compositionButtonInCD");
+                        clickOn(secondClickedClassDiagramCanvas);
+                        clickOn(thirdClickedClassDiagramCanvas);
+                        write("- composition");
+                        clickOn(okButtonOnDialogBox);
+                        clickOn("#normalButtonInCD");
+                        drag(thirdClickedClassDiagramCanvas).dropTo(firstClickedClassDiagramCanvas);
+
+                        rightClickOn(betweenSecondAndThirdClickedClassDiagramCanvas);
+                        ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+                        assertThat(scrollPane.getContextMenu()).isNull();
+                        rightClickOn(betweenFirstAndSecondClickedClassDiagramCanvas);
+                        scrollPane = getScrollPaneBelowClassDiagramCanvas();
+                        assertThat(scrollPane.getContextMenu().getItems().get(0).getText()).startsWith("- composition");
+                    }
                 }
             }
 
@@ -1227,6 +1269,36 @@ class ControllerTest extends ApplicationTest {
                     rightClickOn(bottomRightCorner.getX(), bottomRightCorner.getY());
                     ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
                     assertThat(scrollPane.getContextMenu()).isNull();
+                }
+
+                @Test
+                void 描画したクラスをドラッグすると描画クラスを移動先にのみ描画する() {
+                    clickOn("#classButtonInCD");
+                    drawClasses(firstClickedClassDiagramCanvas, "Test");
+                    clickOn("#normalButtonInCD");
+                    drag(firstClickedClassDiagramCanvas).dropTo(secondClickedClassDiagramCanvas);
+
+                    rightClickOn(firstClickedClassDiagramCanvas.getX(), firstClickedClassDiagramCanvas.getY());
+                    ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+                    assertThat(scrollPane.getContextMenu()).isNull();
+                    rightClickOn(secondClickedClassDiagramCanvas.getX(), secondClickedClassDiagramCanvas.getY());
+                    scrollPane = getScrollPaneBelowClassDiagramCanvas();
+                    assertThat(scrollPane.getContextMenu()).isNotNull();
+                }
+
+                @Test
+                void 描画したクラスを枠外までドラッグすると描画クラスを枠内の移動先にのみ描画する() {
+                    clickOn("#classButtonInCD");
+                    drawClasses(firstClickedClassDiagramCanvas, "Test");
+                    clickOn("#normalButtonInCD");
+                    drag(firstClickedClassDiagramCanvas).dropTo(firstClickedClassDiagramCanvas.getX() - 400.0, firstClickedClassDiagramCanvas.getY());
+
+                    rightClickOn(firstClickedClassDiagramCanvas.getX(), firstClickedClassDiagramCanvas.getY());
+                    ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas();
+                    assertThat(scrollPane.getContextMenu()).isNull();
+                    rightClickOn(firstClickedClassDiagramCanvas.getX() - 200.0, firstClickedClassDiagramCanvas.getY());
+                    scrollPane = getScrollPaneBelowClassDiagramCanvas();
+                    assertThat(scrollPane.getContextMenu()).isNotNull();
                 }
             }
 

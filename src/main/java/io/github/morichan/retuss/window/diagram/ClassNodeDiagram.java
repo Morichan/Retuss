@@ -22,7 +22,7 @@ import java.util.List;
  * </p>
  */
 public class ClassNodeDiagram extends NodeDiagram {
-    private Point2D upperLeftCorner = Point2D.ZERO;
+    private Point2D topLeftCorner = Point2D.ZERO;
     private Point2D bottomRightCorner = Point2D.ZERO;
 
     private int classNameFontSize = 20;
@@ -62,11 +62,22 @@ public class ClassNodeDiagram extends NodeDiagram {
     public boolean isAlreadyDrawnNode(double x, double y) {
         boolean act = false;
 
-        if (upperLeftCorner.getX() < x && upperLeftCorner.getY() < y
+        if (topLeftCorner.getX() < x && topLeftCorner.getY() < y
                 && x < bottomRightCorner.getX() && y < bottomRightCorner.getY())
             act = true;
 
         return act;
+    }
+
+    /**
+     * <p> クラス図キャンバスにおける任意の座標に、このクラスを移動します </p>
+     *
+     * @param point 任意の座標
+     */
+    @Override
+    public void moveTo(Point2D point) {
+        currentPoint = point;
+        draw();
     }
 
     /**
@@ -287,21 +298,21 @@ public class ClassNodeDiagram extends NodeDiagram {
      */
     private void drawGraphicsContext(Text classNameText, List<Text> attributesText, List<Text> operationsText, double maxWidth, double classHeight, double attributeHeight, double operationHeight, double operationStartHeight) {
         gc.setFill(Color.BEIGE);
-        gc.fillRect(upperLeftCorner.getX(), upperLeftCorner.getY(), maxWidth, classHeight + attributeHeight + operationHeight);
+        gc.fillRect(topLeftCorner.getX(), topLeftCorner.getY(), maxWidth, classHeight + attributeHeight + operationHeight);
 
         if (isChosen) {
             gc.setStroke(Color.RED);
         } else {
             gc.setStroke(Color.BLACK);
         }
-        gc.strokeRect(upperLeftCorner.getX(), upperLeftCorner.getY(), maxWidth, classHeight + attributeHeight + operationHeight);
-        gc.strokeLine(upperLeftCorner.getX(), upperLeftCorner.getY() + classHeight, bottomRightCorner.getX(), upperLeftCorner.getY() + classHeight);
-        gc.strokeLine(upperLeftCorner.getX(), upperLeftCorner.getY() + classHeight + attributeHeight, bottomRightCorner.getX(), upperLeftCorner.getY() + classHeight + attributeHeight);
+        gc.strokeRect(topLeftCorner.getX(), topLeftCorner.getY(), maxWidth, classHeight + attributeHeight + operationHeight);
+        gc.strokeLine(topLeftCorner.getX(), topLeftCorner.getY() + classHeight, bottomRightCorner.getX(), topLeftCorner.getY() + classHeight);
+        gc.strokeLine(topLeftCorner.getX(), topLeftCorner.getY() + classHeight + attributeHeight, bottomRightCorner.getX(), topLeftCorner.getY() + classHeight + attributeHeight);
 
         gc.setFill(Color.BLACK);
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setFont(classNameText.getFont());
-        gc.fillText(classNameText.getText(), currentPoint.getX(), upperLeftCorner.getY() + classHeight / 2);
+        gc.fillText(classNameText.getText(), currentPoint.getX(), topLeftCorner.getY() + classHeight / 2);
 
         if (attributesText.size() > 0) {
             gc.setTextAlign(TextAlignment.LEFT);
@@ -311,7 +322,7 @@ public class ClassNodeDiagram extends NodeDiagram {
             for (int i = 0; i < attributesText.size(); i++) {
                 if (attributes.get(i).isIndicate()) {
                     gc.fillText(attributesText.get(i).getText(),
-                            upperLeftCorner.getX() + leftSpace, upperLeftCorner.getY() + classHeight + 15.0 + (defaultAttributeHeight * (i - notDrawAttributeCount)));
+                            topLeftCorner.getX() + leftSpace, topLeftCorner.getY() + classHeight + 15.0 + (defaultAttributeHeight * (i - notDrawAttributeCount)));
                 } else {
                     notDrawAttributeCount++;
                     isExistedNoIndication = true;
@@ -320,7 +331,7 @@ public class ClassNodeDiagram extends NodeDiagram {
             if (isExistedNoIndication) {
                 gc.setTextAlign(TextAlignment.CENTER);
                 gc.fillText("... " + attributeNotVisibilityCount + " more",
-                        currentPoint.getX(), upperLeftCorner.getY() + classHeight + 15.0 + (defaultAttributeHeight * (attributesText.size() - attributeNotVisibilityCount)));
+                        currentPoint.getX(), topLeftCorner.getY() + classHeight + 15.0 + (defaultAttributeHeight * (attributesText.size() - attributeNotVisibilityCount)));
             }
         }
 
@@ -332,7 +343,7 @@ public class ClassNodeDiagram extends NodeDiagram {
             for (int i = 0; i < operationsText.size(); i++) {
                 if (operations.get(i).isIndicate()) {
                     gc.fillText(operationsText.get(i).getText(),
-                            upperLeftCorner.getX() + leftSpace, upperLeftCorner.getY() + classHeight + 15.0 + (defaultOperationHeight * (i - notDrawOperationCount)) + operationStartHeight);
+                            topLeftCorner.getX() + leftSpace, topLeftCorner.getY() + classHeight + 15.0 + (defaultOperationHeight * (i - notDrawOperationCount)) + operationStartHeight);
                 } else {
                     notDrawOperationCount++;
                     isExistedNoIndication = true;
@@ -341,7 +352,7 @@ public class ClassNodeDiagram extends NodeDiagram {
             if (isExistedNoIndication) {
                 gc.setTextAlign(TextAlignment.CENTER);
                 gc.fillText("... " + operationNotVisibilityCount + " more",
-                        currentPoint.getX(), upperLeftCorner.getY() + classHeight + 15.0 + (defaultOperationHeight * (operationsText.size() - operationNotVisibilityCount)) + operationStartHeight);
+                        currentPoint.getX(), topLeftCorner.getY() + classHeight + 15.0 + (defaultOperationHeight * (operationsText.size() - operationNotVisibilityCount)) + operationStartHeight);
             }
         }
     }
@@ -508,8 +519,8 @@ public class ClassNodeDiagram extends NodeDiagram {
     public void calculateWidthAndHeight(double maxWidth, double maxHeight) {
         calculateUpperLeftCorner(currentPoint, maxWidth, maxHeight);
         calculateBottomRightCorner(currentPoint, maxWidth, maxHeight);
-        width = bottomRightCorner.subtract(upperLeftCorner).getX();
-        height = bottomRightCorner.subtract(upperLeftCorner).getY();
+        width = bottomRightCorner.subtract(topLeftCorner).getX();
+        height = bottomRightCorner.subtract(topLeftCorner).getY();
     }
 
     /**
@@ -524,7 +535,7 @@ public class ClassNodeDiagram extends NodeDiagram {
      * @param height クラスの最大高さ
      */
     private void calculateUpperLeftCorner(Point2D point, double width, double height) {
-        upperLeftCorner = new Point2D(point.getX() - width / 2, point.getY() - height / 2);
+        topLeftCorner = new Point2D(point.getX() - width / 2, point.getY() - height / 2);
     }
 
     /**

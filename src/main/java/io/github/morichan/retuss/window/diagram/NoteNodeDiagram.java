@@ -1,5 +1,7 @@
 package io.github.morichan.retuss.window.diagram;
 
+import javafx.geometry.Point2D;
+
 import java.util.List;
 
 public class NoteNodeDiagram extends NodeDiagram {
@@ -7,6 +9,10 @@ public class NoteNodeDiagram extends NodeDiagram {
     @Override
     public boolean isAlreadyDrawnNode(double x, double y) {
         return false;
+    }
+
+    @Override
+    public void moveTo(Point2D point) {
     }
 
     @Override

@@ -414,9 +414,13 @@ public class EdgeDiagram {
      * @param number                       描画する関係の番号 ここにおける番号とは、生成した順番を表す。
      */
     private void drawEdge(Point2D relationIntersectPoint, Point2D relationSourceIntersectPoint, int number) {
-        drawLine(relationIntersectPoint, relationSourceIntersectPoint);
-        drawEdgeUmbrella(relationIntersectPoint, relationSourceIntersectPoint, number);
-        drawEdgeName(relationIntersectPoint, relationSourceIntersectPoint, number);
+        try {
+            drawLine(relationIntersectPoint, relationSourceIntersectPoint);
+            drawEdgeUmbrella(relationIntersectPoint, relationSourceIntersectPoint, number);
+            drawEdgeName(relationIntersectPoint, relationSourceIntersectPoint, number);
+        } catch (NullPointerException e) {
+            // クラスとクラスの間が重なっている場合何もしない
+        }
     }
 
     /**

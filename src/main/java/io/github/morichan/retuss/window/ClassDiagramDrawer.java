@@ -69,18 +69,17 @@ public class ClassDiagramDrawer {
     /**
      * クラス図キャンバスにおいて操作しているマウスの位置を受け取る。
      *
-     * @param x マウスのX軸
-     * @param y マウスのY軸
+     * @param x マウスのX軸座標
+     * @param y マウスのY軸座標
      */
     public void setMouseCoordinates(double x, double y) {
-        mousePoint = new Point2D(x, y);
-        operationalPoint = checkPointFromCanvas(mousePoint);
+        setMouseCoordinates(new Point2D(x, y));
     }
 
     /**
      * クラス図キャンバスにおいて操作しているマウスの位置を受け取る。
      *
-     * @param mouse マウスのポイント
+     * @param mouse マウスの座標
      */
     public void setMouseCoordinates(Point2D mouse) {
         this.mousePoint = mouse;
@@ -147,6 +146,8 @@ public class ClassDiagramDrawer {
             double relationSourceWidth = nodes.get(relationSourceId).getWidth();
             double relationSourceHeight = nodes.get(relationSourceId).getHeight();
 
+            relations.setRelationPoint(ContentType.Composition, i, nodes.get(relationId).getPoint());
+            relations.setRelationSourcePoint(ContentType.Composition, i, nodes.get(relationSourceId).getPoint());
             relations.draw(relationWidth, relationHeight, relationSourceWidth, relationSourceHeight, i);
         }
     }
@@ -306,6 +307,16 @@ public class ClassDiagramDrawer {
     }
 
     /**
+     * 描画済みの任意のノードにおける座標位置を変更する。
+     *
+     * @param nodeNumber    描画済みの任意のノード番号
+     * @param point         変更先の座標
+     */
+    public void moveTo(int nodeNumber, Point2D point) {
+        nodes.get(nodeNumber).moveTo(checkPointFromCanvas(point));
+    }
+
+    /**
      * 描画済みの任意のノードを削除する。
      *
      * @param number 描画済みの任意のノード番号
@@ -412,22 +423,19 @@ public class ClassDiagramDrawer {
      * @return キャンバス上の任意のポイントに任意の図を描画済みか否かの真偽値
      */
     public boolean isAlreadyDrawnAnyDiagram(double mouseX, double mouseY) {
-        boolean act = false;
 
         for (NodeDiagram nodeDiagram : nodes) {
             if (nodeDiagram.isAlreadyDrawnNode(mouseX, mouseY)) {
-                act = true;
-                break;
+                return true;
             }
         }
         for (int i = 0; i < relations.getCompositionsCount(); i++) {
             if (relations.isAlreadyDrawnAnyEdge(ContentType.Composition, i, new Point2D(mouseX, mouseY))) {
-                act = true;
-                break;
+                return true;
             }
         }
 
-        return act;
+        return false;
     }
 
     /**
@@ -438,8 +446,7 @@ public class ClassDiagramDrawer {
      * @return キャンバス上の任意のポイントにおける描画済みのエッジのインスタンス <br> キャンバス上の任意のポイントに何も描画していない場合は {@code null} を返す。
      */
     public RelationshipAttributeGraphic searchDrawnEdge(double mouseX, double mouseY) {
-        RelationshipAttributeGraphic relation = relations.searchCurrentRelation(new Point2D(mouseX, mouseY));
-        return relation;
+        return relations.searchCurrentRelation(new Point2D(mouseX, mouseY));
     }
 
     /**
