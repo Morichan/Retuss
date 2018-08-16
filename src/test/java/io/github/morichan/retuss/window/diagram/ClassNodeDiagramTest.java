@@ -1,6 +1,7 @@
 package io.github.morichan.retuss.window.diagram;
 
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Text;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class ClassNodeDiagramTest {
 
@@ -19,6 +21,8 @@ class ClassNodeDiagramTest {
     @BeforeEach
     void setObj() {
         obj = new ClassNodeDiagram();
+        GraphicsContext mock = mock(GraphicsContext.class);
+        obj.setGraphicsContext(mock);
     }
 
     @Test
