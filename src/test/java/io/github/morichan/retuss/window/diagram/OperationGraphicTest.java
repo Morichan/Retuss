@@ -1,5 +1,7 @@
 package io.github.morichan.retuss.window.diagram;
 
+import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.fescue.feature.name.Name;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -60,5 +62,15 @@ class OperationGraphicTest {
 
         for (int i = 0; i < expected.size(); i++)
             assertThat(operations.get(i).isIndicate()).isEqualTo(expected.get(i));
+    }
+
+    @Test
+    void 操作を取得する() {
+        Operation expected = new Operation(new Name("createdOperation"));
+
+        operation.setText("createdOperation()");
+        Operation actual = operation.getOperation();
+
+        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
     }
 }

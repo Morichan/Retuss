@@ -1,5 +1,7 @@
 package io.github.morichan.retuss.window;
 
+import io.github.morichan.retuss.language.java.Java;
+import io.github.morichan.retuss.translator.Translator;
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.NodeDiagram;
 import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
@@ -52,7 +54,9 @@ public class Controller {
     private TextInputDialog classNameInputDialog;
 
     private UtilityJavaFXComponent util = new UtilityJavaFXComponent();
-    private ClassDiagramDrawer classDiagramDrawer = new ClassDiagramDrawer();
+    private static Translator translator = new Translator();
+    private static ClassDiagramDrawer classDiagramDrawer = new ClassDiagramDrawer();
+    private static String code = "";
 
     /**
      * <p> JavaFXにおけるデフォルトコンストラクタ </p>
@@ -140,6 +144,8 @@ public class Controller {
         } else if (event.getButton() == MouseButton.SECONDARY) {
             clickedCanvasBySecondaryButtonInCD(event.getX(), event.getY());
         }
+        translator.translate(classDiagramDrawer.extractPackage());
+        setCodeTab(translator.getJava().getClasses().get(0).toString());
     }
 
     /**
@@ -452,6 +458,16 @@ public class Controller {
     private Tab createCodeTab(String tabName) {
         CodeArea codeArea = new CodeArea();
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.appendText(code);
+        codeArea.setOnKeyTyped(event -> {
+            System.out.println("Pressed");
+            System.out.println(((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getText());
+            // System.out.println(classDiagramDrawer.extractPackage().getClasses().get(0).getName());
+            //translator.translate(new Java());
+        });
+        codeArea.setOnMouseClicked(event -> {
+            if (!code.equals(codeArea.getText())) codeArea.replaceText(code);
+        });
 
         AnchorPane anchor = new AnchorPane(codeArea);
         AnchorPane.setBottomAnchor(codeArea, 0.0);
@@ -464,5 +480,11 @@ public class Controller {
         codeTab.setText(tabName);
 
         return codeTab;
+    }
+
+    private void setCodeTab(String code) {
+        this.code = code;
+        codeTabPane = new TabPane(createCodeTab("Java"));
+        ((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).appendText(code);
     }
 }

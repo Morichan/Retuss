@@ -23,6 +23,10 @@ public class OperationGraphic extends ClassDiagramGraphic {
         isIndicate = true;
     }
 
+    public Operation getOperation() {
+        return operation;
+    }
+
     @Override
     public void setText(String name) {
         sculptor.parse(name);

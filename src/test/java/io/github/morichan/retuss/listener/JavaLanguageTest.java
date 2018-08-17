@@ -1,5 +1,6 @@
 package io.github.morichan.retuss.listener;
 
+import io.github.morichan.retuss.language.java.Java;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,25 @@ class JavaLanguageTest {
             String actual = obj.getExtendedClassName();
 
             assertThat(actual).isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    class Javaインスタンスの場合 {
+
+        @BeforeEach
+        void setup() {
+            obj = new JavaLanguage();
+        }
+
+        @Test
+        void クラス名を持つクラスを1つ抽出する() {
+            String expected = "class ClassName {\n}\n";
+
+            obj.parseForClassDiagram("class ClassName {\n}\n");
+            Java actual = obj.getJava();
+
+            assertThat(actual.getClasses().get(0)).hasToString(expected);
         }
     }
 }

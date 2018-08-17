@@ -1,5 +1,12 @@
 package io.github.morichan.retuss.window;
 
+import io.github.morichan.fescue.feature.Attribute;
+import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.fescue.feature.name.Name;
+import io.github.morichan.fescue.feature.type.Type;
+import io.github.morichan.fescue.feature.visibility.Visibility;
+import io.github.morichan.retuss.language.uml.Class;
+import io.github.morichan.retuss.language.uml.Package;
 import io.github.morichan.retuss.window.diagram.ClassNodeDiagram;
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.NoteNodeDiagram;
@@ -1107,6 +1114,164 @@ class ClassDiagramDrawerTest {
 
             assertThat(actualTrue).isTrue();
             assertThat(actualFalse).isFalse();
+        }
+    }
+
+    @Nested
+    class パッケージインスタンスを抽出する際に extends ApplicationTest {
+        @Tested
+        ClassDiagramDrawer cdd;
+
+        List<Button> buttons = new ArrayList<>();
+        Button normalButton;
+        Button classButton;
+        Button noteButton;
+        Button compositionButton;
+        Button generalizationButton;
+        Point2D firstClass;
+        Point2D secondClass;
+        Point2D thirdClass;
+        Point2D betweenFirstAndSecondClass;
+        Point2D betweenFirstAndThirdClass;
+
+        UtilityJavaFXComponent util;
+
+        @Nested
+        class クラスを1つ記述している場合 {
+
+            @BeforeEach
+            void setUp() {
+                cdd = new ClassDiagramDrawer();
+                GraphicsContext mocked = mock(GraphicsContext.class);
+                Canvas canvas = new Canvas();
+                canvas.setWidth(1000.0);
+                canvas.setHeight(1000.0);
+                when(mocked.getCanvas()).thenReturn(canvas);
+                cdd.setGraphicsContext(mocked);
+
+                normalButton = new Button("Normal");
+                classButton = new Button("Class");
+                noteButton = new Button("Note");
+                buttons = Arrays.asList(normalButton, classButton, noteButton);
+                firstClass = new Point2D(100.0, 200.0);
+
+                util = new UtilityJavaFXComponent();
+                buttons = util.bindAllButtonsFalseWithout(buttons, classButton);
+
+                ClassNodeDiagram.resetNodeCount();
+
+                cdd.setNodeText("FirstClassName");
+                createClasses(cdd, buttons, 0, "FirstClassName", firstClass);
+            }
+
+            @Test
+            void クラス名のみのインスタンスを抽出する() {
+                Class expected = new Class("FirstClassName");
+
+                cdd.allReDrawCanvas();
+                Package actual = cdd.extractPackage();
+
+                assertThat(actual.getClasses().get(0)).isEqualToComparingFieldByFieldRecursively(expected);
+            }
+
+            @Test
+            void 属性を1つ持つインスタンスを抽出する() {
+                Class expected = new Class("FirstClassName");
+                expected.addAttribute(new Attribute(new Name("attributeFromFirst")));
+
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "attributeFromFirst");
+                cdd.allReDrawCanvas();
+                Package actual = cdd.extractPackage();
+
+                assertThat(actual.getClasses().get(0)).isEqualToComparingFieldByFieldRecursively(expected);
+            }
+
+            @Test
+            void 操作を1つ持つインスタンスを抽出する() {
+                Class expected = new Class("FirstClassName");
+                Operation operation = new Operation(new Name("operationFromFirst"));
+                operation.setVisibility(Visibility.Public);
+                operation.setReturnType(new Type("float"));
+                expected.addOperation(operation);
+
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Operation, "+ operationFromFirst() : float");
+                cdd.allReDrawCanvas();
+                Package actual = cdd.extractPackage();
+
+                assertThat(actual.getClasses().get(0)).isEqualToComparingFieldByFieldRecursively(expected);
+            }
+        }
+
+        @Nested
+        class クラスを3つ記述している場合 {
+
+            @BeforeEach
+            void setUp() {
+                cdd = new ClassDiagramDrawer();
+                GraphicsContext mocked = mock(GraphicsContext.class);
+                Canvas canvas = new Canvas();
+                canvas.setWidth(1000.0);
+                canvas.setHeight(1000.0);
+                when(mocked.getCanvas()).thenReturn(canvas);
+                cdd.setGraphicsContext(mocked);
+
+                normalButton = new Button("Normal");
+                classButton = new Button("Class");
+                noteButton = new Button("Note");
+                compositionButton = new Button("Composition");
+                generalizationButton = new Button("Generalization");
+                buttons = Arrays.asList(normalButton, classButton, noteButton, compositionButton, generalizationButton);
+                firstClass = new Point2D(100.0, 200.0);
+                secondClass = new Point2D(500.0, 600.0);
+                thirdClass = new Point2D(100.0, 600.0);
+                betweenFirstAndSecondClass = new Point2D(300.0, 400.0);
+                betweenFirstAndThirdClass = new Point2D(100.0, 400.0);
+
+                util = new UtilityJavaFXComponent();
+                buttons = util.bindAllButtonsFalseWithout(buttons, classButton);
+
+                ClassNodeDiagram.resetNodeCount();
+
+                cdd.setNodeText("FirstClassName");
+                createClasses(cdd, buttons, 0, "FirstClassName", firstClass);
+                createClasses(cdd, buttons, 1, "SecondClassName", secondClass);
+                createClasses(cdd, buttons, 2, "ThirdClassName", thirdClass);
+            }
+
+            @Test
+            void クラス名のみのインスタンスを抽出する() {
+                Package expected = new Package();
+                expected.addClass(new Class("FirstClassName"));
+                expected.addClass(new Class("SecondClassName"));
+                expected.addClass(new Class("ThirdClassName"));
+
+                cdd.allReDrawCanvas();
+                Package actual = cdd.extractPackage();
+
+                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+            }
+
+            @Test
+            void 継承クラスを持つインスタンスを抽出する() {
+                Package expected = new Package();
+                Class extendingClass = new Class("FirstClassName");
+                Class extendedClass = new Class("SecondClassName");
+                extendingClass.setGeneralizationClass(extendedClass);
+                expected.addClass(extendingClass);
+                expected.addClass(extendedClass);
+                expected.addClass(new Class("ThirdClassName"));
+
+                buttons = util.bindAllButtonsFalseWithout(buttons, generalizationButton);
+                cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, firstClass.getX(), firstClass.getY());
+                cdd.setMouseCoordinates(firstClass.getX(), firstClass.getY());
+                cdd.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, secondClass.getX(), secondClass.getY());
+                cdd.addDrawnEdge(buttons, "", secondClass.getX(), secondClass.getY());
+
+                cdd.allReDrawCanvas();
+                Package actual = cdd.extractPackage();
+
+                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+            }
         }
     }
 

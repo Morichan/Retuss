@@ -1,5 +1,7 @@
 package io.github.morichan.retuss.window;
 
+import io.github.morichan.retuss.language.uml.Package;
+import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.window.diagram.*;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
 import javafx.geometry.Point2D;
@@ -21,6 +23,7 @@ public class ClassDiagramDrawer {
     private GraphicsContext gc;
     private List<NodeDiagram> nodes = new ArrayList<>();
     private EdgeDiagram relations = new EdgeDiagram();
+    private Package umlPackage;
 
     private int currentNodeNumber = -1;
 
@@ -44,6 +47,19 @@ public class ClassDiagramDrawer {
 
     private String nodeText = "";
     private ContentType nowStateType = ContentType.Undefined;
+
+    /**
+     * <p> パッケージインスタンスを抽出します </p>
+     *
+     * <p>
+     *     正確には {@link #allReDrawCanvas()} メソッド、およびその内部で呼び出している {@link #allReDrawNode()} メソッドないで整形しています。
+     * </p>
+     *
+     * @return パッケージインスタンス
+     */
+    public Package extractPackage() {
+        return umlPackage;
+    }
 
     /**
      * 操作中のノード番号を返す。
@@ -114,23 +130,34 @@ public class ClassDiagramDrawer {
     }
 
     /**
-     * クラス図キャンバスにおける全てのノード、エッジおよびキャンバスの縁を描画する。
-     * 上書きするのを防ぐために、最初にキャンバスをまっさらにする。
+     * <p> クラス図キャンバスにおける全てのノード、エッジおよびキャンバスの縁を描画します </p>
+     *
+     * <p>
+     * 上書きするのを防ぐために、最初にキャンバスをまっさらにします。
+     * 同時に {@link Package} インスタンスを整形します。
+     * </p>
      */
     public void allReDrawCanvas() {
         gc.clearRect(0.0, 0.0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
+        umlPackage = new Package();
+
         drawDiagramCanvasEdge();
-        allReDrawEdge();
         allReDrawNode();
+        allReDrawEdge();
     }
 
     /**
-     * クラス図キャンバスにおける全てのノードを描画する。
+     * <p> クラス図キャンバスにおける全てのノードを描画します </p>
+     *
+     * <p>
+     * 同時に {@link io.github.morichan.retuss.language.uml.Class} インスタンスを整形し、 {@link #umlPackage} 変数に格納します。
+     * </p>
      */
     public void allReDrawNode() {
         for (int i = 0; i < nodes.size(); i++) {
             drawNode(i);
+            if (nodes.get(i) instanceof ClassNodeDiagram) umlPackage.addClass(((ClassNodeDiagram) nodes.get(i)).extractClass());
         }
     }
 
@@ -149,6 +176,23 @@ public class ClassDiagramDrawer {
             relations.setRelationPoint(ContentType.Composition, i, nodes.get(relationId).getPoint());
             relations.setRelationSourcePoint(ContentType.Composition, i, nodes.get(relationSourceId).getPoint());
             relations.draw(relationWidth, relationHeight, relationSourceWidth, relationSourceHeight, i);
+            if (relations.getContentType(i) == ContentType.Generalization) {
+                Class extendingClass = new Class();
+                Class extendedClass = new Class();
+                for (Class umlClass : umlPackage.getClasses()) {
+                    if (umlClass.getName().equals(nodes.get(relationSourceId).getNodeText())) {
+                        extendingClass = umlClass;
+                        break;
+                    }
+                }
+                for (Class umlClass : umlPackage.getClasses()) {
+                    if (umlClass.getName().equals(nodes.get(relationId).getNodeText())) {
+                        extendedClass = umlClass;
+                        break;
+                    }
+                }
+                extendingClass.setGeneralizationClass(extendedClass);
+            }
         }
     }
 

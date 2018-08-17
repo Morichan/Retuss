@@ -31,6 +31,10 @@ public class AttributeGraphic extends ClassDiagramGraphic {
         isIndicate = true;
     }
 
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @Override
     public void setText(String name) {
         sculptor.parse(name);

@@ -1,5 +1,9 @@
 package io.github.morichan.retuss.window.diagram;
 
+import io.github.morichan.fescue.feature.Attribute;
+import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.fescue.feature.name.Name;
+import io.github.morichan.retuss.language.uml.Class;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Text;
@@ -595,5 +599,42 @@ class ClassNodeDiagramTest {
 
         assertThat(actualWidth).isEqualTo(expectedWidth);
         assertThat(actualHeight).isEqualTo(expectedHeight);
+    }
+
+    @Test
+    void クラス名のみのクラスを返す() {
+        Class expected = new Class("CreatedClass");
+
+        obj.createNodeText(ContentType.Title, "CreatedClass");
+        obj.draw();
+        Class actual = obj.extractClass();
+
+        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+    }
+
+    @Test
+    void 属性を1つ持つクラスを返す() {
+        Class expected = new Class("ClassName");
+        expected.addAttribute(new Attribute(new Name("attribute")));
+
+        obj.createNodeText(ContentType.Title, "ClassName");
+        obj.createNodeText(ContentType.Attribute, "attribute");
+        obj.draw();
+        Class actual = obj.extractClass();
+
+        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+    }
+
+    @Test
+    void 操作を1つ持つクラスを返す() {
+        Class expected = new Class("ClassName");
+        expected.addOperation(new Operation(new Name("operation")));
+
+        obj.createNodeText(ContentType.Title, "ClassName");
+        obj.createNodeText(ContentType.Operation, "operation()");
+        obj.draw();
+        Class actual = obj.extractClass();
+
+        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
     }
 }

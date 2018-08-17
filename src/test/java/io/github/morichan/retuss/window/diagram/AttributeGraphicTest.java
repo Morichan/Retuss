@@ -1,5 +1,7 @@
 package io.github.morichan.retuss.window.diagram;
 
+import io.github.morichan.fescue.feature.Attribute;
+import io.github.morichan.fescue.feature.name.Name;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -62,4 +64,13 @@ class AttributeGraphicTest {
             assertThat(attributes.get(i).isIndicate()).isEqualTo(expected.get(i));
     }
 
+    @Test
+    void 属性を取得する() {
+        Attribute expected = new Attribute(new Name("createdAttribute"));
+
+        attribute.setText("createdAttribute");
+        Attribute actual = attribute.getAttribute();
+
+        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+    }
 }

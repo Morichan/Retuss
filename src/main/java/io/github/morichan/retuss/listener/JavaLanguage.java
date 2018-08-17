@@ -1,5 +1,6 @@
 package io.github.morichan.retuss.listener;
 
+import io.github.morichan.retuss.language.java.Java;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -8,13 +9,9 @@ import io.github.morichan.retuss.parser.java.JavaLexer;
 import io.github.morichan.retuss.parser.java.JavaParser;
 
 public class JavaLanguage {
-    private JavaEvalListener java = new JavaEvalListener();
+    private JavaEvalListener javaEvalListener = new JavaEvalListener();
 
-    private JavaLexer lexer;
-    private CommonTokenStream tokens;
-    private JavaParser parser;
-    private ParseTree tree;
-    private ParseTreeWalker walker;
+    private Java java;
 
     private String className;
     private String extendedClassName;
@@ -23,6 +20,11 @@ public class JavaLanguage {
         walk(code);
         className = searchClassName();
         extendedClassName = searchExtendedClassName();
+        java = javaEvalListener.getJava();
+    }
+
+    public Java getJava() {
+        return java;
     }
 
     public String getClassName() {
@@ -46,9 +48,9 @@ public class JavaLanguage {
     private String searchClassName() {
         String name = "";
 
-        for (int i = 0; i < java.getTypeDeclarations().get(0).getChildCount(); i++) {
-            if (java.getTypeDeclarations().get(0).getChild(i) instanceof JavaParser.ClassDeclarationContext) {
-                name = java.getTypeDeclarations().get(0).getChild(i).getChild(1).getText();
+        for (int i = 0; i < javaEvalListener.getTypeDeclarations().get(0).getChildCount(); i++) {
+            if (javaEvalListener.getTypeDeclarations().get(0).getChild(i) instanceof JavaParser.ClassDeclarationContext) {
+                name = javaEvalListener.getTypeDeclarations().get(0).getChild(i).getChild(1).getText();
                 break;
             }
         }
@@ -70,16 +72,16 @@ public class JavaLanguage {
     private String searchExtendedClassName() {
         String name = "";
 
-        for (int i = 0; i < java.getTypeDeclarations().get(0).getChildCount(); i++) {
-            if (java.getTypeDeclarations().get(0).getChild(i) instanceof JavaParser.ClassDeclarationContext) {
+        for (int i = 0; i < javaEvalListener.getTypeDeclarations().get(0).getChildCount(); i++) {
+            if (javaEvalListener.getTypeDeclarations().get(0).getChild(i) instanceof JavaParser.ClassDeclarationContext) {
                 // クラス宣言コンテキスト内
-                for (int j = 0; j < java.getTypeDeclarations().get(0).getChild(i).getChildCount(); j++) {
-                    if (java.getTypeDeclarations().get(0).getChild(i).getChild(j) instanceof JavaParser.TypeTypeContext) {
+                for (int j = 0; j < javaEvalListener.getTypeDeclarations().get(0).getChild(i).getChildCount(); j++) {
+                    if (javaEvalListener.getTypeDeclarations().get(0).getChild(i).getChild(j) instanceof JavaParser.TypeTypeContext) {
                         // 継承先クラス名コンテキスト内を含むTypeTypeコンテキスト内
-                        for (int k = 0; k < java.getTypeDeclarations().get(0).getChild(i).getChild(j).getChildCount(); k++) {
-                            if (java.getTypeDeclarations().get(0).getChild(i).getChild(j).getChild(k) instanceof JavaParser.ClassOrInterfaceTypeContext) {
+                        for (int k = 0; k < javaEvalListener.getTypeDeclarations().get(0).getChild(i).getChild(j).getChildCount(); k++) {
+                            if (javaEvalListener.getTypeDeclarations().get(0).getChild(i).getChild(j).getChild(k) instanceof JavaParser.ClassOrInterfaceTypeContext) {
                                 // 継承先クラス名コンテキスト内
-                                name = java.getTypeDeclarations().get(0).getChild(i).getChild(j).getChild(k).getText();
+                                name = javaEvalListener.getTypeDeclarations().get(0).getChild(i).getChild(j).getChild(k).getText();
                                 break;
                             }
                         }
@@ -104,12 +106,12 @@ public class JavaLanguage {
      * @param code 構文解析したいコードの文字列
      */
     private void walk(String code) {
-        lexer = new JavaLexer(CharStreams.fromString(code));
-        tokens = new CommonTokenStream(lexer);
-        parser = new JavaParser(tokens);
-        tree = parser.compilationUnit();
-        walker = new ParseTreeWalker();
-        java = new JavaEvalListener();
-        walker.walk(java, tree);
+        JavaLexer lexer = new JavaLexer(CharStreams.fromString(code));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        JavaParser parser = new JavaParser(tokens);
+        ParseTree tree = parser.compilationUnit();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        javaEvalListener = new JavaEvalListener();
+        walker.walk(javaEvalListener, tree);
     }
 }

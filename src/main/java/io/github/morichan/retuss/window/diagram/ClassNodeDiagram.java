@@ -1,5 +1,8 @@
 package io.github.morichan.retuss.window.diagram;
 
+import io.github.morichan.fescue.feature.Attribute;
+import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.window.ClassDiagramDrawer;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -22,6 +25,8 @@ import java.util.List;
  * </p>
  */
 public class ClassNodeDiagram extends NodeDiagram {
+    private Class umlClass = new Class();
+
     private Point2D topLeftCorner = Point2D.ZERO;
     private Point2D bottomRightCorner = Point2D.ZERO;
 
@@ -41,6 +46,20 @@ public class ClassNodeDiagram extends NodeDiagram {
     private int attributeNotVisibilityCount = 0;
 
     private int operationNotVisibilityCount = 0;
+
+    /**
+     * <p> クラスを抽出します </p>
+     *
+     * <p>
+     *     正確には、 {@link #draw()} メソッド内で抽出しています。
+     *     そのため、このメソッドは {@link #draw()} メソッド実行後に実行してください。
+     * </p>
+     *
+     * @return {@link Class} インスタンスに整形したクラス
+     */
+    public Class extractClass() {
+        return umlClass;
+    }
 
     /**
      * <p> クラス名の左右の余白の長さを取得します </p>
@@ -105,7 +124,8 @@ public class ClassNodeDiagram extends NodeDiagram {
         if (type == ContentType.Title) {
             nodeText = text;
         } else if (type == ContentType.Attribute) {
-            attributes.add(new AttributeGraphic(text));
+            AttributeGraphic attribute = new AttributeGraphic(text);
+            attributes.add(attribute);
         } else if (type == ContentType.Operation) {
             operations.add(new OperationGraphic(text));
         }
@@ -261,18 +281,24 @@ public class ClassNodeDiagram extends NodeDiagram {
 
         Text classNameText = new Text(nodeText);
         classNameText.setFont(Font.font(diagramFont, FontWeight.BOLD, classNameFontSize));
+        umlClass = new Class(nodeText);
+
         List<Text> attributesText = new ArrayList<>();
-        List<Text> operationsText = new ArrayList<>();
         for (ClassDiagramGraphic attribute : attributes) {
             Text text = new Text(attribute.getText());
             text.setFont(Font.font(diagramFont, FontWeight.LIGHT, classAttributeFontSize));
             attributesText.add(text);
+            umlClass.addAttribute(((AttributeGraphic) attribute).getAttribute());
         }
+
+        List<Text> operationsText = new ArrayList<>();
         for (ClassDiagramGraphic operation : operations) {
             Text text = new Text(operation.getText());
             text.setFont(Font.font(diagramFont, FontWeight.LIGHT, classOperationFontSize));
             operationsText.add(text);
+            umlClass.addOperation(((OperationGraphic) operation).getOperation());
         }
+
         double maxWidth = calculateMaxWidth(classNameText, attributesText, operationsText);
         double classHeight = defaultClassHeight;
         double attributeHeight = calculateMaxAttributeHeight(attributes);
