@@ -23,7 +23,7 @@ public class ClassDiagramDrawer {
     private GraphicsContext gc;
     private List<NodeDiagram> nodes = new ArrayList<>();
     private EdgeDiagram relations = new EdgeDiagram();
-    private Package umlPackage;
+    private Package umlPackage = new Package();
 
     private int currentNodeNumber = -1;
 

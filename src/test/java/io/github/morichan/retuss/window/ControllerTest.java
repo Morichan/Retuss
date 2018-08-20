@@ -1146,15 +1146,10 @@ class ControllerTest extends ApplicationTest {
                 }
 
                 @Test
-                void クラスアイコンを選択していない際にキャンバスをクリックしても何も表示しない(@Mocked TextInputDialog mock) {
+                void クラスアイコンを選択していない際にキャンバスをクリックしても何も表示しない() {
                     clickOn("#classDiagramCanvas");
 
                     assertThrows(FxRobotException.class, () -> clickOn(okButtonOnDialogBox));
-
-                    new Verifications() {{
-                        mock.showAndWait();
-                        times = 0;
-                    }};
                 }
 
                 @Nested
@@ -1480,6 +1475,7 @@ class ControllerTest extends ApplicationTest {
         }
     }
 
+    private static int windowStartCount = 0;
 
     @Nested
     class コード入力画面において extends ApplicationTest {
@@ -1488,6 +1484,11 @@ class ControllerTest extends ApplicationTest {
         Scene mainScene;
         Scene codeScene;
 
+        @AfterEach
+        void reset() {
+            windowStartCount = 0;
+        }
+
         @Start
         public void start(Stage stage) throws IOException {
             Stage addStage = new Stage();
@@ -1495,11 +1496,14 @@ class ControllerTest extends ApplicationTest {
             codeScene = new Scene(FXMLLoader.load(getClass().getResource("/retussCode.fxml")));
             stage.setScene(mainScene);
             addStage.setScene(codeScene);
-            addStage.initOwner(stage);
-            stage.show();
-            addStage.show();
+            if (windowStartCount == 0) {
+                stage.show();
+            } else {
+                addStage.show();
+            }
             mainStage = stage;
             codeStage = addStage;
+            windowStartCount++;
         }
 
         @Nested
@@ -1508,7 +1512,6 @@ class ControllerTest extends ApplicationTest {
             @BeforeEach
             void setup() {
                 moveCodeWindow();
-                deleteCodeWindow();
             }
 
             @Test
@@ -1579,7 +1582,6 @@ class ControllerTest extends ApplicationTest {
             @BeforeEach
             void moveAndDeleteCodeWindow() {
                 moveCodeWindow();
-                deleteCodeWindow();
             }
 
             @Test
@@ -1597,10 +1599,6 @@ class ControllerTest extends ApplicationTest {
 
         private void moveCodeWindow() {
             drag(new Point2D(800.0, 250.0)).dropTo(new Point2D(1700.0, 250.0));
-        }
-
-        private void deleteCodeWindow() {
-            clickOn(new Point2D(1230, 250));
         }
     }
 

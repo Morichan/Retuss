@@ -69,12 +69,15 @@ public class Controller {
     @FXML
     private void initialize() {
         buttonsInCD.addAll(Arrays.asList(normalButtonInCD, classButtonInCD, noteButtonInCD, compositionButtonInCD, generalizationButtonInCD));
+        code = "";
         try {
             // retussCode.FXMLファイルの読み込み時にclassDiagramCanvasが設定されていないためNullPointerExceptionを投げるのを防ぐ
             GraphicsContext gc = classDiagramCanvas.getGraphicsContext2D();
             double scrollBarBreadth = 15.0;
             gc.getCanvas().setWidth(classDiagramScrollPane.getPrefWidth() - scrollBarBreadth);
             gc.getCanvas().setHeight(classDiagramScrollPane.getPrefHeight() - scrollBarBreadth);
+            translator = new Translator();
+            classDiagramDrawer = new ClassDiagramDrawer();
             classDiagramDrawer.setGraphicsContext(gc);
         } catch (NullPointerException e) {
             // 結果的にこちらはretussCode.FXMLに関する変数を設定することになる
@@ -145,7 +148,7 @@ public class Controller {
             clickedCanvasBySecondaryButtonInCD(event.getX(), event.getY());
         }
         translator.translate(classDiagramDrawer.extractPackage());
-        setCodeTab(translator.getJava().getClasses().get(0).toString());
+        if (translator.getJava().getClasses().size() > 0) setCodeTab(translator.getJava().getClasses().get(0).toString());
     }
 
     /**
