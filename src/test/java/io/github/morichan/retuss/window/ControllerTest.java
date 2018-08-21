@@ -1653,7 +1653,8 @@ class ControllerTest extends ApplicationTest {
      * <p> コード入力ウィンドウに存在するJavaタブ内の文字列を取得する。 </p>
      *
      * <p>
-     * 具体的には、ステージ上のボーダーパネル上のタブパネル上の1つ目のタブ内のアンカーパネル上のコードエリア内の文字列を取得する。
+     * 具体的には、ステージ上のボーダーパネル上のタブパネル上の1つ目のタブ内のアンカーパネル上の
+     * タブパネル上の1つ目のタブ内のアンカーパネル上のコードエリア内の文字列を取得する。
      * 上記構造のタブ内以降についてはController実行中に生成しているため、変更される恐れがある。
      * </p>
      *
@@ -1667,9 +1668,12 @@ class ControllerTest extends ApplicationTest {
     private String getCode(Stage stage) {
         BorderPane borderPaneOnStage = (BorderPane) stage.getScene().getRoot().getChildrenUnmodifiable().get(0);
         TabPane tabPaneOnBorderPane = (TabPane) borderPaneOnStage.getCenter();
-        Tab tabOnTabPane = tabPaneOnBorderPane.getTabs().get(0);
-        AnchorPane anchorPaneOnTab = (AnchorPane) tabOnTabPane.getContent();
-        CodeArea codeArea = (CodeArea) anchorPaneOnTab.getChildren().get(0);
+        Tab tabOnLanguageTabPane = tabPaneOnBorderPane.getTabs().get(0);
+        AnchorPane anchorPaneOnLanguageTab = (AnchorPane) tabOnLanguageTabPane.getContent();
+        TabPane tabPaneOnAnchorPane = (TabPane) anchorPaneOnLanguageTab.getChildren().get(0);
+        Tab tabOnCodeTabPane = tabPaneOnAnchorPane.getTabs().get(0);
+        AnchorPane anchorPaneOnCodeTab = (AnchorPane) tabOnCodeTabPane.getContent();
+        CodeArea codeArea = (CodeArea) anchorPaneOnCodeTab.getChildren().get(0);
         return codeArea.getText();
     }
 

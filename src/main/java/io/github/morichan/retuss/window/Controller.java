@@ -1,5 +1,6 @@
 package io.github.morichan.retuss.window;
 
+import io.github.morichan.retuss.language.java.Class;
 import io.github.morichan.retuss.language.java.Java;
 import io.github.morichan.retuss.translator.Translator;
 import io.github.morichan.retuss.window.diagram.ContentType;
@@ -17,7 +18,6 @@ import javafx.scene.layout.AnchorPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +56,7 @@ public class Controller {
     private UtilityJavaFXComponent util = new UtilityJavaFXComponent();
     private static Translator translator = new Translator();
     private static ClassDiagramDrawer classDiagramDrawer = new ClassDiagramDrawer();
-    private static String code = "";
+    private static Java java = new Java();
 
     /**
      * <p> JavaFXにおけるデフォルトコンストラクタ </p>
@@ -69,7 +69,7 @@ public class Controller {
     @FXML
     private void initialize() {
         buttonsInCD.addAll(Arrays.asList(normalButtonInCD, classButtonInCD, noteButtonInCD, compositionButtonInCD, generalizationButtonInCD));
-        code = "";
+        java = new Java();
         try {
             // retussCode.FXMLファイルの読み込み時にclassDiagramCanvasが設定されていないためNullPointerExceptionを投げるのを防ぐ
             GraphicsContext gc = classDiagramCanvas.getGraphicsContext2D();
@@ -81,7 +81,7 @@ public class Controller {
             classDiagramDrawer.setGraphicsContext(gc);
         } catch (NullPointerException e) {
             // 結果的にこちらはretussCode.FXMLに関する変数を設定することになる
-            codeTabPane.getTabs().add(createCodeTab("Java"));
+            codeTabPane.getTabs().add(createLanguageTab("Java"));
         }
     }
 
@@ -148,7 +148,7 @@ public class Controller {
             clickedCanvasBySecondaryButtonInCD(event.getX(), event.getY());
         }
         translator.translate(classDiagramDrawer.extractPackage());
-        if (translator.getJava().getClasses().size() > 0) setCodeTab(translator.getJava().getClasses().get(0).toString());
+        if (translator.getJava().getClasses().size() > 0) setCodeTabs(translator.getJava());
     }
 
     /**
@@ -458,36 +458,59 @@ public class Controller {
         return contextMenu;
     }
 
-    private Tab createCodeTab(String tabName) {
+    private Tab createLanguageTab(String tabName) {
+
+        TabPane codeTabPane = new TabPane(createCodeTab(""));
+        AnchorPane languageAnchor = new AnchorPane(codeTabPane);
+        AnchorPane.setBottomAnchor(codeTabPane, 0.0);
+        AnchorPane.setTopAnchor(codeTabPane, 0.0);
+        AnchorPane.setLeftAnchor(codeTabPane, 0.0);
+        AnchorPane.setRightAnchor(codeTabPane, 0.0);
+
+        Tab languageTab = new Tab();
+        languageTab.setContent(languageAnchor);
+        languageTab.setText(tabName);
+
+        return languageTab;
+    }
+
+    private Tab createCodeTab(String codeText) {
         CodeArea codeArea = new CodeArea();
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
-        codeArea.appendText(code);
+        // codeArea.appendText(java.getClasses().get(0).toString());
         codeArea.setOnKeyTyped(event -> {
             System.out.println("Pressed");
-            System.out.println(((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getText());
+            // System.out.println(((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getText());
             // System.out.println(classDiagramDrawer.extractPackage().getClasses().get(0).getName());
             //translator.translate(new Java());
         });
         codeArea.setOnMouseClicked(event -> {
-            if (!code.equals(codeArea.getText())) codeArea.replaceText(code);
+            if (java.getClasses().size() > 0 && !java.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(java.getClasses().get(0).toString());
         });
 
-        AnchorPane anchor = new AnchorPane(codeArea);
+        AnchorPane codeAnchor = new AnchorPane(codeArea);
         AnchorPane.setBottomAnchor(codeArea, 0.0);
         AnchorPane.setTopAnchor(codeArea, 0.0);
         AnchorPane.setLeftAnchor(codeArea, 0.0);
         AnchorPane.setRightAnchor(codeArea, 0.0);
 
         Tab codeTab = new Tab();
-        codeTab.setContent(anchor);
-        codeTab.setText(tabName);
+        codeTab.setContent(codeAnchor);
+        codeTab.setText("<Unknown Title>");
+        codeTab.setClosable(false);
 
         return codeTab;
     }
 
-    private void setCodeTab(String code) {
-        this.code = code;
-        codeTabPane = new TabPane(createCodeTab("Java"));
-        ((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).appendText(code);
+    private void setCodeTabs(Java java) {
+        this.java = java;
+        for (Class javaClass : java.getClasses()) {
+            codeTabPane = new TabPane(createLanguageTab("Java"));
+            codeTabPane.getTabs().clear();
+            Tab tab = createCodeTab(javaClass.toString());
+            tab.setText(javaClass.getName());
+            codeTabPane.getTabs().add(tab);
+            // ((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).appendText(javaClass.toString());
+        }
     }
 }

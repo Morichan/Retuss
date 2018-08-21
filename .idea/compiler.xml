@@ -8,4 +8,10 @@
       <module name="window_test" target="1.9" />
     </bytecodeTargetLevel>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="retuss_main" options="--add-modules=javafx.fxml,javafx.graphics,javafx.controls,javafx.base" />
+      <module name="retuss_test" options="--add-modules=javafx.fxml,javafx.graphics,javafx.controls" />
+    </option>
+  </component>
 </project>
