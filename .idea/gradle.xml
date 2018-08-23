@@ -6,7 +6,6 @@
         <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleHome" value="C:/ProgramData/chocolatey/lib/gradle/tools/gradle-4.9" />
-        <option name="gradleJvm" value="9.0" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
