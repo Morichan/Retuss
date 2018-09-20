@@ -277,11 +277,7 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- attribute : int");
-                            clickOn(okButtonOnDialogBox);
+                            addAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
 
                             GraphicsContext gc = getGraphicsContext(stage);
                             Paint fillColor = gc.getFill();
@@ -302,19 +298,9 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- attribute : int");
-                            clickOn(okButtonOnDialogBox);
+                            addAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
 
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            moveTo(addMenu);
-                            moveTo(changeMenu);
-                            clickOn("- attribute : int");
-                            write("- attribute : double");
-                            clickOn(okButtonOnDialogBox);
+                            changeAttribute(firstClickedClassDiagramCanvas, "- attribute : int", "- attribute : double");
 
                             rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -326,19 +312,9 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- attribute : int");
-                            clickOn(okButtonOnDialogBox);
+                            addAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
 
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            moveTo(addMenu);
-                            moveTo(changeMenu);
-                            clickOn("- attribute : int");
-                            push(KeyCode.BACK_SPACE);
-                            clickOn(okButtonOnDialogBox);
+                            changeAttribute(firstClickedClassDiagramCanvas, "- attribute : int", "");
 
                             rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -350,17 +326,9 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- attribute : int");
-                            clickOn(okButtonOnDialogBox);
+                            addAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
 
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            moveTo(addMenu);
-                            moveTo(deleteMenu);
-                            clickOn("- attribute : int");
+                            deleteAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
 
                             rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -372,17 +340,9 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- attribute : int");
-                            clickOn(okButtonOnDialogBox);
+                            addAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
 
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            moveTo(addMenu);
-                            moveTo(checkMenu);
-                            clickOn("- attribute : int");
+                            checkAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
 
                             rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -398,24 +358,13 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- attribute : int");
-                            clickOn(okButtonOnDialogBox);
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            moveTo(addMenu);
-                            moveTo(checkMenu);
-                            clickOn("- attribute : int");
+                            addAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
+                            checkAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
 
-                            rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
                             assertThat(((CheckMenuItem) ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(3)).getItems().get(0)).isSelected()).isFalse();
-                            moveTo(classAttributeMenu);
-                            moveTo(addMenu);
-                            moveTo(checkMenu);
-                            clickOn("- attribute : int");
+
+                            checkAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
 
                             rightClickOn(firstClickedClassDiagramCanvas);
                             scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -427,11 +376,7 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ operation() : void");
-                            clickOn(okButtonOnDialogBox);
+                            addOperation(firstClickedClassDiagramCanvas, "+ operation() : void");
 
                             GraphicsContext gc = getGraphicsContext(stage);
                             Paint fillColor = gc.getFill();
@@ -452,19 +397,9 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ operation() : int");
-                            clickOn(okButtonOnDialogBox);
+                            addOperation(firstClickedClassDiagramCanvas, "+ operation() : void");
 
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            moveTo(addMenu);
-                            moveTo(changeMenu);
-                            clickOn("+ operation() : int");
-                            write("+ operation() : double");
-                            clickOn(okButtonOnDialogBox);
+                            changeOperation(firstClickedClassDiagramCanvas, "+ operation() : void", "+ operation() : double");
 
                             rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -476,17 +411,9 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ operation() : int");
-                            clickOn(okButtonOnDialogBox);
+                            addOperation(firstClickedClassDiagramCanvas, "+ operation() : void");
 
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            moveTo(addMenu);
-                            moveTo(deleteMenu);
-                            clickOn("+ operation() : int");
+                            deleteOperation(firstClickedClassDiagramCanvas, "+ operation() : void");
 
                             rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -498,17 +425,9 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ operation() : int");
-                            clickOn(okButtonOnDialogBox);
+                            addOperation(firstClickedClassDiagramCanvas, "+ operation() : int");
 
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            moveTo(addMenu);
-                            moveTo(checkMenu);
-                            clickOn("+ operation() : int");
+                            checkOperation(firstClickedClassDiagramCanvas, "+ operation() : int");
 
                             rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -524,19 +443,9 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ operation() : int");
-                            clickOn(okButtonOnDialogBox);
+                            addOperation(firstClickedClassDiagramCanvas, "+ operation() : int");
 
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            moveTo(addMenu);
-                            moveTo(changeMenu);
-                            clickOn("+ operation() : int");
-                            push(KeyCode.BACK_SPACE);
-                            clickOn(okButtonOnDialogBox);
+                            changeOperation(firstClickedClassDiagramCanvas, "+ operation() : int", "");
 
                             rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -548,24 +457,12 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "ClassName");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ operation() : int");
-                            clickOn(okButtonOnDialogBox);
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            moveTo(addMenu);
-                            moveTo(checkMenu);
-                            clickOn("+ operation() : int");
+                            addOperation(firstClickedClassDiagramCanvas, "+ operation() : int");
+                            checkOperation(firstClickedClassDiagramCanvas, "+ operation() : int");
 
-                            rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
                             assertThat(((CheckMenuItem) ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(3)).getItems().get(0)).isSelected()).isFalse();
-                            moveTo(classOperationMenu);
-                            moveTo(addMenu);
-                            moveTo(checkMenu);
-                            clickOn("+ operation() : int");
+                            checkOperation(firstClickedClassDiagramCanvas, "+ operation() : int");
 
                             rightClickOn(firstClickedClassDiagramCanvas);
                             scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -629,26 +526,10 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "Test");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- x : int");
-                            clickOn(okButtonOnDialogBox);
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- y : int");
-                            clickOn(okButtonOnDialogBox);
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ z() : c");
-                            clickOn(okButtonOnDialogBox);
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ w() : c");
-                            clickOn(okButtonOnDialogBox);
+                            addAttribute(firstClickedClassDiagramCanvas, "- x : int");
+                            addAttribute(firstClickedClassDiagramCanvas, "- y : int");
+                            addOperation(firstClickedClassDiagramCanvas, "+ z() : c");
+                            addOperation(firstClickedClassDiagramCanvas, "+ w() : c");
 
                             rightClickOn(firstClickedClassDiagramCanvas.getX() + 49, firstClickedClassDiagramCanvas.getY() + 59);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -669,26 +550,10 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "Test");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- x : int");
-                            clickOn(okButtonOnDialogBox);
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- y : int");
-                            clickOn(okButtonOnDialogBox);
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ z() : c");
-                            clickOn(okButtonOnDialogBox);
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ w() : c");
-                            clickOn(okButtonOnDialogBox);
+                            addAttribute(firstClickedClassDiagramCanvas, "- x : int");
+                            addAttribute(firstClickedClassDiagramCanvas, "- y : int");
+                            addOperation(firstClickedClassDiagramCanvas, "+ z() : c");
+                            addOperation(firstClickedClassDiagramCanvas, "+ w() : c");
 
                             rightClickOn(firstClickedClassDiagramCanvas.getX() + 51, firstClickedClassDiagramCanvas.getY() + 61);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -721,47 +586,15 @@ class ControllerTest extends ApplicationTest {
                             clickOn("#classButtonInCD");
                             drawClasses(firstClickedClassDiagramCanvas, "Test");
                             clickOn("#normalButtonInCD");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- longAttribute1 : int");
-                            clickOn(okButtonOnDialogBox);
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            clickOn(addMenu);
-                            write("- longAttribute2 : double");
-                            clickOn(okButtonOnDialogBox);
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ longOperation1() : void");
-                            clickOn(okButtonOnDialogBox);
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            clickOn(addMenu);
-                            write("+ longOperation2() : double");
-                            clickOn(okButtonOnDialogBox);
+                            addAttribute(firstClickedClassDiagramCanvas, "- longLongAttribute1 : int");
+                            addAttribute(firstClickedClassDiagramCanvas, "- longLongAttribute2 : double");
+                            addOperation(firstClickedClassDiagramCanvas, "+ longLongOperation1() : character");
+                            addOperation(firstClickedClassDiagramCanvas, "+ longLongOperation2() : float");
 
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            moveTo(addMenu);
-                            moveTo(checkMenu);
-                            clickOn("- longAttribute1 : int");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classAttributeMenu);
-                            moveTo(addMenu);
-                            moveTo(checkMenu);
-                            clickOn("- longAttribute2 : double");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            moveTo(addMenu);
-                            moveTo(checkMenu);
-                            clickOn("+ longOperation1() : void");
-                            rightClickOn(firstClickedClassDiagramCanvas);
-                            moveTo(classOperationMenu);
-                            moveTo(addMenu);
-                            moveTo(checkMenu);
-                            clickOn("+ longOperation2() : double");
+                            checkAttribute(firstClickedClassDiagramCanvas, "- longLongAttribute1 : int");
+                            checkAttribute(firstClickedClassDiagramCanvas, "- longLongAttribute2 : double");
+                            checkOperation(firstClickedClassDiagramCanvas, "+ longLongOperation1() : character");
+                            checkOperation(firstClickedClassDiagramCanvas, "+ longLongOperation2() : float");
 
                             rightClickOn(firstClickedClassDiagramCanvas.getX() + 49, firstClickedClassDiagramCanvas.getY() + 39);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
@@ -1595,6 +1428,36 @@ class ControllerTest extends ApplicationTest {
 
                 assertThat(actual).isEqualTo(expected);
             }
+
+            @Test
+            void 属性を1つ持つクラスを記述する() {
+                String expected = "class Main {\n    private double addAttribute;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, okButtonPoint, "- addAttribute : double");
+                clickOn(codeStage);
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 属性を3つ持つクラスを記述する() {
+                String expected = "class Main {\n    private double addAttribute;\n    protected int number = 0;\n    float x;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, okButtonPoint, "- addAttribute : double");
+                addAttribute(firstClickedClassDiagramCanvas, okButtonPoint, "# number : int = 0");
+                addAttribute(firstClickedClassDiagramCanvas, okButtonPoint, "~ x : float");
+                clickOn(codeStage);
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
         }
 
         private void moveCodeWindow() {
@@ -1687,5 +1550,90 @@ class ControllerTest extends ApplicationTest {
         clickOn(canvasPoint);
         write(className);
         clickOn(okButtonPoint);
+    }
+
+    private void addAttribute(Point2D classPoint, Point2D okButtonPoint, String addText) {
+        addFeature(classPoint, okButtonPoint, "属性", addText);
+    }
+
+    private void addOperation(Point2D classPoint, Point2D okButtonPoint, String addText) {
+        addFeature(classPoint, okButtonPoint, "操作", addText);
+    }
+
+    private void addFeature(Point2D classPoint, Point2D okButtonPoint, String menu, String addText) {
+        rightClickOn(classPoint);
+        moveTo(menu);
+        clickOn("追加");
+        write(addText);
+        clickOn(okButtonPoint);
+    }
+
+    private void addAttribute(Point2D classPoint, String addText) {
+        addFeature(classPoint, "属性", addText);
+    }
+
+    private void addOperation(Point2D classPoint, String addText) {
+        addFeature(classPoint, "操作", addText);
+    }
+
+    private void addFeature(Point2D classPoint, String menu, String addText) {
+        rightClickOn(classPoint);
+        moveTo(menu);
+        clickOn("追加");
+        write(addText);
+        clickOn(okButtonOnDialogBox);
+    }
+
+    private void changeAttribute(Point2D classPoint, String beforeText, String afterText) {
+        changeFeature(classPoint, "属性", beforeText, afterText);
+    }
+
+    private void changeOperation(Point2D classPoint, String beforeText, String afterText) {
+        changeFeature(classPoint, "操作", beforeText, afterText);
+    }
+
+    private void changeFeature(Point2D classPoint, String menu, String beforeText, String afterText) {
+        rightClickOn(classPoint);
+        moveTo(menu);
+        moveTo("追加");
+        moveTo("変更");
+        clickOn(beforeText);
+
+        if (afterText.length() > 0) write(afterText);
+        else push(KeyCode.BACK_SPACE);
+
+        clickOn(okButtonOnDialogBox);
+    }
+
+    private void deleteAttribute(Point2D classPoint, String deleteText) {
+        deleteFeature(classPoint, "属性", deleteText);
+    }
+
+    private void deleteOperation(Point2D classPoint, String deleteText) {
+        deleteFeature(classPoint, "操作", deleteText);
+    }
+
+    private void deleteFeature(Point2D classPoint, String menu, String deleteMenu) {
+        rightClickOn(classPoint);
+        moveTo(menu);
+        moveTo("追加");
+        moveTo("削除");
+        clickOn(deleteMenu);
+    }
+
+    private void checkAttribute(Point2D classPoint, String checkText) {
+        checkFeature(classPoint, "属性", checkText);
+    }
+
+    private void checkOperation(Point2D classPoint, String checkText) {
+        checkFeature(classPoint, "操作", checkText);
+    }
+
+    private void checkFeature(Point2D classPoint, String menu, String checkMenu) {
+        rightClickOn(classPoint);
+        moveTo(menu);
+        moveTo("追加");
+        moveTo("表示選択");
+        clickOn(checkMenu);
     }
 }

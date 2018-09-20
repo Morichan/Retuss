@@ -147,8 +147,6 @@ public class Controller {
         } else if (event.getButton() == MouseButton.SECONDARY) {
             clickedCanvasBySecondaryButtonInCD(event.getX(), event.getY());
         }
-        translator.translate(classDiagramDrawer.extractPackage());
-        if (translator.getJava().getClasses().size() > 0) setCodeTabs(translator.getJava());
     }
 
     /**
@@ -485,6 +483,8 @@ public class Controller {
             //translator.translate(new Java());
         });
         codeArea.setOnMouseClicked(event -> {
+            translator.translate(classDiagramDrawer.extractPackage());
+            if (translator.getJava().getClasses().size() > 0) setCodeTabs(translator.getJava());
             if (java.getClasses().size() > 0 && !java.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(java.getClasses().get(0).toString());
         });
 
