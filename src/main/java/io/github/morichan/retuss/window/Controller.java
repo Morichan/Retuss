@@ -1,6 +1,9 @@
 package io.github.morichan.retuss.window;
 
-import io.github.morichan.retuss.language.java.Class;
+import io.github.morichan.retuss.language.cpp.Cpp;
+import io.github.morichan.retuss.language.cpp.Class;
+
+//import io.github.morichan.retuss.language.java.Class;
 import io.github.morichan.retuss.language.java.Java;
 import io.github.morichan.retuss.translator.Translator;
 import io.github.morichan.retuss.window.diagram.ContentType;
@@ -57,6 +60,7 @@ public class Controller {
     private static Translator translator = new Translator();
     private static ClassDiagramDrawer classDiagramDrawer = new ClassDiagramDrawer();
     private static Java java = new Java();
+    private static Cpp cpp = new Cpp();
 
     /**
      * <p> JavaFXにおけるデフォルトコンストラクタ </p>
@@ -69,7 +73,8 @@ public class Controller {
     @FXML
     private void initialize() {
         buttonsInCD.addAll(Arrays.asList(normalButtonInCD, classButtonInCD, noteButtonInCD, compositionButtonInCD, generalizationButtonInCD));
-        java = new Java();
+       java = new Java();
+        cpp = new Cpp();
         try {
             // retussCode.FXMLファイルの読み込み時にclassDiagramCanvasが設定されていないためNullPointerExceptionを投げるのを防ぐ
             GraphicsContext gc = classDiagramCanvas.getGraphicsContext2D();
@@ -484,8 +489,10 @@ public class Controller {
         });
         codeArea.setOnMouseClicked(event -> {
             translator.translate(classDiagramDrawer.extractPackage());
-            if (translator.getJava().getClasses().size() > 0) setCodeTabs(translator.getJava());
-            if (java.getClasses().size() > 0 && !java.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(java.getClasses().get(0).toString());
+//            if (translator.getJava().getClasses().size() > 0) setCodeTabs(translator.getJava());
+//            if (java.getClasses().size() > 0 && !java.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(java.getClasses().get(0).toString());
+            if (translator.getCpp().getClasses().size() > 0) setCodeTabs(translator.getCpp());
+            if (cpp.getClasses().size() > 0 && !cpp.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(cpp.getClasses().get(0).toString());
         });
 
         AnchorPane codeAnchor = new AnchorPane(codeArea);
@@ -502,13 +509,13 @@ public class Controller {
         return codeTab;
     }
 
-    private void setCodeTabs(Java java) {
-        this.java = java;
-        for (Class javaClass : java.getClasses()) {
+    private void setCodeTabs(Cpp cpp) {
+        this.cpp = cpp;
+        for (Class cppClass : cpp.getClasses()) {
             codeTabPane = new TabPane(createLanguageTab("Cpp"));
             codeTabPane.getTabs().clear();
-            Tab tab = createCodeTab(javaClass.toString());
-            tab.setText(javaClass.getName());
+            Tab tab = createCodeTab(cppClass.toString());
+            tab.setText(cppClass.getName());
             codeTabPane.getTabs().add(tab);
             // ((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).appendText(javaClass.toString());
         }
