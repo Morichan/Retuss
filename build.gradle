@@ -97,6 +97,7 @@ test {
     systemProperties 'property': 'value'
 }
 
+
 // gradleでOSのアーキテクチャ情報を利用する方法を語りき, http://saygox.blogspot.com/2013/08/gradle-os.html
 class OSChecker {
     static String getFamily() {
