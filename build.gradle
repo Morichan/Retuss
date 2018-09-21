@@ -108,9 +108,9 @@ class OSChecker {
 println ">>> This OS that test runs is " + OSChecker.getFamily()
 
 // OSがWindowsでない場合はTest実行時にGUITestsタグを付けたテストスイートを実行しない
-if (OSChecker.getFamily() != "windows") {
+// if (OSChecker.getFamily() != "windows") {
     junitPlatform.filters.tags.exclude "GUITests"
-}
+//}
 
 junitPlatform.enableStandardTestTask true
 
