@@ -81,7 +81,7 @@ public class Controller {
             classDiagramDrawer.setGraphicsContext(gc);
         } catch (NullPointerException e) {
             // 結果的にこちらはretussCode.FXMLに関する変数を設定することになる
-            codeTabPane.getTabs().add(createLanguageTab("Java"));
+            codeTabPane.getTabs().add(createLanguageTab("Cpp"));
         }
     }
 
@@ -480,7 +480,7 @@ public class Controller {
             System.out.println("Pressed");
             // System.out.println(((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getText());
             // System.out.println(classDiagramDrawer.extractPackage().getClasses().get(0).getName());
-            //translator.translate(new Java());
+            //translator.translate(new Cpp());
         });
         codeArea.setOnMouseClicked(event -> {
             translator.translate(classDiagramDrawer.extractPackage());
@@ -505,7 +505,7 @@ public class Controller {
     private void setCodeTabs(Java java) {
         this.java = java;
         for (Class javaClass : java.getClasses()) {
-            codeTabPane = new TabPane(createLanguageTab("Java"));
+            codeTabPane = new TabPane(createLanguageTab("Cpp"));
             codeTabPane.getTabs().clear();
             Tab tab = createCodeTab(javaClass.toString());
             tab.setText(javaClass.getName());

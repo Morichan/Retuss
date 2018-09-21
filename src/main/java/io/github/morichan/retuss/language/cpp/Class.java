@@ -11,7 +11,7 @@ public class Class {
     private String name;
     private Class extendsClass;
     private List<MemberVariable> memberVariables;
-    private List<Method> methods;
+    private List<MemberFunction> memberFunctions;
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -23,7 +23,7 @@ public class Class {
     public Class() {
         name = "ClassName";
         memberVariables = new ArrayList<>();
-        methods = new ArrayList<>();
+        memberFunctions = new ArrayList<>();
     }
 
     /**
@@ -34,7 +34,7 @@ public class Class {
     public Class(String className) {
         setName(className);
         memberVariables = new ArrayList<>();
-        methods = new ArrayList<>();
+        memberFunctions = new ArrayList<>();
     }
 
     /**
@@ -92,7 +92,7 @@ public class Class {
      *
      * @param memberVariable フィールド <br> {@code null} 無視
      */
-    public void addField(MemberVariable memberVariable) {
+    public void addMemberVariable(MemberVariable memberVariable) {
         if (memberVariable != null) memberVariables.add(memberVariable);
     }
 
@@ -107,7 +107,7 @@ public class Class {
      * @param memberVariables フィールドのリスト
      */
     public void setMemberVariables(List<MemberVariable> memberVariables) {
-        if (memberVariables != null) for (MemberVariable memberVariable : memberVariables) addField(memberVariable);
+        if (memberVariables != null) for (MemberVariable memberVariable : memberVariables) addMemberVariable(memberVariable);
         else this.memberVariables.clear();
     }
 
@@ -127,7 +127,7 @@ public class Class {
      * {@link #setMemberVariables(List)} に{@code null} を設定しています。
      * </p>
      */
-    public void emptyFields() {
+    public void emptyMemberVariables() {
         setMemberVariables(null);
     }
 
@@ -138,10 +138,10 @@ public class Class {
      * {@code null} を追加しようとしても反映しません。
      * </p>
      *
-     * @param method メソッド <br> {@code null} 無視
+     * @param memberFunction メソッド <br> {@code null} 無視
      */
-    public void addMethod(Method method) {
-        if (method != null) methods.add(method);
+    public void addMemberFunction(MemberFunction memberFunction) {
+        if (memberFunction != null) memberFunctions.add(memberFunction);
     }
 
     /**
@@ -152,11 +152,11 @@ public class Class {
      * また、 {@code null} を設定しようとした場合はリストを空にします。
      * </p>
      *
-     * @param methods メソッドのリスト
+     * @param memberFunctions メソッドのリスト
      */
-    public void setMethod(List<Method> methods) {
-        if (methods != null) for (Method method : methods) addMethod(method);
-        else this.methods.clear();
+    public void setMemberFunction(List<MemberFunction> memberFunctions) {
+        if (memberFunctions != null) for (MemberFunction memberFunction : memberFunctions) addMemberFunction(memberFunction);
+        else this.memberFunctions.clear();
     }
 
     /**
@@ -164,19 +164,19 @@ public class Class {
      *
      * @return メソッドのリスト <br> 要素数0の可能性あり
      */
-    public List<Method> getMethods() {
-        return methods;
+    public List<MemberFunction> getMemberFunctions() {
+        return memberFunctions;
     }
 
     /**
      * <p> メソッドのリストを空にします </p>
      *
      * <p>
-     * {@link #setMethod(List)} に{@code null} を設定しています。
+     * {@link #setMemberFunction(List)} に{@code null} を設定しています。
      * </p>
      */
-    public void emptyMethods() {
-        setMethod(null);
+    public void emptyMemberFunctions() {
+        setMemberFunction(null);
     }
 
 
@@ -192,7 +192,7 @@ public class Class {
         sb.append(name);
 
         if (extendsClass != null) {
-            sb.append(" extends ");
+            sb.append(" : public ");
             sb.append(extendsClass.getName());
         }
 
@@ -204,15 +204,15 @@ public class Class {
             sb.append("\n");
         }
 
-        if (!memberVariables.isEmpty() && !methods.isEmpty()) sb.append("\n");
+        if (!memberVariables.isEmpty() && !memberFunctions.isEmpty()) sb.append("\n");
 
-        for (Method method : methods) {
+        for (MemberFunction memberFunction : memberFunctions) {
             sb.append("    ");
-            sb.append(method);
+            sb.append(memberFunction);
             sb.append("\n");
         }
 
-        sb.append("}\n");
+        sb.append("};\n");
 
         return sb.toString();
     }

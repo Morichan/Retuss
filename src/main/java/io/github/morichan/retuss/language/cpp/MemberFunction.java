@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Method {
+public class MemberFunction {
 
     private AccessSpecifier accessSpecifier;
     private Type type;
@@ -18,7 +18,7 @@ public class Method {
      *     アクセス修飾子は {@link AccessSpecifier#Public} 、型は {@code void} 、メソッド名は {@code method} 、引数なしで設定します。
      * </p>
      */
-    public Method() {
+    public MemberFunction() {
         accessSpecifier = AccessSpecifier.Public;
         type = new Type("void");
         name = "method";
@@ -31,7 +31,7 @@ public class Method {
      * @param type 型 <br> {@link #setType(Type)} を利用します
      * @param name メソッド名 <br> {@link #setName(String)} を利用します
      */
-    public Method(Type type, String name) {
+    public MemberFunction(Type type, String name) {
         accessSpecifier = AccessSpecifier.Public;
         setType(type);
         setName(name);
@@ -45,7 +45,7 @@ public class Method {
      * @param name メソッド名 <br> {@link #setName(String)} を利用します
      * @param arguments 複数の引数 <br> {@link #setArguments(List)} を利用します
      */
-    public Method(Type type, String name, Argument... arguments) {
+    public MemberFunction(Type type, String name, Argument... arguments) {
         accessSpecifier = AccessSpecifier.Public;
         setType(type);
         setName(name);
@@ -175,10 +175,10 @@ public class Method {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        if (!accessSpecifier.is(AccessSpecifier.Package.toString())) {
+      //  if (!accessSpecifier.is(AccessSpecifier.Package.toString())) {
             sb.append(accessSpecifier);
             sb.append(" ");
-        }
+      //  }
 
         sb.append(type);
         sb.append(" ");

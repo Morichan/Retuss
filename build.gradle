@@ -48,7 +48,7 @@ dependencies {
     testCompile 'org.assertj:assertj-core:3.10.0'
     testCompile 'net.java.quickcheck:quickcheck:0.6'
     testCompile 'org.testfx:testfx-junit5:4.0.13-alpha'
-    testCompile "org.testfx:openjfx-monocle:8u76-b04" // jdk-9+181 for Java 9
+    testCompile "org.testfx:openjfx-monocle:8u76-b04" // jdk-9+181 for Cpp 9
 
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
 }

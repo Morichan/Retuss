@@ -1,7 +1,7 @@
 /*
  [The "BSD licence"]
  Copyright (c) 2013 Terence Parr, Sam Harwell
- Copyright (c) 2017 Ivan Kochurkin (upgrade to Java 8)
+ Copyright (c) 2017 Ivan Kochurkin (upgrade to Cpp 8)
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -138,7 +138,7 @@ memberDeclaration
     | enumDeclaration
     ;
 
-/* We use rule this even for void methods which cannot have [] after parameters.
+/* We use rule this even for void memberFunctions which cannot have [] after parameters.
    This simplifies grammar and we can consider void to be a type, which
    renders the [] matching as a context-sensitive issue or a semantic check
    for invalid return type after parsing.
@@ -492,7 +492,7 @@ expression
       expression
     | lambdaExpression // Java8
 
-    // Java 8 methodReference
+    // Cpp 8 methodReference
     | expression '::' typeArguments? IDENTIFIER
     | typeType '::' (typeArguments? IDENTIFIER | NEW)
     | classType '::' typeArguments? NEW

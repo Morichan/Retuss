@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p> Javaクラス </p>
+ * <p> Cppクラス </p>
  */
-public class Java {
+public class Cpp {
 
     private List<Class> classes = new ArrayList<>();
 
@@ -17,10 +17,10 @@ public class Java {
      * {@code null} を追加しようとしても反映しません。
      * </p>
      *
-     * @param javaClass クラス <br> {@code null} 無視
+     * @param cppClass クラス <br> {@code null} 無視
      */
-    public void addClass(Class javaClass) {
-        if (javaClass != null) classes.add(javaClass);
+    public void addClass(Class cppClass) {
+        if (cppClass != null) classes.add(cppClass);
     }
 
     /**
@@ -34,7 +34,7 @@ public class Java {
      * @param classes クラスのリスト
      */
     public void setClasses(List<Class> classes) {
-        if (classes != null) for (Class javaClass : classes) addClass(javaClass);
+        if (classes != null) for (Class cppClass : classes) addClass(cppClass);
         else this.classes.clear();
     }
 

@@ -1,7 +1,7 @@
 /*
  [The "BSD licence"]
  Copyright (c) 2013 Terence Parr, Sam Harwell
- Copyright (c) 2017 Ivan Kochurkin (upgrade to Java 8)
+ Copyright (c) 2017 Ivan Kochurkin (upgrade to Cpp 8)
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -155,7 +155,7 @@ LSHIFT_ASSIGN:      '<<=';
 RSHIFT_ASSIGN:      '>>=';
 URSHIFT_ASSIGN:     '>>>=';
 
-// Java 8 tokens
+// Cpp 8 tokens
 
 ARROW:              '->';
 COLONCOLON:         '::';
