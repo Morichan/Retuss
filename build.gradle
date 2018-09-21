@@ -69,17 +69,17 @@ if (gradle.startParameter.taskNames.contains('uploadArchives')) {
 
 
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-artifacts {
-    archives javadocJar, sourcesJar
-}
+//task javadocJar(type: Jar) {
+//    classifier = 'javadoc'
+//    from javadoc
+//}
+//task sourcesJar(type: Jar) {
+//    classifier = 'sources'
+//    from sourceSets.main.allSource
+//}
+//artifacts {
+//    archives javadocJar, sourcesJar
+//}
 
 jar {
     // SpringBoot pluginを利用することで邪魔になったため除外

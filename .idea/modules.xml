@@ -3,9 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/retuss.iml" filepath="$PROJECT_DIR$/.idea/modules/retuss.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/retuss_main.iml" filepath="$PROJECT_DIR$/.idea/modules/retuss_main.iml" group="retuss" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/retuss_test.iml" filepath="$PROJECT_DIR$/.idea/modules/retuss_test.iml" group="retuss" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/window.iml" filepath="$PROJECT_DIR$/.idea/modules/window.iml" />
     </modules>
   </component>
 </project>
