@@ -53,10 +53,10 @@ dependencies {
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
 }
 
-ext.antlr = [destinationDir: 'src/main/java/io/github/morichan/retuss/parser/java']
+ext.antlr = [destinationDir: 'src/main/java/io/github/morichan/retuss/parser/cpp']
 generateGrammarSource {
     outputDirectory = file(new File("${antlr.destinationDir}"))
-    arguments = ["-package", "io.github.morichan.retuss.parser.java", "-listener", "-no-visitor"].flatten()
+    arguments = ["-package", "io.github.morichan.retuss.parser.cpp", "-listener", "-no-visitor"].flatten()
 }
 
 clean {

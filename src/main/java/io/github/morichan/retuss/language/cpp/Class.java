@@ -188,7 +188,7 @@ public class Class {
     private String manufacture() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("class ");
+        sb.append("Cpp class ");
         sb.append(name);
 
         if (extendsClass != null) {
