@@ -9,6 +9,7 @@ apply plugin: 'spring-boot'
 // mainClassName = 'io.github.morichan.retuss.window.RetussWindow'
 
 sourceCompatibility = 9
+targetCompatibility = 9
 tasks.withType(AbstractCompile)*.options*.encoding =
         tasks.withType(GroovyCompile)*.groovyOptions*.encoding =
                 javadoc.options.encoding =
