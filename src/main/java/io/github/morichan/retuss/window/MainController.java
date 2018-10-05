@@ -1,6 +1,5 @@
 package io.github.morichan.retuss.window;
 
-import io.github.morichan.retuss.language.java.Class;
 import io.github.morichan.retuss.language.java.Java;
 import io.github.morichan.retuss.translator.Translator;
 import io.github.morichan.retuss.window.diagram.ContentType;
@@ -8,29 +7,33 @@ import io.github.morichan.retuss.window.diagram.NodeDiagram;
 import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.LineNumberFactory;
+import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * <p> RETUSSウィンドウの動作管理クラス </p>
+ * <p> RETUSSメインウィンドウの動作管理クラス </p>
  *
  * <p>
- * {@link RetussWindow}クラスで用いているFXMLファイルにおけるシグナルハンドラを扱います。
+ * {@link RetussWindow}クラスで用いているretussMain.fxmlファイルにおけるシグナルハンドラを扱います。
  * </p>
  */
-public class Controller {
+public class MainController {
     @FXML
     private Button normalButtonInCD;
     @FXML
@@ -48,15 +51,13 @@ public class Controller {
 
     private List<Button> buttonsInCD = new ArrayList<>();
 
-    @FXML
-    private TabPane codeTabPane;
-
     private TextInputDialog classNameInputDialog;
 
+    private Stage codeStage;
+    private CodeController codeController;
+
     private UtilityJavaFXComponent util = new UtilityJavaFXComponent();
-    private static Translator translator = new Translator();
-    private static ClassDiagramDrawer classDiagramDrawer = new ClassDiagramDrawer();
-    private static Java java = new Java();
+    private ClassDiagramDrawer classDiagramDrawer = new ClassDiagramDrawer();
 
     /**
      * <p> JavaFXにおけるデフォルトコンストラクタ </p>
@@ -69,20 +70,54 @@ public class Controller {
     @FXML
     private void initialize() {
         buttonsInCD.addAll(Arrays.asList(normalButtonInCD, classButtonInCD, noteButtonInCD, compositionButtonInCD, generalizationButtonInCD));
-        java = new Java();
+        GraphicsContext gc = classDiagramCanvas.getGraphicsContext2D();
+        double scrollBarBreadth = 15.0;
+        gc.getCanvas().setWidth(classDiagramScrollPane.getPrefWidth() - scrollBarBreadth);
+        gc.getCanvas().setHeight(classDiagramScrollPane.getPrefHeight() - scrollBarBreadth);
+        classDiagramDrawer = new ClassDiagramDrawer();
+        classDiagramDrawer.setGraphicsContext(gc);
+    }
+
+    /**
+     * <p> コードウィンドウを表示します </p>
+     *
+     * <p>
+     *     同時に、コードウィンドウのコントローラクラスのインスタンスを取得しています。
+     *     これはJavaFX仕様の取得方法です。
+     * </p>
+     *
+     * <p>
+     *     参照: <a href="http://hideoku.hatenablog.jp/entry/2013/06/07/205016"> FXML Controller で Stage を使うためのアレコレ - Java開発のんびり日記 </a>
+     * </p>
+     * @param parent 親ウィンドウ
+     * @param filePath ウィンドウFXMLファイルのパス
+     * @param title ウィンドウのタイトル
+     */
+    public void showCodeStage(Stage parent, String filePath, String title) {
         try {
-            // retussCode.FXMLファイルの読み込み時にclassDiagramCanvasが設定されていないためNullPointerExceptionを投げるのを防ぐ
-            GraphicsContext gc = classDiagramCanvas.getGraphicsContext2D();
-            double scrollBarBreadth = 15.0;
-            gc.getCanvas().setWidth(classDiagramScrollPane.getPrefWidth() - scrollBarBreadth);
-            gc.getCanvas().setHeight(classDiagramScrollPane.getPrefHeight() - scrollBarBreadth);
-            translator = new Translator();
-            classDiagramDrawer = new ClassDiagramDrawer();
-            classDiagramDrawer.setGraphicsContext(gc);
-        } catch (NullPointerException e) {
-            // 結果的にこちらはretussCode.FXMLに関する変数を設定することになる
-            codeTabPane.getTabs().add(createLanguageTab("Java"));
+            codeStage = new Stage();
+            codeStage.initOwner(parent);
+            codeStage.setTitle(title);
+            FXMLLoader codeLoader = new FXMLLoader(getClass().getResource(filePath));
+            codeStage.setScene(new Scene(codeLoader.load()));
+            codeStage.show();
+            codeController = codeLoader.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    /**
+     * <p> コードステージを取得します </p>
+     *
+     * <p>
+     *     テストコードでのみの使用を想定していますが、開発が進むことで変わる可能性があります。
+     * </p>
+     *
+     * @return コードステージ
+     */
+    Stage getCodeStage() {
+        return codeStage;
     }
 
     /**
@@ -147,8 +182,8 @@ public class Controller {
         } else if (event.getButton() == MouseButton.SECONDARY) {
             clickedCanvasBySecondaryButtonInCD(event.getX(), event.getY());
         }
-        translator.translate(classDiagramDrawer.extractPackage());
-        if (translator.getJava().getClasses().size() > 0) setCodeTabs(translator.getJava());
+
+        if (codeController != null) codeController.createCodeTabs(classDiagramDrawer.extractPackage());
     }
 
     /**
@@ -456,61 +491,5 @@ public class Controller {
         });
 
         return contextMenu;
-    }
-
-    private Tab createLanguageTab(String tabName) {
-
-        TabPane codeTabPane = new TabPane(createCodeTab(""));
-        AnchorPane languageAnchor = new AnchorPane(codeTabPane);
-        AnchorPane.setBottomAnchor(codeTabPane, 0.0);
-        AnchorPane.setTopAnchor(codeTabPane, 0.0);
-        AnchorPane.setLeftAnchor(codeTabPane, 0.0);
-        AnchorPane.setRightAnchor(codeTabPane, 0.0);
-
-        Tab languageTab = new Tab();
-        languageTab.setContent(languageAnchor);
-        languageTab.setText(tabName);
-
-        return languageTab;
-    }
-
-    private Tab createCodeTab(String codeText) {
-        CodeArea codeArea = new CodeArea();
-        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
-        // codeArea.appendText(java.getClasses().get(0).toString());
-        codeArea.setOnKeyTyped(event -> {
-            System.out.println("Pressed");
-            // System.out.println(((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getText());
-            // System.out.println(classDiagramDrawer.extractPackage().getClasses().get(0).getName());
-            //translator.translate(new Java());
-        });
-        codeArea.setOnMouseClicked(event -> {
-            if (java.getClasses().size() > 0 && !java.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(java.getClasses().get(0).toString());
-        });
-
-        AnchorPane codeAnchor = new AnchorPane(codeArea);
-        AnchorPane.setBottomAnchor(codeArea, 0.0);
-        AnchorPane.setTopAnchor(codeArea, 0.0);
-        AnchorPane.setLeftAnchor(codeArea, 0.0);
-        AnchorPane.setRightAnchor(codeArea, 0.0);
-
-        Tab codeTab = new Tab();
-        codeTab.setContent(codeAnchor);
-        codeTab.setText("<Unknown Title>");
-        codeTab.setClosable(false);
-
-        return codeTab;
-    }
-
-    private void setCodeTabs(Java java) {
-        this.java = java;
-        for (Class javaClass : java.getClasses()) {
-            codeTabPane = new TabPane(createLanguageTab("Java"));
-            codeTabPane.getTabs().clear();
-            Tab tab = createCodeTab(javaClass.toString());
-            tab.setText(javaClass.getName());
-            codeTabPane.getTabs().add(tab);
-            // ((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).appendText(javaClass.toString());
-        }
     }
 }

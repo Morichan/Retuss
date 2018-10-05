@@ -1,7 +1,7 @@
 package io.github.morichan.retuss.window.diagram;
 
 import io.github.morichan.retuss.window.ClassDiagramDrawer;
-import io.github.morichan.retuss.window.Controller;
+import io.github.morichan.retuss.window.MainController;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -31,7 +31,7 @@ public class EdgeDiagram {
      * 受け取るのは最初のインスタンス生成時です。
      * </p>
      *
-     * @param gc {@link Controller} クラスから受け取るグラフィックスコンテキスト
+     * @param gc {@link MainController} クラスから受け取るグラフィックスコンテキスト
      */
     public void setGraphicsContext(GraphicsContext gc) {
         this.gc = gc;

@@ -3,6 +3,7 @@ package io.github.morichan.retuss.window;
 import io.github.morichan.retuss.window.diagram.ClassNodeDiagram;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -27,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("GUITests")
-class ControllerTest extends ApplicationTest {
+class MainControllerTest extends ApplicationTest {
     Point2D xButtonOnDialogBox;
     String okButtonOnDialogBox;
 
@@ -1475,35 +1476,24 @@ class ControllerTest extends ApplicationTest {
         }
     }
 
-    private static int windowStartCount = 0;
-
     @Nested
     class コード入力画面において extends ApplicationTest {
         Stage mainStage;
         Stage codeStage;
-        Scene mainScene;
-        Scene codeScene;
-
-        @AfterEach
-        void reset() {
-            windowStartCount = 0;
-        }
 
         @Start
         public void start(Stage stage) throws IOException {
-            Stage addStage = new Stage();
-            mainScene = new Scene(FXMLLoader.load(getClass().getResource("/retussMain.fxml")));
-            codeScene = new Scene(FXMLLoader.load(getClass().getResource("/retussCode.fxml")));
-            stage.setScene(mainScene);
-            addStage.setScene(codeScene);
-            if (windowStartCount == 0) {
-                stage.show();
-            } else {
-                addStage.show();
-            }
             mainStage = stage;
-            codeStage = addStage;
-            windowStartCount++;
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/retussMain.fxml"));
+            Parent root = loader.load();
+            mainStage.setScene(new Scene(root));
+
+            MainController mainController = loader.getController();
+            mainController.showCodeStage(mainStage, "/retussCode.fxml", "");
+
+            mainStage.show();
+            codeStage = mainController.getCodeStage();
         }
 
         @Nested
@@ -1518,7 +1508,7 @@ class ControllerTest extends ApplicationTest {
             void 何か入力する() {
                 String expected = "class Main {\n}\n";
 
-                clickOn(codeScene);
+                clickOn(codeStage);
                 write("class Main {\n}\n");
                 String actual = getCode(codeStage);
 
@@ -1590,7 +1580,7 @@ class ControllerTest extends ApplicationTest {
 
                 clickOn("#classButtonInCD");
                 drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
-                clickOn(codeStage);
+                //clickOn(codeStage);
                 String actual = getCode(codeStage);
 
                 assertThat(actual).isEqualTo(expected);
@@ -1599,6 +1589,7 @@ class ControllerTest extends ApplicationTest {
 
         private void moveCodeWindow() {
             drag(new Point2D(800.0, 250.0)).dropTo(new Point2D(1700.0, 250.0));
+            clickOn(new Point2D(1250.0, 250.0));
         }
     }
 

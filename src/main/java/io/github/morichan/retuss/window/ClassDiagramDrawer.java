@@ -71,10 +71,10 @@ public class ClassDiagramDrawer {
     }
 
     /**
-     * {@link Controller} クラスからretussMain.fxmlの {@link javafx.scene.canvas.Canvas} クラスのインスタンスが持つ {@link GraphicsContext} クラスのインスタンスを受け取り、 {@link EdgeDiagram} クラスのインスタンスに渡す。
+     * {@link MainController} クラスからretussMain.fxmlの {@link javafx.scene.canvas.Canvas} クラスのインスタンスが持つ {@link GraphicsContext} クラスのインスタンスを受け取り、 {@link EdgeDiagram} クラスのインスタンスに渡す。
      * また、キャンバスの縁を描画する。
      *
-     * @param gc {@link Controller} クラスから受け取るグラフィックスコンテキスト
+     * @param gc {@link MainController} クラスから受け取るグラフィックスコンテキスト
      */
     public void setGraphicsContext(GraphicsContext gc) {
         this.gc = gc;
