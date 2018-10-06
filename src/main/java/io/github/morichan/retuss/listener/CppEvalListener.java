@@ -20,26 +20,52 @@ public class CppEvalListener extends CPP14BaseListener{
 
     @Override public void enterTranslationunit(CPP14Parser.TranslationunitContext ctx) { }
 
-    @Override public void enterClasshead(CPP14Parser.ClassheadContext ctx) { }
+    @Override public void enterTypespecifier(CPP14Parser.TypespecifierContext ctx) { }
 
-    @Override
-    public void enterClassheadname(CPP14Parser.ClassheadnameContext ctx) {
-//        for (int i = 0; i < ctx.getChildCount(); i++) {
-//            if (ctx.getChild(i) instanceof CPP14Parser.ClassnameContext) {
-//                classnames.add((CPP14Parser.ClassnameContext) ctx.getChild(i));
-//
-//            }
-//        }
+    @Override public void enterClassspecifier(CPP14Parser.ClassspecifierContext ctx) {
         Class cppClass = new Class();
 
         for (int i = 0; i < ctx.getChildCount(); i++) {
-            if (ctx.getChild(i) instanceof CPP14Parser.ClassnameContext) {
-                cppClass.setName(ctx.getChild(i).getChild(0).getText());
-           //     cppClass.setExtendsClass(searchExtendsClass((JavaParser.ClassDeclarationContext) ctx.getChild(i)));
+            if (ctx.getChild(i) instanceof CPP14Parser.ClassheadContext) {
+                cppClass.setName(ctx.getChild(i).getChild(1).getChild(0).getChild(0).getText());
+                cppClass.setExtendsClass(searchExtendsClass((CPP14Parser.ClassheadContext) ctx.getChild(i)));
             }
         }
+
         cpp.addClass(cppClass);
     }
+
+private Class searchExtendsClass(CPP14Parser.ClassheadContext ctx) {
+
+    for (int i = 0; i < ctx.getChildCount(); i++) {
+        if (ctx.getChild(i) instanceof CPP14Parser.BaseclauseContext) {
+//                return new Class(ctx.getChild(i).getChild(1).getChild(0).getChild(1).getChild(0).getChild(0).getText());
+            for (int j = 0; j < ctx.getChild(i).getChildCount(); j++) {
+                if (ctx.getChild(i).getChild(j) instanceof CPP14Parser.BasespecifierlistContext) {
+                    for (int k = 0; k < ctx.getChild(i).getChild(j).getChildCount(); k++) {
+                        if (ctx.getChild(i).getChild(j) .getChild(k)instanceof CPP14Parser.BasespecifierContext) {
+                            for (int l = 0; l < ctx.getChild(i).getChild(j).getChild(k).getChildCount(); l++) {
+                                if (ctx.getChild(i).getChild(j) .getChild(k).getChild(l)instanceof CPP14Parser.BasetypespecifierContext) {
+                                    return new Class(ctx.getChild(i).getChild(j).getChild(k).getChild(l).getChild(0).getChild(0).getChild(0).getText());
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+                }
+                break;
+            }
+
+            }
+
+
+
+    return null;
+}
+
+
 
     /**
      *     継承クラスの構文解析中に実行されるメソッド
@@ -47,13 +73,13 @@ public class CppEvalListener extends CPP14BaseListener{
      */
     @Override
     public void enterClassordecltype(CPP14Parser.ClassordecltypeContext ctx) {
-        Class cppClass = new Class();
-        for (int i = 0; i < ctx.getChildCount(); i++) {
-            if (ctx.getChild(i) instanceof CPP14Parser.ClassnameContext) {
-                    cppClass.setExtendsClass(searchExtendsClass((CPP14Parser.ClassDeclarationContext) ctx.getChild(i)));
-            }
-        }
-        cpp.addClass(cppClass);
+//        Class cppClass = new Class();
+//        for (int i = 0; i < ctx.getChildCount(); i++) {
+//            if (ctx.getChild(i) instanceof CPP14Parser.ClassnameContext) {
+//                    cppClass.setExtendsClass(searchExtendsClass((CPP14Parser.ClassnameContext) ctx.getChild(i)));
+//            }
+//        }
+//        cpp.addClass(cppClass);
     }
 
 
@@ -75,15 +101,6 @@ public class CppEvalListener extends CPP14BaseListener{
 
 
 
-    //抽出してくれるメソッドの処理の例
-//    @Override
-//    public void exitUnqualifiedid(CPP14Parser.UnqualifiedidContext ctx) {
-//        for(int i=0;i<ctx.getChildCount();i++) {
-//            if(ctx.getChild(i) instanceof TerminalNodeImpl) {
-//                className=ctx.getChild(0).getText();
-//            }
-//        }
-//    }
 
 
 

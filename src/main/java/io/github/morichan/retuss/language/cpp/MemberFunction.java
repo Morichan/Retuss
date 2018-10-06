@@ -176,8 +176,8 @@ public class MemberFunction {
         StringBuilder sb = new StringBuilder();
 
       //  if (!accessSpecifier.is(AccessSpecifier.Package.toString())) {
-            sb.append(accessSpecifier);
-            sb.append(" ");
+//            sb.append(accessSpecifier);
+//            sb.append(" ");
       //  }
 
         sb.append(type);

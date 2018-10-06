@@ -154,7 +154,7 @@ public class Class {
      *
      * @param methods メソッドのリスト
      */
-    public void setMethods(List<Method> methods) {
+    public void setMethod(List<Method> methods) {
         if (methods != null) for (Method method : methods) addMethod(method);
         else this.methods.clear();
     }
@@ -172,11 +172,11 @@ public class Class {
      * <p> メソッドのリストを空にします </p>
      *
      * <p>
-     * {@link #setMethods(List)} に{@code null} を設定しています。
+     * {@link #setMethod(List)} に{@code null} を設定しています。
      * </p>
      */
     public void emptyMethods() {
-        setMethods(null);
+        setMethod(null);
     }
 
 

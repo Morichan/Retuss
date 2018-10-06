@@ -481,19 +481,7 @@ public class Controller {
         CodeArea codeArea = new CodeArea();
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
         // codeArea.appendText(java.getClasses().get(0).toString());
-        codeArea.setOnKeyTyped(event -> {
-            System.out.println("Pressed");
-            // System.out.println(((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getText());
-            // System.out.println(classDiagramDrawer.extractPackage().getClasses().get(0).getName());
-            //translator.translate(new Cpp());
-        });
-        codeArea.setOnMouseClicked(event -> {
-            translator.translate(classDiagramDrawer.extractPackage());
-//            if (translator.getJava().getClasses().size() > 0) setCodeTabs(translator.getJava());
-//            if (java.getClasses().size() > 0 && !java.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(java.getClasses().get(0).toString());
-            if (translator.getCpp().getClasses().size() > 0) setCodeTabs(translator.getCpp());
-            if (cpp.getClasses().size() > 0 && !cpp.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(cpp.getClasses().get(0).toString());
-        });
+
 
         AnchorPane codeAnchor = new AnchorPane(codeArea);
         AnchorPane.setBottomAnchor(codeArea, 0.0);
@@ -506,18 +494,48 @@ public class Controller {
         codeTab.setText("<Unknown Title>");
         codeTab.setClosable(false);
 
+
+
+        codeArea.setOnKeyTyped(event -> {
+            System.out.println("Pressed");
+            // System.out.println(((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getText());
+            // System.out.println(classDiagramDrawer.extractPackage().getClasses().get(0).getName());
+            //translator.translate(new Cpp());
+        });
+        codeArea.setOnMouseClicked(event -> {
+            translator.translate(classDiagramDrawer.extractPackage());
+//            if (translator.getJava().getClasses().size() > 0) setCodeTabs(translator.getJava());
+//            if (java.getClasses().size() > 0 && !java.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(java.getClasses().get(0).toString());
+            if (translator.getCpp().getClasses().size() > 0) setCodeTabs(translator.getCpp());
+            if (cpp.getClasses().size() > 0 && !cpp.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(cpp.getClasses().get(0).toString());
+
+                codeTab.setText(cpp.getClasses().get(0).getName());
+
+        });
+
+//        AnchorPane codeAnchor = new AnchorPane(codeArea);
+//        AnchorPane.setBottomAnchor(codeArea, 0.0);
+//        AnchorPane.setTopAnchor(codeArea, 0.0);
+//        AnchorPane.setLeftAnchor(codeArea, 0.0);
+//        AnchorPane.setRightAnchor(codeArea, 0.0);
+//
+//        Tab codeTab = new Tab();
+//        codeTab.setContent(codeAnchor);
+//        codeTab.setText("<Unknown Title>");
+//        codeTab.setClosable(false);
+
         return codeTab;
     }
 
     private void setCodeTabs(Cpp cpp) {
         this.cpp = cpp;
-        for (Class cppClass : cpp.getClasses()) {
-            codeTabPane = new TabPane(createLanguageTab("Cpp"));
-            codeTabPane.getTabs().clear();
-            Tab tab = createCodeTab(cppClass.toString());
-            tab.setText(cppClass.getName());
-            codeTabPane.getTabs().add(tab);
-            // ((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).appendText(javaClass.toString());
-        }
+//        for (Class cppClass : cpp.getClasses()) {
+//            codeTabPane = new TabPane(createLanguageTab("Cpp"));
+//            codeTabPane.getTabs().clear();
+//            Tab tab = createCodeTab(cppClass.toString());
+//            tab.setText(cppClass.getName());
+//            codeTabPane.getTabs().add(tab);
+//            // ((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).appendText(javaClass.toString());
+//        }
     }
 }
