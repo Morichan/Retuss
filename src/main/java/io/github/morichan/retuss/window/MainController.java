@@ -1,15 +1,13 @@
 package io.github.morichan.retuss.window;
 
-import io.github.morichan.retuss.language.java.Java;
-import io.github.morichan.retuss.translator.Translator;
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.NodeDiagram;
 import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
+import io.github.morichan.retuss.language.uml.Package;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -18,9 +16,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -89,11 +85,12 @@ public class MainController {
      * <p>
      *     参照: <a href="http://hideoku.hatenablog.jp/entry/2013/06/07/205016"> FXML Controller で Stage を使うためのアレコレ - Java開発のんびり日記 </a>
      * </p>
+     * @param mainController メインウィンドウのコントローラクラスのインスタンス
      * @param parent 親ウィンドウ
      * @param filePath ウィンドウFXMLファイルのパス
      * @param title ウィンドウのタイトル
      */
-    public void showCodeStage(Stage parent, String filePath, String title) {
+    public void showCodeStage(MainController mainController, Stage parent, String filePath, String title) {
         try {
             codeStage = new Stage();
             codeStage.initOwner(parent);
@@ -102,9 +99,17 @@ public class MainController {
             codeStage.setScene(new Scene(codeLoader.load()));
             codeStage.show();
             codeController = codeLoader.getController();
+            codeController.setMainController(mainController);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void writeUmlForCode(Package umlPackage) {
+        if (umlPackage.getClasses().size() <= 0) return;
+
+        classDiagramDrawer.changeDrawnNodeText(0, ContentType.Title, 0, umlPackage.getClasses().get(0).getName());
+        classDiagramDrawer.allReDrawCanvas();
     }
 
     /**
@@ -182,8 +187,7 @@ public class MainController {
         } else if (event.getButton() == MouseButton.SECONDARY) {
             clickedCanvasBySecondaryButtonInCD(event.getX(), event.getY());
         }
-
-        if (codeController != null) codeController.createCodeTabs(classDiagramDrawer.extractPackage());
+        convertUmlToCode();
     }
 
     /**
@@ -348,6 +352,13 @@ public class MainController {
             ContextMenu contextMenu = util.createClassContextMenuInCD("", relation.getType());
             classDiagramScrollPane.setContextMenu(formatContextMenuInCD(contextMenu, relation.getType(), mouseX, mouseY));
         }
+    }
+
+    /**
+     * <p> UMLをコードに変換してコードエリアに反映します </p>
+     */
+    private void convertUmlToCode() {
+        if (codeController != null) codeController.createCodeTabs(classDiagramDrawer.extractPackage());
     }
 
     /**

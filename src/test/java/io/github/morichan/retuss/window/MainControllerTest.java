@@ -1490,18 +1490,25 @@ class MainControllerTest extends ApplicationTest {
             mainStage.setScene(new Scene(root));
 
             MainController mainController = loader.getController();
-            mainController.showCodeStage(mainStage, "/retussCode.fxml", "");
+            mainController.showCodeStage(mainController, mainStage, "/retussCode.fxml", "");
 
             mainStage.show();
             codeStage = mainController.getCodeStage();
         }
 
         @Nested
-        class そのまま入力する場合 {
+        class コードエリアの場合 {
+            Point2D topLeftCorner;
+            Point2D okButtonPoint;
 
             @BeforeEach
             void setup() {
+                topLeftCorner = new Point2D(700, 200);
+                okButtonPoint = new Point2D(1000.0, 490.0);
                 moveCodeWindow();
+                clickOn("#classButtonInCD");
+                drawClasses(topLeftCorner, "SampleClass", okButtonPoint);
+                resetCodeArea(codeStage);
             }
 
             @Test
@@ -1514,14 +1521,28 @@ class MainControllerTest extends ApplicationTest {
 
                 assertThat(actual).isEqualTo(expected);
             }
+
+            @Test
+            void クラス名だけを入力するとクラス名だけのクラスを描画する() {
+                String expected = "Main";
+
+                clickOn(codeStage);
+                write("class Main {\n}\n");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(topLeftCorner);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                String actual = scrollPane.getContextMenu().getItems().get(0).getText();
+                assertThat(actual).startsWith(expected);
+            }
         }
 
         @Nested
         class クラス図の場合 {
             Point2D xButtonOnDialogBox;
             Point2D okButtonPoint;
-            Point2D topLeftCorner;
-            Point2D bottomRightCorner;
+            Point2D topLeftCornerEdge;
+            Point2D bottomRightCornerEdge;
             Point2D firstClickedClassDiagramCanvas;
             Point2D secondClickedClassDiagramCanvas;
             Point2D thirdClickedClassDiagramCanvas;
@@ -1539,8 +1560,8 @@ class MainControllerTest extends ApplicationTest {
 
             @BeforeEach
             void setup() {
-                topLeftCorner = new Point2D(650, 163);
-                bottomRightCorner = new Point2D(1583, 984);
+                topLeftCornerEdge = new Point2D(650, 163);
+                bottomRightCornerEdge = new Point2D(1583, 984);
                 xButtonOnDialogBox = new Point2D(1050.0, 350.0);
                 okButtonPoint = new Point2D(1000.0, 490.0);
                 firstClickedClassDiagramCanvas = new Point2D(900.0, 600.0);
@@ -1641,22 +1662,61 @@ class MainControllerTest extends ApplicationTest {
     }
 
     /**
-     * <p> コード入力ウィンドウに存在するJavaタブ内の文字列を取得する。 </p>
+     * <p> コード入力ウィンドウに存在するJavaタブ内の文字列を取得します </p>
+     *
+     * <p>
+     * 具体的には、 {@link #getCodeArea(Stage)} で取得したコードエリア内の文字列を取得します。
+     * 上記構造のタブ内以降についてはController実行中に生成しているため、変更される恐れがあります。
+     * </p>
+     *
+     * <p>
+     * コード入力とキャンバス上との整合性テストに利用すします。
+     * </p>
+     *
+     * @param stage 大元のステージ <br> 基本的にはretussCode.fxmlのステージ以外を呼び出すことはありません
+     * @return コード入力ウィンドウに存在するJavaタブ内の文字列 <br> FXMLファイルを書き換えるか実行中にどこかのタブを消さない限り{@code null}になる可能性はありません
+     */
+    private String getCode(Stage stage) {
+        return getCodeArea(stage).getText();
+    }
+
+    /**
+     * <p> コード入力ウィンドウに存在するJavaタブ内の文字列を消去します </p>
      *
      * <p>
      * 具体的には、ステージ上のボーダーパネル上のタブパネル上の1つ目のタブ内のアンカーパネル上の
-     * タブパネル上の1つ目のタブ内のアンカーパネル上のコードエリア内の文字列を取得する。
-     * 上記構造のタブ内以降についてはController実行中に生成しているため、変更される恐れがある。
+     * タブパネル上の1つ目のタブ内のアンカーパネル上のコードエリア内の文字列を取得します。
+     * 上記構造のタブ内以降についてはController実行中に生成しているため、変更される恐れがします。
      * </p>
      *
      * <p>
-     * コード入力とキャンバス上との整合性テストに利用する。
+     * コード入力とキャンバス上との整合性テストの前に利用します。
      * </p>
      *
-     * @param stage 大元のステージ <br> 基本的にはretussCode.fxmlのステージ以外を呼び出すことはない
-     * @return クラス図キャンバス直下のスクロールパネル <br> FXMLファイルを書き換えるか実行中にどこかのパネルを消さない限り{@code null}になる可能性はない
+     * @param stage 大元のステージ <br> 基本的にはretussCode.fxmlのステージ以外を呼び出すことはありません
      */
-    private String getCode(Stage stage) {
+    private void resetCodeArea(Stage stage) {
+        // getCodeArea(stage).replaceText("");
+        clickOn(stage);
+        drag(stage).dropTo(new Point2D(1300.0, 250.0));
+        push(KeyCode.BACK_SPACE);
+        push(KeyCode.RIGHT);
+        push(KeyCode.BACK_SPACE);
+    }
+
+    /**
+     * <p> コード入力ウィンドウに存在するJavaタブ内のコードエリアを取得します </p>
+     *
+     * <p>
+     * 具体的には、ステージ上のボーダーパネル上のタブパネル上の1つ目のタブ内のアンカーパネル上の
+     * タブパネル上の1つ目のタブ内のアンカーパネル上のコードエリアを取得します。
+     * 上記構造のタブ内以降についてはController実行中に生成しているため、変更される恐れがあります。
+     * </p>
+     *
+     * @param stage 大元のステージ <br> 基本的にはretussCode.fxmlのステージ以外を呼び出すことはありません
+     * @return コード入力ウィンドウに存在するJavaタブ内のコードエリア <br> FXMLファイルを書き換えるか実行前にどこかのタブを消さない限り{@code null}になる可能性はありません
+     */
+    private CodeArea getCodeArea(Stage stage) {
         BorderPane borderPaneOnStage = (BorderPane) stage.getScene().getRoot().getChildrenUnmodifiable().get(0);
         TabPane tabPaneOnBorderPane = (TabPane) borderPaneOnStage.getCenter();
         Tab tabOnLanguageTabPane = tabPaneOnBorderPane.getTabs().get(0);
@@ -1664,8 +1724,7 @@ class MainControllerTest extends ApplicationTest {
         TabPane tabPaneOnAnchorPane = (TabPane) anchorPaneOnLanguageTab.getChildren().get(0);
         Tab tabOnCodeTabPane = tabPaneOnAnchorPane.getTabs().get(0);
         AnchorPane anchorPaneOnCodeTab = (AnchorPane) tabOnCodeTabPane.getContent();
-        CodeArea codeArea = (CodeArea) anchorPaneOnCodeTab.getChildren().get(0);
-        return codeArea.getText();
+        return (CodeArea) anchorPaneOnCodeTab.getChildren().get(0);
     }
 
     private void drawClasses(Point2D canvasPoint, String className) {

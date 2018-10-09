@@ -3,6 +3,8 @@ package io.github.morichan.retuss.window;
 import io.github.morichan.retuss.language.java.Class;
 import io.github.morichan.retuss.language.java.Java;
 import io.github.morichan.retuss.language.uml.Package;
+import io.github.morichan.retuss.listener.JavaEvalListener;
+import io.github.morichan.retuss.listener.JavaLanguage;
 import io.github.morichan.retuss.translator.Translator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -22,16 +24,26 @@ public class CodeController {
     @FXML
     private TabPane codeTabPane;
 
+    private MainController mainController;
+
+    private Java java = new Java();
+    private Package umlPackage = new Package();
     private Translator translator = new Translator();
+    private JavaLanguage javaLanguage = new JavaLanguage();
 
     @FXML
     private void initialize() {
         codeTabPane.getTabs().add(createLanguageTab("Java"));
     }
 
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
     public void createCodeTabs(Package classPackage) {
         translator.translate(classPackage);
-        setCodeTabs(translator.getJava());
+        java = translator.getJava();
+        setCodeTabs(java);
     }
 
     private Tab createLanguageTab(String tabName) {
@@ -55,10 +67,7 @@ public class CodeController {
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
         // codeArea.appendText(java.getClasses().get(0).toString());
         codeArea.setOnKeyTyped(event -> {
-            System.out.println("Pressed");
-            // System.out.println(((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getText());
-            // System.out.println(classDiagramDrawer.extractPackage().getClasses().get(0).getName());
-            //translator.translate(new Java());
+            convertCodeToUml();
         });
         codeArea.setOnMouseClicked(event -> {
             //translator.translate(classDiagramDrawer.extractPackage());
@@ -89,5 +98,25 @@ public class CodeController {
             Tab tab = createCodeTab(javaClass);
             ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().add(tab);
         }
+    }
+
+    private void convertCodeToUml() {
+        if (java.getClasses() == null) return;
+
+        try {
+            javaLanguage.parseForClassDiagram(getCode(0));
+            translator.translate(javaLanguage.getJava());
+
+            umlPackage = translator.getPackage();
+
+            mainController.writeUmlForCode(umlPackage);
+
+        } catch (NullPointerException e) {
+            System.out.println("This is Parse Error because JavaEvalListener object is null, but no problem.");
+        }
+    }
+
+    private String getCode(int tabNumber) {
+        return ((CodeArea) ((AnchorPane) ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().get(tabNumber).getContent()).getChildren().get(0)).getText();
     }
 }

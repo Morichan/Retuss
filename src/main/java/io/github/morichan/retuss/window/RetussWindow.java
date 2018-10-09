@@ -42,7 +42,7 @@ public class RetussWindow extends Application {
 
         // {@link MainController#showCodeStage(Stage, String, String)} と同様の処理
         MainController mainController = loader.getController();
-        mainController.showCodeStage(mainStage, resourcesPath + codeFxmlFileName, codeTitle);
+        mainController.showCodeStage(mainController, mainStage, resourcesPath + codeFxmlFileName, codeTitle);
     }
 
     /**
