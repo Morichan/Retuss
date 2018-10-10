@@ -237,6 +237,7 @@ public class MainController {
                 } else {
                     classDiagramDrawer.addDrawnEdge(buttonsInCD, "", mouseX, mouseY);
                     classDiagramDrawer.allReDrawCanvas();
+                    convertUmlToCode();
                 }
             }
         } else {

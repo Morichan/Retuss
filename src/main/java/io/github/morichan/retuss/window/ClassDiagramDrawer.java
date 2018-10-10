@@ -192,6 +192,12 @@ public class ClassDiagramDrawer {
                     }
                 }
                 extendingClass.setGeneralizationClass(extendedClass);
+            } else { // if (relations.getContentType(i) == ContentType.Composition) {
+                for (Class umlClass : umlPackage.getClasses()) {
+                    if (umlClass.getName().equals(nodes.get(relationSourceId).getNodeText())) {
+                        break;
+                    }
+                }
             }
         }
     }

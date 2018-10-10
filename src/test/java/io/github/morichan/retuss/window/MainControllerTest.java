@@ -23,6 +23,8 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.framework.junit5.Start;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -1518,7 +1520,7 @@ class MainControllerTest extends ApplicationTest {
 
                 clickOn(codeStage);
                 write("class Main {\n}\n");
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1602,8 +1604,7 @@ class MainControllerTest extends ApplicationTest {
 
                 clickOn("#classButtonInCD");
                 drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
-                //clickOn(codeStage);
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1619,7 +1620,7 @@ class MainControllerTest extends ApplicationTest {
                 clickOn("Main" + changeClassMenu);
                 write("ChangedClassName");
                 clickOn(okButtonPoint);
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1633,7 +1634,7 @@ class MainControllerTest extends ApplicationTest {
                 rightClickOn(firstClickedClassDiagramCanvas);
                 clickOn("Main" + deleteClassMenu);
 
-                assertThatThrownBy(() -> getCode(codeStage)).isInstanceOf(IndexOutOfBoundsException.class);
+                assertThatThrownBy(() -> getCode(codeStage, 0)).isInstanceOf(IndexOutOfBoundsException.class);
             }
 
             @Test
@@ -1645,7 +1646,7 @@ class MainControllerTest extends ApplicationTest {
                 clickOn("#normalButtonInCD");
                 addAttribute(firstClickedClassDiagramCanvas, "- number : int");
                 clickOn(okButtonPoint);
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1660,7 +1661,7 @@ class MainControllerTest extends ApplicationTest {
                 addAttribute(firstClickedClassDiagramCanvas, "- number : int");
                 addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
                 addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1676,7 +1677,7 @@ class MainControllerTest extends ApplicationTest {
                 addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
                 addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
                 changeAttribute(firstClickedClassDiagramCanvas, "~ point : double", "+ changedAttribute : char");
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1692,7 +1693,7 @@ class MainControllerTest extends ApplicationTest {
                 addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
                 addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
                 deleteAttribute(firstClickedClassDiagramCanvas, "~ point : double");
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1708,7 +1709,7 @@ class MainControllerTest extends ApplicationTest {
                 addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
                 addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
                 disableAttribute(firstClickedClassDiagramCanvas, "~ point : double");
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1722,7 +1723,7 @@ class MainControllerTest extends ApplicationTest {
                 clickOn("#normalButtonInCD");
                 addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
                 clickOn(okButtonPoint);
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1737,7 +1738,7 @@ class MainControllerTest extends ApplicationTest {
                 addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
                 addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
                 addOperation(firstClickedClassDiagramCanvas, "# print() : void");
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1753,7 +1754,7 @@ class MainControllerTest extends ApplicationTest {
                 addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
                 addOperation(firstClickedClassDiagramCanvas, "# print() : void");
                 changeOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void", "~ changeNumber(num : int, param : int) : void");
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1769,7 +1770,7 @@ class MainControllerTest extends ApplicationTest {
                 addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
                 addOperation(firstClickedClassDiagramCanvas, "# print() : void");
                 deleteOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1785,9 +1786,131 @@ class MainControllerTest extends ApplicationTest {
                 addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
                 addOperation(firstClickedClassDiagramCanvas, "# print() : void");
                 disableOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名のみのクラスを3つ記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラスを3つ記述して2番目のクラスに属性と操作を2つずつ追加する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub {\n    private int number;\n    private char text;\n\n    public void setNumber(int number) {}\n    public int getNumber() {}\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(secondClickedClassDiagramCanvas, "- number : int");
+                addAttribute(secondClickedClassDiagramCanvas, "- text : char");
+                addOperation(secondClickedClassDiagramCanvas, "+ setNumber(number : int) : void");
+                addOperation(secondClickedClassDiagramCanvas, "+ getNumber() : int");
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラス名のみのクラスを3つ記述して2番目のクラスを除去する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                rightClickOn(secondClickedClassDiagramCanvas);
+                clickOn("Sub" + deleteClassMenu);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラス名のみのクラスを3つ記述して2番目のクラスのクラス名を変更する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Subversion {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                rightClickOn(secondClickedClassDiagramCanvas);
+                clickOn("Sub" + changeClassMenu);
+                write("Subversion");
+                clickOn(okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラス名のみのクラス3つの内2つが継承関係のクラス関係を持つクラス記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub extends Super {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#generalizationButtonInCD");
+                clickOn(secondClickedClassDiagramCanvas);
+                clickOn(thirdClickedClassDiagramCanvas);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラス名のみのクラス3つの内2つがコンポジット関係のクラス関係を持つクラス記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n    private Sub sub = new Sub();\n}\n",
+                        "class Sub {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#compositionButtonInCD");
+                clickOn(firstClickedClassDiagramCanvas);
+                clickOn(secondClickedClassDiagramCanvas);
+                write("- sub");
+                clickOn(okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
             }
 
             private void addAttribute(Point2D point, String attributeText) {
@@ -1884,7 +2007,7 @@ class MainControllerTest extends ApplicationTest {
      * <p> コード入力ウィンドウに存在するJavaタブ内の文字列を取得します </p>
      *
      * <p>
-     * 具体的には、 {@link #getCodeArea(Stage)} で取得したコードエリア内の文字列を取得します。
+     * 具体的には、 {@link #getCodeArea(Stage, int)} で取得したコードエリア内の文字列を取得します。
      * 上記構造のタブ内以降についてはController実行中に生成しているため、変更される恐れがあります。
      * </p>
      *
@@ -1895,8 +2018,8 @@ class MainControllerTest extends ApplicationTest {
      * @param stage 大元のステージ <br> 基本的にはretussCode.fxmlのステージ以外を呼び出すことはありません
      * @return コード入力ウィンドウに存在するJavaタブ内の文字列 <br> FXMLファイルを書き換えるか実行中にどこかのタブを消さない限り{@code null}になる可能性はありません
      */
-    private String getCode(Stage stage) {
-        return getCodeArea(stage).getText();
+    private String getCode(Stage stage, int tabNumber) {
+        return getCodeArea(stage, tabNumber).getText();
     }
 
     /**
@@ -1935,13 +2058,13 @@ class MainControllerTest extends ApplicationTest {
      * @param stage 大元のステージ <br> 基本的にはretussCode.fxmlのステージ以外を呼び出すことはありません
      * @return コード入力ウィンドウに存在するJavaタブ内のコードエリア <br> FXMLファイルを書き換えるか実行前にどこかのタブを消さない限り{@code null}になる可能性はありません
      */
-    private CodeArea getCodeArea(Stage stage) {
+    private CodeArea getCodeArea(Stage stage, int tabNumber) {
         BorderPane borderPaneOnStage = (BorderPane) stage.getScene().getRoot().getChildrenUnmodifiable().get(0);
         TabPane tabPaneOnBorderPane = (TabPane) borderPaneOnStage.getCenter();
         Tab tabOnLanguageTabPane = tabPaneOnBorderPane.getTabs().get(0);
         AnchorPane anchorPaneOnLanguageTab = (AnchorPane) tabOnLanguageTabPane.getContent();
         TabPane tabPaneOnAnchorPane = (TabPane) anchorPaneOnLanguageTab.getChildren().get(0);
-        Tab tabOnCodeTabPane = tabPaneOnAnchorPane.getTabs().get(0);
+        Tab tabOnCodeTabPane = tabPaneOnAnchorPane.getTabs().get(tabNumber);
         AnchorPane anchorPaneOnCodeTab = (AnchorPane) tabOnCodeTabPane.getContent();
         return (CodeArea) anchorPaneOnCodeTab.getChildren().get(0);
     }
