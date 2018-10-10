@@ -187,7 +187,6 @@ public class MainController {
         } else if (event.getButton() == MouseButton.SECONDARY) {
             clickedCanvasBySecondaryButtonInCD(event.getX(), event.getY());
         }
-        convertUmlToCode();
     }
 
     /**
@@ -247,6 +246,7 @@ public class MainController {
                 classDiagramDrawer.setNodeText(className);
                 classDiagramDrawer.addDrawnNode(buttonsInCD);
                 classDiagramDrawer.allReDrawCanvas();
+                convertUmlToCode();
             } else if (util.searchSelectedButtonIn(buttonsInCD) == compositionButtonInCD) {
                 classDiagramDrawer.resetNodeChosen(classDiagramDrawer.getCurrentNodeNumber());
                 classDiagramDrawer.allReDrawCanvas();
@@ -401,23 +401,27 @@ public class MainController {
             String className = showChangeClassNameInputDialog(classDiagramDrawer.getNodes().get(classDiagramDrawer.getCurrentNodeNumber()).getNodeText());
             classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Title, 0, className);
             classDiagramDrawer.allReDrawCanvas();
+            convertUmlToCode();
         });
         // クラスの削除
         contextMenu.getItems().get(1).setOnAction(event -> {
             classDiagramDrawer.deleteDrawnNode(classDiagramDrawer.getCurrentNodeNumber());
             classDiagramDrawer.allReDrawCanvas();
+            convertUmlToCode();
         });
         // クラスの属性の追加
         ((Menu) contextMenu.getItems().get(3)).getItems().get(0).setOnAction(event -> {
             String addAttribute = showAddClassAttributeInputDialog();
             classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, addAttribute);
             classDiagramDrawer.allReDrawCanvas();
+            convertUmlToCode();
         });
         // クラスの操作の追加
         ((Menu) contextMenu.getItems().get(4)).getItems().get(0).setOnAction(event -> {
             String addOperation = showAddClassOperationInputDialog();
             classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, addOperation);
             classDiagramDrawer.allReDrawCanvas();
+            convertUmlToCode();
         });
         List<String> attributes = classDiagramDrawer.getDrawnNodeTextList(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute);
         List<String> operations = classDiagramDrawer.getDrawnNodeTextList(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation);
@@ -428,6 +432,7 @@ public class MainController {
                 String changedAttribute = showChangeClassAttributeInputDialog(attributes.get(contentNumber));
                 classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, contentNumber, changedAttribute);
                 classDiagramDrawer.allReDrawCanvas();
+                convertUmlToCode();
             });
         }
         // クラスの各属性の削除
@@ -436,6 +441,7 @@ public class MainController {
             ((Menu) ((Menu) contextMenu.getItems().get(3)).getItems().get(2)).getItems().get(i).setOnAction(event -> {
                 classDiagramDrawer.deleteDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, contentNumber);
                 classDiagramDrawer.allReDrawCanvas();
+                convertUmlToCode();
             });
         }
         // クラスの各属性の表示選択
@@ -454,6 +460,7 @@ public class MainController {
                 String changedOperation = showChangeClassOperationInputDialog(operations.get(contentNumber));
                 classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, contentNumber, changedOperation);
                 classDiagramDrawer.allReDrawCanvas();
+                convertUmlToCode();
             });
         }
         // クラスの各操作の削除
@@ -462,6 +469,7 @@ public class MainController {
             ((Menu) ((Menu) contextMenu.getItems().get(4)).getItems().get(2)).getItems().get(i).setOnAction(event -> {
                 classDiagramDrawer.deleteDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, contentNumber);
                 classDiagramDrawer.allReDrawCanvas();
+                convertUmlToCode();
             });
         }
         // クラスの各操作の表示選択

@@ -25,6 +25,7 @@ import org.testfx.framework.junit5.Start;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("GUITests")
@@ -1606,6 +1607,224 @@ class MainControllerTest extends ApplicationTest {
 
                 assertThat(actual).isEqualTo(expected);
             }
+
+            @Test
+            void クラス名を変更したクラスを記述する() {
+                String expected = "class ChangedClassName {\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                rightClickOn(firstClickedClassDiagramCanvas);
+                clickOn("Main" + changeClassMenu);
+                write("ChangedClassName");
+                clickOn(okButtonPoint);
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 描画済みのクラスを除去する() {
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                rightClickOn(firstClickedClassDiagramCanvas);
+                clickOn("Main" + deleteClassMenu);
+
+                assertThatThrownBy(() -> getCode(codeStage)).isInstanceOf(IndexOutOfBoundsException.class);
+            }
+
+            @Test
+            void クラス名と属性を1つ持つクラスを記述する() {
+                String expected = "class Main {\n    private int number;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- number : int");
+                clickOn(okButtonPoint);
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と属性を3つ持つクラスを記述する() {
+                String expected = "class Main {\n    private int number;\n    double point;\n    protected float testNumber;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- number : int");
+                addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と属性を3つ持つクラスの2番目の属性を変更する() {
+                String expected = "class Main {\n    private int number;\n    public char changedAttribute;\n    protected float testNumber;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- number : int");
+                addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
+                changeAttribute(firstClickedClassDiagramCanvas, "~ point : double", "+ changedAttribute : char");
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と属性を3つ持つクラスの2番目の属性を除去する() {
+                String expected = "class Main {\n    private int number;\n    protected float testNumber;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- number : int");
+                addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
+                deleteAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と属性を3つ持つクラスの2番目の属性を非表示化する() {
+                String expected = "class Main {\n    private int number;\n    double point;\n    protected float testNumber;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- number : int");
+                addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
+                disableAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と操作を1つ持つクラスを記述する() {
+                String expected = "class Main {\n    public int getNumber() {}\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
+                clickOn(okButtonPoint);
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と操作を3つ持つクラスを記述する() {
+                String expected = "class Main {\n    public int getNumber() {}\n    void setNumber(int num) {}\n    protected void print() {}\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
+                addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                addOperation(firstClickedClassDiagramCanvas, "# print() : void");
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と操作を3つ持つクラスの2番目の操作を変更する() {
+                String expected = "class Main {\n    public int getNumber() {}\n    void changeNumber(int num, int param) {}\n    protected void print() {}\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
+                addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                addOperation(firstClickedClassDiagramCanvas, "# print() : void");
+                changeOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void", "~ changeNumber(num : int, param : int) : void");
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と操作を3つ持つクラスの2番目の操作を除去する() {
+                String expected = "class Main {\n    public int getNumber() {}\n    protected void print() {}\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
+                addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                addOperation(firstClickedClassDiagramCanvas, "# print() : void");
+                deleteOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と操作を3つ持つクラスの2番目の操作を非表示化する() {
+                String expected = "class Main {\n    public int getNumber() {}\n    void setNumber(int num) {}\n    protected void print() {}\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
+                addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                addOperation(firstClickedClassDiagramCanvas, "# print() : void");
+                disableOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                String actual = getCode(codeStage);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            private void addAttribute(Point2D point, String attributeText) {
+                add(classAttributeMenu, addMenu, point, attributeText);
+                clickOn(okButtonPoint);
+            }
+
+            private void changeAttribute(Point2D point, String beforeAttributeText, String afterAttributeText) {
+                change(classAttributeMenu, addMenu, changeMenu, point, beforeAttributeText, afterAttributeText);
+                clickOn(okButtonPoint);
+            }
+
+            private void deleteAttribute(Point2D point, String attributeText) {
+                delete(classAttributeMenu, addMenu, deleteMenu, point, attributeText);
+            }
+
+            private void disableAttribute(Point2D point, String attributeText) {
+                disable(classAttributeMenu, addMenu, checkMenu, point, attributeText);
+            }
+
+            private void addOperation(Point2D point, String attributeText) {
+                add(classOperationMenu, addMenu, point, attributeText);
+                clickOn(okButtonPoint);
+            }
+
+            private void changeOperation(Point2D point, String beforeAttributeText, String afterAttributeText) {
+                change(classOperationMenu, addMenu, changeMenu, point, beforeAttributeText, afterAttributeText);
+                clickOn(okButtonPoint);
+            }
+
+            private void deleteOperation(Point2D point, String attributeText) {
+                delete(classOperationMenu, addMenu, deleteMenu, point, attributeText);
+            }
+
+            private void disableOperation(Point2D point, String attributeText) {
+                disable(classOperationMenu, addMenu, checkMenu, point, attributeText);
+            }
         }
 
         private void moveCodeWindow() {
@@ -1737,5 +1956,37 @@ class MainControllerTest extends ApplicationTest {
         clickOn(canvasPoint);
         write(className);
         clickOn(okButtonPoint);
+    }
+
+    private void add(String featureMenu, String addMenu, Point2D point, String attributeText) {
+        rightClickOn(point);
+        moveTo(featureMenu);
+        clickOn(addMenu);
+        write(attributeText);
+    }
+
+    private void change(String featureMenu, String addMenu, String changeMenu, Point2D point, String beforeAttributeText, String afterAttributeText) {
+        rightClickOn(point);
+        moveTo(featureMenu);
+        moveTo(addMenu);
+        moveTo(changeMenu);
+        clickOn(beforeAttributeText);
+        write(afterAttributeText);
+    }
+
+    private void delete(String featureMenu, String addMenu, String deleteMenu, Point2D point, String attributeText) {
+        rightClickOn(point);
+        moveTo(featureMenu);
+        moveTo(addMenu);
+        moveTo(deleteMenu);
+        clickOn(attributeText);
+    }
+
+    private void disable(String featureMenu, String addMenu, String checkMenu, Point2D point, String attributeText) {
+        rightClickOn(point);
+        moveTo(featureMenu);
+        moveTo(addMenu);
+        moveTo(checkMenu);
+        clickOn(attributeText);
     }
 }
