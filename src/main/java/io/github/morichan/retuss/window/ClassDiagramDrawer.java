@@ -1,7 +1,5 @@
 package io.github.morichan.retuss.window;
 
-import io.github.morichan.fescue.feature.Attribute;
-import io.github.morichan.fescue.feature.name.Name;
 import io.github.morichan.retuss.language.uml.Package;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.window.diagram.*;

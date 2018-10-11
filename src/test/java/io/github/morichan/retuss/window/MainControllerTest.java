@@ -1484,31 +1484,33 @@ class MainControllerTest extends ApplicationTest {
         Stage mainStage;
         Stage codeStage;
 
-        @Start
-        public void start(Stage stage) throws IOException {
-            mainStage = stage;
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/retussMain.fxml"));
-            Parent root = loader.load();
-            mainStage.setScene(new Scene(root));
-
-            MainController mainController = loader.getController();
-            mainController.showCodeStage(mainController, mainStage, "/retussCode.fxml", "");
-
-            mainStage.show();
-            codeStage = mainController.getCodeStage();
-        }
-
         @Nested
-        class コードエリアの場合 {
+        class コードエリアの場合 extends ApplicationTest {
             Point2D topLeftCorner;
             Point2D okButtonPoint;
+
+            @Start
+            public void start(Stage stage) throws IOException {
+                mainStage = stage;
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/retussMain.fxml"));
+                Parent root = loader.load();
+                mainStage.setScene(new Scene(root));
+
+                MainController mainController = loader.getController();
+                mainController.showCodeStage(mainController, mainStage, "/retussCode.fxml", "");
+
+                mainStage.show();
+                codeStage = mainController.getCodeStage();
+            }
 
             @BeforeEach
             void setup() {
                 topLeftCorner = new Point2D(700, 200);
                 okButtonPoint = new Point2D(1000.0, 490.0);
                 moveCodeWindow();
+                deleteCodeWindow();
+                deleteCodeWindow();
                 clickOn("#classButtonInCD");
                 drawClasses(topLeftCorner, "SampleClass", okButtonPoint);
                 resetCodeArea(codeStage);
@@ -1541,7 +1543,7 @@ class MainControllerTest extends ApplicationTest {
         }
 
         @Nested
-        class クラス図の場合 {
+        class クラス図の場合 extends ApplicationTest {
             Point2D xButtonOnDialogBox;
             Point2D okButtonPoint;
             Point2D topLeftCornerEdge;
@@ -1560,6 +1562,22 @@ class MainControllerTest extends ApplicationTest {
             String changeMenu;
             String deleteMenu;
             String checkMenu;
+
+            @Start
+            public void start(Stage stage) throws IOException {
+                mainStage = stage;
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/retussMain.fxml"));
+                Parent root = loader.load();
+                mainStage.setScene(new Scene(root));
+
+                MainController mainController = loader.getController();
+                mainController.showCodeStage(mainController, mainStage, "/retussCode.fxml", "");
+
+                mainStage.show();
+                codeStage = mainController.getCodeStage();
+                codeStage.close();
+            }
 
             @BeforeEach
             void setup() {
@@ -1594,8 +1612,8 @@ class MainControllerTest extends ApplicationTest {
             }
 
             @BeforeEach
-            void moveAndDeleteCodeWindow() {
-                moveCodeWindow();
+            void reset() {
+                ClassNodeDiagram.resetNodeCount();
             }
 
             @Test
@@ -1982,6 +2000,9 @@ class MainControllerTest extends ApplicationTest {
 
         private void moveCodeWindow() {
             drag(new Point2D(800.0, 250.0)).dropTo(new Point2D(1700.0, 250.0));
+        }
+
+        private void deleteCodeWindow() {
             clickOn(new Point2D(1250.0, 250.0));
         }
     }
@@ -2102,7 +2123,7 @@ class MainControllerTest extends ApplicationTest {
     private void drawClasses(Point2D canvasPoint, String className) {
         clickOn(canvasPoint);
         write(className);
-        clickOn(okButtonOnDialogBox);
+        clickOn(new Point2D(1000.0, 490.0));
     }
 
     private void drawClasses(Point2D canvasPoint, String className, Point2D okButtonPoint) {
