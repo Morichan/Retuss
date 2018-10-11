@@ -14,6 +14,7 @@ public class Class {
     private String name;
     private Class generalizationClass;
     private List<Attribute> attributes;
+    private List<Attribute> relations;
     private List<Operation> operations;
 
     /**
@@ -26,6 +27,7 @@ public class Class {
     public Class() {
         setName("ClassName");
         attributes = new ArrayList<>();
+        relations = new ArrayList<>();
         operations = new ArrayList<>();
     }
 
@@ -37,6 +39,7 @@ public class Class {
     public Class(String className) {
         setName(className);
         attributes = new ArrayList<>();
+        relations = new ArrayList<>();
         operations = new ArrayList<>();
     }
 
@@ -135,6 +138,54 @@ public class Class {
      */
     public void emptyAttribute() {
         setAttributes(null);
+    }
+
+    /**
+     * <p> 関係属性のリストに属性を追加します </p>
+     *
+     * <p>
+     * {@code null} を追加しようとしても反映しません。
+     * </p>
+     *
+     * @param relation 関係属性 <br> {@code null} 無視
+     */
+    public void addRelation(Attribute relation) {
+        if (relation != null) relations.add(relation);
+    }
+
+    /**
+     * <p> 関係属性のリストを設定します </p>
+     *
+     * <p>
+     * リスト内に {@code null} を含んでいた場合はその要素を無視します。
+     * また、 {@code null} を設定しようとした場合はリストを空にします。
+     * </p>
+     *
+     * @param relations 属性のリスト
+     */
+    public void setRelations(List<Attribute> relations) {
+        if (relations != null) for (Attribute relation : relations) addRelation(relation);
+        else this.relations.clear();
+    }
+
+    /**
+     * <p> 関係属性のリストを取得します </p>
+     *
+     * @return 関係属性のリスト <br> 要素数0の可能性あり
+     */
+    public List<Attribute> getRelations() {
+        return relations;
+    }
+
+    /**
+     * <p> 属性のリストを空にします </p>
+     *
+     * <p>
+     * {@link #setRelations(List)} に{@code null} を設定しています。
+     * </p>
+     */
+    public void emptyRelations() {
+        setRelations(null);
     }
 
     /**

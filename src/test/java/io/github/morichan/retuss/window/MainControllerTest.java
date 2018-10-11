@@ -1913,6 +1913,36 @@ class MainControllerTest extends ApplicationTest {
                 }
             }
 
+            @Test
+            void クラス名のみのクラス3つの内3つがコンポジット関係のクラス関係を持つクラス記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n    private Sub sub = new Sub();\n}\n",
+                        "class Sub {\n    public Super super = new Super();\n}\n",
+                        "class Super {\n    Main main = new Main();\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#compositionButtonInCD");
+                clickOn(firstClickedClassDiagramCanvas);
+                clickOn(secondClickedClassDiagramCanvas);
+                write("- sub");
+                clickOn(okButtonPoint);
+                clickOn(secondClickedClassDiagramCanvas);
+                clickOn(thirdClickedClassDiagramCanvas);
+                write("+ super");
+                clickOn(okButtonPoint);
+                clickOn(thirdClickedClassDiagramCanvas);
+                clickOn(firstClickedClassDiagramCanvas);
+                write("~ main");
+                clickOn(okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
             private void addAttribute(Point2D point, String attributeText) {
                 add(classAttributeMenu, addMenu, point, attributeText);
                 clickOn(okButtonPoint);

@@ -71,6 +71,14 @@ public class ClassNodeDiagram extends NodeDiagram {
         return classNameSpace;
     }
 
+    public List<Attribute> extractRelations() {
+        List<Attribute> relations = new ArrayList<>();
+        for (RelationshipAttributeGraphic rag : this.relations) {
+            relations.add(rag.getAttribute());
+        }
+        return relations;
+    }
+
     /**
      * <p> クラス図キャンバスにおける任意のポイントに、このクラスを描画しているか否かの真偽値を取得します </p>
      *

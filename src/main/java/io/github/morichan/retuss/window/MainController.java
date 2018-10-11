@@ -229,6 +229,7 @@ public class MainController {
                     String compositionName = showCreateCompositionNameInputDialog();
                     classDiagramDrawer.addDrawnEdge(buttonsInCD, compositionName, mouseX, mouseY);
                     classDiagramDrawer.allReDrawCanvas();
+                    convertUmlToCode();
                 }
             } else if (util.searchSelectedButtonIn(buttonsInCD) == generalizationButtonInCD) {
                 if (!classDiagramDrawer.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, mouseX, mouseY)) {

@@ -1,5 +1,7 @@
 package io.github.morichan.retuss.window;
 
+import io.github.morichan.fescue.feature.Attribute;
+import io.github.morichan.fescue.feature.name.Name;
 import io.github.morichan.retuss.language.uml.Package;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.window.diagram.*;
@@ -192,9 +194,10 @@ public class ClassDiagramDrawer {
                     }
                 }
                 extendingClass.setGeneralizationClass(extendedClass);
-            } else { // if (relations.getContentType(i) == ContentType.Composition) {
+            } else if (relations.getContentType(i) == ContentType.Composition) {
                 for (Class umlClass : umlPackage.getClasses()) {
                     if (umlClass.getName().equals(nodes.get(relationSourceId).getNodeText())) {
+                        umlClass.setRelations(((ClassNodeDiagram) nodes.get(relationSourceId)).extractRelations());
                         break;
                     }
                 }
@@ -432,6 +435,8 @@ public class ClassDiagramDrawer {
                 relations.setRelationSourceId(ContentType.Composition, relations.getCompositionsCount() - 1, fromNodeId);
                 relations.setRelationPoint(ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get(toNodeId).getPoint());
                 relations.setRelationSourcePoint(ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get(fromNodeId).getPoint());
+                // コンポジション関係のインスタンスを生成
+                nodes.get(fromNodeId).createNodeText(ContentType.Composition, name + " : " + nodes.get(toNodeId).getNodeText());
             }
 
         } else if (button.getText().equals("Generalization")) {
