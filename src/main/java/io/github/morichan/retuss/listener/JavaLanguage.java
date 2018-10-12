@@ -15,8 +15,6 @@ public class JavaLanguage {
 
     public void parseForClassDiagram(String code) {
         walk(code);
-        //className = searchClassName();
-        //extendedClassName = searchExtendedClassName();
         java = javaEvalListener.getJava();
     }
 

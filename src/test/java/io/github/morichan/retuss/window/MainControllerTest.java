@@ -1512,7 +1512,7 @@ class MainControllerTest extends ApplicationTest {
                 deleteCodeWindow();
                 deleteCodeWindow();
                 clickOn("#classButtonInCD");
-                drawClasses(topLeftCorner, "SampleClass", okButtonPoint);
+                drawClasses(topLeftCorner, "AAA", okButtonPoint);
                 resetCodeArea(codeStage);
             }
 
@@ -1539,6 +1539,21 @@ class MainControllerTest extends ApplicationTest {
                 ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
                 String actual = scrollPane.getContextMenu().getItems().get(0).getText();
                 assertThat(actual).startsWith(expected);
+            }
+
+            @Disabled
+            @Test
+            void 属性を1つ持つクラスを描画する() {
+                String expected = "- number : double";
+
+                clickOn(codeStage);
+                write("class Main {\n    private int number;\n}\n");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(topLeftCorner);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                String actual = ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText();
+                assertThat(actual).isEqualTo(expected);
             }
         }
 

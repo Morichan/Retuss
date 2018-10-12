@@ -94,7 +94,7 @@ public class UMLTranslator {
                 int finalI = i;
                 List<io.github.morichan.retuss.language.uml.Class> oneExtendsClass =
                         classPackage.getClasses().stream().filter(
-                                cp -> cp.getName().equals(javaClasses.get(finalI).getExtendsClassName().toString())
+                                cp -> cp.getName().equals(javaClasses.get(finalI).getExtendsClassName())
                         ).collect(Collectors.toList());
                 classPackage.getClasses().get(finalI).setGeneralizationClass(oneExtendsClass.get(0));
             }
