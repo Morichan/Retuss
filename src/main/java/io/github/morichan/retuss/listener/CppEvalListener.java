@@ -20,6 +20,7 @@ public class CppEvalListener extends CPP14BaseListener {
   //  private MemberVariable memberVariable=new MemberVariable();
     private AccessSpecifier accessSpecifier=null;
     boolean isAlreadySearchedAccessSpecifier = false;
+    boolean functiondefinitionFlag=false;
 
     @Override
     public void enterTranslationunit(CPP14Parser.TranslationunitContext ctx) {
@@ -65,8 +66,8 @@ public class CppEvalListener extends CPP14BaseListener {
     }
 
     @Override
-
     public void enterFunctiondefinition(CPP14Parser.FunctiondefinitionContext ctx) {
+        functiondefinitionFlag=true;
         MemberFunction memberFunction = new MemberFunction();
 
         if (accessSpecifier != null) {
@@ -87,7 +88,37 @@ public class CppEvalListener extends CPP14BaseListener {
 
     }
 
+    @Override public void exitFunctiondefinition(CPP14Parser.FunctiondefinitionContext ctx) { functiondefinitionFlag=true; }
 
+    @Override
+    public void enterParameterdeclaration(CPP14Parser.ParameterdeclarationContext ctx) {
+//        if (! (ctx.getParent().getParent().getParent().getParent().getParent().getParent().getParent() instanceof CPP14Parser.FunctiondefinitionContext)) return;
+        if (functiondefinitionFlag == true) {
+            Argument argument = new Argument();
+
+            if (ctx.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0) instanceof CPP14Parser.SimpletypespecifierContext) {
+                argument.setType(new Type(ctx.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
+            }
+
+            for (int i = 0; i < ctx.getChildCount(); i++) {
+                if (ctx.getChild(i) instanceof CPP14Parser.DeclaratorContext) {
+                    argument.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+                }
+            }
+
+            cpp.getClasses().get(cpp.getClasses().size() - 1).getMemberFunctions()
+                    .get(cpp.getClasses().get(cpp.getClasses().size() - 1).getMemberFunctions().size() - 1).addArgument(argument);
+
+        }
+
+    }
+//    @Override
+//    public void enterParametersandqualifiers(CPP14Parser.ParametersandqualifiersContext ctx) {
+//        if (! (ctx.getParent().getParent().getParent().getParent() instanceof CPP14Parser.FunctiondefinitionContext)) return;
+//
+//        Argument argument = new Argument();
+//
+//    }
 
     private Class searchExtendsClass(CPP14Parser.ClassheadContext ctx) {
 

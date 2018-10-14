@@ -116,6 +116,45 @@ class CppEvalListenerTest {
         }
     }
 
+
+
+    @Test
+    void 引数を持つメソッドを3つ返す() {
+        init("class JavaClass {public: double calculate(double x, double y, double z) {}protected: Point createPoint(int x, int y) {}private: void print(char text) {}};");
+        List<MemberFunction> expected = Arrays.asList(
+                new MemberFunction(new Type("double"), "calculate"),
+                new MemberFunction(new Type("Point"), "createPoint"),
+                new MemberFunction(new Type("void"), "print")
+        );
+        expected.get(0).setAccessSpecifier(AccessSpecifier.Public);
+        expected.get(1).setAccessSpecifier(AccessSpecifier.Protected);
+        expected.get(2).setAccessSpecifier(AccessSpecifier.Private);
+        expected.get(0).addArgument(new Argument(new Type("double"), "x"));
+        expected.get(0).addArgument(new Argument(new Type("double"), "y"));
+        expected.get(0).addArgument(new Argument(new Type("double"), "z"));
+        expected.get(1).addArgument(new Argument(new Type("int"), "x"));
+        expected.get(1).addArgument(new Argument(new Type("int"), "y"));
+        expected.get(2).addArgument(new Argument(new Type("char"), "text"));
+
+        List<MemberFunction> actual = obj.getCpp().getClasses().get(0).getMemberFunctions();
+
+        for (int i = 0; i < expected.size(); i++) {
+            assertThat(actual.get(i)).isEqualToComparingFieldByFieldRecursively(expected.get(i));
+        }
+    }
+
+    @Test
+    void 継承クラス名を返す() {
+        init("class JavaClassName : SuperJavaClassName {};");
+        String expected = "SuperJavaClassName";
+
+        String actual = obj.getCpp().getClasses().get(0).getExtendsClassName();
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+
+
     private void init(String cppCode) {
         lexer = new CPP14Lexer(CharStreams.fromString(cppCode));
         tokens = new CommonTokenStream(lexer);
