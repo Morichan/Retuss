@@ -71,6 +71,23 @@ public class CppTranslator {
             cppClass.addMemberFunction(memberFunction);
         }
 
+
+
+/**
+ * コンポジションｎ￥の変換
+ *
+ */
+//        for (Attribute relation : classClass.getRelations()) {
+//            Field field = new Field(new Type(relation.getType().toString()), relation.getName().toString());
+//            try {
+//                field.setAccessModifier(convert(relation.getVisibility()));
+//            } catch (IllegalStateException e) {
+//                field.setAccessModifier(AccessModifier.Private);
+//            }
+//            field.setValue("new " + relation.getType().toString());
+//            javaClass.addField(field);
+//        }
+
         return cppClass;
     }
 
