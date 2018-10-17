@@ -48,7 +48,7 @@ public class CodeController {
 
     private Tab createLanguageTab(String tabName) {
 
-        TabPane codeTabPane = new TabPane(createCodeTab(null));
+        TabPane codeTabPane = new TabPane();
         AnchorPane languageAnchor = new AnchorPane(codeTabPane);
         AnchorPane.setBottomAnchor(codeTabPane, 0.0);
         AnchorPane.setTopAnchor(codeTabPane, 0.0);

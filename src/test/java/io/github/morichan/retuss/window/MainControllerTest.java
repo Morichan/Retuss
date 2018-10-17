@@ -23,6 +23,7 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.framework.junit5.Start;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -1541,19 +1542,72 @@ class MainControllerTest extends ApplicationTest {
                 assertThat(actual).startsWith(expected);
             }
 
-            @Disabled
             @Test
             void 属性を1つ持つクラスを描画する() {
-                String expected = "- number : double";
+                String expected = "- number : int";
 
                 clickOn(codeStage);
-                write("class Main {\n    private int number;\n}\n");
+                write("class Main {private int number;}");
 
                 clickOn("#normalButtonInCD");
                 rightClickOn(topLeftCorner);
                 ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
                 String actual = ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText();
                 assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 属性を3つ持つクラスを描画する() {
+                List<String> expected = Arrays.asList("- number : double", "# text : String", "~ point : float");
+
+                clickOn(codeStage);
+                write("class Main {private double number; protected String text; float point;}");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(topLeftCorner);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                List<String> actual = new ArrayList<>();
+                for (MenuItem item : ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems()) {
+                    actual.add(item.getText());
+                }
+
+                for (int i = 0; i < expected.size(); i++) {
+                    assertThat(actual.get(i)).isEqualTo(expected.get(i));
+                }
+            }
+
+            @Test
+            void 操作を1つ持つクラスを描画する() {
+                String expected = "+ getNumber() : int";
+
+                clickOn(codeStage);
+                write("class Main {public int getNumber() {}}");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(topLeftCorner);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                String actual = ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems().get(0).getText();
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 操作を3つ持つクラスを描画する() {
+                List<String> expected = Arrays.asList("+ getNumber() : int", "# setNumber(number : int) : void", "~ print(text : String, point : float) : void");
+
+                clickOn(codeStage);
+                write("class Main {public int getNumber() {} protected void setNumber(int number) {} void print(String text, float point) {}}");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(topLeftCorner);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                List<String> actual = new ArrayList<>();
+                for (MenuItem item : ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems()) {
+                    actual.add(item.getText());
+                }
+
+                for (int i = 0; i < expected.size(); i++) {
+                    assertThat(actual.get(i)).isEqualTo(expected.get(i));
+                }
             }
         }
 

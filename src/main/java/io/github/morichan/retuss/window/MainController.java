@@ -108,7 +108,25 @@ public class MainController {
     public void writeUmlForCode(Package umlPackage) {
         if (umlPackage.getClasses().size() <= 0) return;
 
-        classDiagramDrawer.changeDrawnNodeText(0, ContentType.Title, 0, umlPackage.getClasses().get(0).getName());
+        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
+            classDiagramDrawer.changeDrawnNodeText(i, ContentType.Title, 0, umlPackage.getClasses().get(i).getName());
+
+            for (int j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
+                try {
+                    classDiagramDrawer.changeDrawnNodeText(i, ContentType.Attribute, j, umlPackage.getClasses().get(i).getAttributes().get(j).toString());
+                } catch (IndexOutOfBoundsException e) {
+                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Attribute, umlPackage.getClasses().get(i).getAttributes().get(j).toString());
+                }
+            }
+
+            for (int j = 0; j < umlPackage.getClasses().get(i).getOperations().size(); j++) {
+                try {
+                    classDiagramDrawer.changeDrawnNodeText(i, ContentType.Operation, j, umlPackage.getClasses().get(i).getOperations().get(j).toString());
+                } catch (IndexOutOfBoundsException e) {
+                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).getOperations().get(j).toString());
+                }
+            }
+        }
         classDiagramDrawer.allReDrawCanvas();
     }
 
