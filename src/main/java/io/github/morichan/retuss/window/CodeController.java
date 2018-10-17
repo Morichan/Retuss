@@ -1,10 +1,11 @@
 package io.github.morichan.retuss.window;
 
-import io.github.morichan.retuss.language.java.Class;
+import io.github.morichan.retuss.language.cpp.Cpp;
 import io.github.morichan.retuss.language.java.Java;
 import io.github.morichan.retuss.language.uml.Package;
-import io.github.morichan.retuss.listener.JavaEvalListener;
+import io.github.morichan.retuss.listener.CppLanguage;
 import io.github.morichan.retuss.listener.JavaLanguage;
+import io.github.morichan.retuss.translator.Language;
 import io.github.morichan.retuss.translator.Translator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -27,13 +28,16 @@ public class CodeController {
     private MainController mainController;
 
     private Java java = new Java();
+    private Cpp cpp = new Cpp();
     private Package umlPackage = new Package();
     private Translator translator = new Translator();
     private JavaLanguage javaLanguage = new JavaLanguage();
+    private CppLanguage cppLanguage = new CppLanguage();
 
     @FXML
     private void initialize() {
         codeTabPane.getTabs().add(createLanguageTab("Java"));
+        codeTabPane.getTabs().add(createLanguageTab("C++"));
     }
 
     public void setMainController(MainController mainController) {
@@ -43,7 +47,9 @@ public class CodeController {
     public void createCodeTabs(Package classPackage) {
         translator.translate(classPackage);
         java = translator.getJava();
+        cpp = translator.getCpp();
         setCodeTabs(java);
+        setCodeTabs(cpp);
     }
 
     private Tab createLanguageTab(String tabName) {
@@ -62,12 +68,12 @@ public class CodeController {
         return languageTab;
     }
 
-    private Tab createCodeTab(Class javaClass) {
+    private Tab createCodeTab(io.github.morichan.retuss.language.java.Class javaClass) {
         CodeArea codeArea = new CodeArea();
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
         // codeArea.appendText(java.getClasses().get(0).toString());
         codeArea.setOnKeyTyped(event -> {
-            convertCodeToUml();
+            convertCodeToUml(Language.Java);
         });
         codeArea.setOnMouseClicked(event -> {
             //translator.translate(classDiagramDrawer.extractPackage());
@@ -92,31 +98,72 @@ public class CodeController {
         return codeTab;
     }
 
+    private Tab createCodeTab(io.github.morichan.retuss.language.cpp.Class cppClass) {
+        CodeArea codeArea = new CodeArea();
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.setOnKeyTyped(event -> {
+            convertCodeToUml(Language.Cpp);
+        });
+
+        if (cpp.getClasses().size() > 0 && !cpp.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(cpp.getClasses().get(0).toString());
+
+        AnchorPane codeAnchor = new AnchorPane(codeArea);
+        AnchorPane.setBottomAnchor(codeArea, 0.0);
+        AnchorPane.setTopAnchor(codeArea, 0.0);
+        AnchorPane.setLeftAnchor(codeArea, 0.0);
+        AnchorPane.setRightAnchor(codeArea, 0.0);
+
+        Tab codeTab = new Tab();
+        codeTab.setContent(codeAnchor);
+        if (cppClass == null) codeTab.setText("<Unknown Title>");
+        else codeTab.setText(cppClass.getName());
+        codeTab.setClosable(false);
+
+        return codeTab;
+    }
+
     private void setCodeTabs(Java java) {
         ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().clear();
-        for (Class javaClass : java.getClasses()) {
+        for (io.github.morichan.retuss.language.java.Class javaClass : java.getClasses()) {
             Tab tab = createCodeTab(javaClass);
             ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().add(tab);
         }
     }
 
-    private void convertCodeToUml() {
+    private void setCodeTabs(Cpp cpp) {
+        ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(1).getContent()).getChildren().get(0)).getTabs().clear();
+        for (io.github.morichan.retuss.language.cpp.Class cppClass : cpp.getClasses()) {
+            Tab tab = createCodeTab(cppClass);
+            ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(1).getContent()).getChildren().get(0)).getTabs().add(tab);
+        }
+    }
+
+    private void convertCodeToUml(Language language) {
         if (java.getClasses() == null) return;
 
         try {
-            javaLanguage.parseForClassDiagram(getCode(0));
-            translator.translate(javaLanguage.getJava());
+            if (language == Language.Java) {
+                javaLanguage.parseForClassDiagram(getCode(0, 0));
+                translator.translate(javaLanguage.getJava());
 
-            umlPackage = translator.getPackage();
+                umlPackage = translator.getPackage();
 
-            mainController.writeUmlForCode(umlPackage);
+                mainController.writeUmlForCode(umlPackage);
+            } else { // if (language == Language.Cpp) {
+                cppLanguage.parseForClassDiagram(getCode(1,0));
+                // translator.translate(cppLanguage.getCpp());
+
+                umlPackage = translator.getPackage();
+
+                mainController.writeUmlForCode(umlPackage);
+            }
 
         } catch (NullPointerException e) {
             System.out.println("This is Parse Error because JavaEvalListener object is null, but no problem.");
         }
     }
 
-    private String getCode(int tabNumber) {
-        return ((CodeArea) ((AnchorPane) ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().get(tabNumber).getContent()).getChildren().get(0)).getText();
+    private String getCode(int languageNumber, int tabNumber) {
+        return ((CodeArea) ((AnchorPane) ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(languageNumber).getContent()).getChildren().get(0)).getTabs().get(tabNumber).getContent()).getChildren().get(0)).getText();
     }
 }

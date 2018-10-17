@@ -1706,9 +1706,9 @@ class MainControllerTest extends ApplicationTest {
                 clickOn("#classButtonInCD");
                 drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
                 clickOn("#normalButtonInCD");
-                addAttribute(firstClickedClassDiagramCanvas, okButtonPoint, "- addAttribute : double");
+                addAttribute(firstClickedClassDiagramCanvas, "- addAttribute : double");
                 clickOn(codeStage);
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1720,11 +1720,11 @@ class MainControllerTest extends ApplicationTest {
                 clickOn("#classButtonInCD");
                 drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
                 clickOn("#normalButtonInCD");
-                addAttribute(firstClickedClassDiagramCanvas, okButtonPoint, "- addAttribute : double");
-                addAttribute(firstClickedClassDiagramCanvas, okButtonPoint, "# number : int = 0");
-                addAttribute(firstClickedClassDiagramCanvas, okButtonPoint, "~ x : float");
+                addAttribute(firstClickedClassDiagramCanvas, "- addAttribute : double");
+                addAttribute(firstClickedClassDiagramCanvas, "# number : int = 0");
+                addAttribute(firstClickedClassDiagramCanvas, "~ x : float");
                 clickOn(codeStage);
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
