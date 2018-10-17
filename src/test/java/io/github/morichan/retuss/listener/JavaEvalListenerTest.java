@@ -1,15 +1,18 @@
 package io.github.morichan.retuss.listener;
 
+import io.github.morichan.retuss.language.java.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import io.github.morichan.retuss.parser.java.JavaLexer;
 import io.github.morichan.retuss.parser.java.JavaParser;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -169,6 +172,89 @@ class JavaEvalListenerTest {
                 String actual = obj.getJava().getClasses().get(0).getExtendsClassName();
 
                 assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void フィールドを1つ返す() {
+                init("class JavaClass {private int number;}");
+                Field expected = new Field(new Type("int"), "number");
+
+                Field actual = obj.getJava().getClasses().get(0).getFields().get(0);
+
+                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+            }
+
+            @Test
+            void フィールドを3つ返す() {
+                init("class JavaClass {private int number; double point; protected float bias;}");
+                List<Field> expected = Arrays.asList(
+                        new Field(new Type("int"), "number"),
+                        new Field(new Type("double"), "point"),
+                        new Field(new Type("float"), "bias"));
+                expected.get(0).setAccessModifier(AccessModifier.Private);
+                expected.get(1).setAccessModifier(AccessModifier.Package);
+                expected.get(2).setAccessModifier(AccessModifier.Protected);
+
+                List<Field> actual = obj.getJava().getClasses().get(0).getFields();
+
+                for (int i = 0; i < expected.size(); i++) {
+                    assertThat(actual.get(i)).isEqualToComparingFieldByFieldRecursively(expected.get(i));
+                }
+            }
+
+            @Test
+            void メソッドを1つ返す() {
+                init("class JavaClass {public void print() {}}");
+                Method expected = new Method(new Type("void"), "print");
+
+                Method actual = obj.getJava().getClasses().get(0).getMethods().get(0);
+
+                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+            }
+
+            @Test
+            void メソッドを3つ返す() {
+                init("class JavaClass {public void print() {}protected int getItem() {}void setItem(int item) {}}");
+                List<Method> expected = Arrays.asList(
+                        new Method(new Type("void"), "print"),
+                        new Method(new Type("int"), "getItem"),
+                        new Method(new Type("void"), "setItem")
+                );
+                expected.get(0).setAccessModifier(AccessModifier.Public);
+                expected.get(1).setAccessModifier(AccessModifier.Protected);
+                expected.get(2).setAccessModifier(AccessModifier.Package);
+                expected.get(2).addArgument(new Argument(new Type("int"), "item"));
+
+                List<Method> actual = obj.getJava().getClasses().get(0).getMethods();
+
+                for (int i = 0; i < expected.size(); i++) {
+                    assertThat(actual.get(i)).isEqualToComparingFieldByFieldRecursively(expected.get(i));
+                }
+            }
+
+            @Test
+            void 引数を持つメソッドを3つ返す() {
+                init("class JavaClass {public double calculate(double x, double y, double z) {}protected Point createPoint(int x, int y) {}private void print(char text) {}}");
+                List<Method> expected = Arrays.asList(
+                        new Method(new Type("double"), "calculate"),
+                        new Method(new Type("Point"), "createPoint"),
+                        new Method(new Type("void"), "print")
+                );
+                expected.get(0).setAccessModifier(AccessModifier.Public);
+                expected.get(1).setAccessModifier(AccessModifier.Protected);
+                expected.get(2).setAccessModifier(AccessModifier.Private);
+                expected.get(0).addArgument(new Argument(new Type("double"), "x"));
+                expected.get(0).addArgument(new Argument(new Type("double"), "y"));
+                expected.get(0).addArgument(new Argument(new Type("double"), "z"));
+                expected.get(1).addArgument(new Argument(new Type("int"), "x"));
+                expected.get(1).addArgument(new Argument(new Type("int"), "y"));
+                expected.get(2).addArgument(new Argument(new Type("char"), "text"));
+
+                List<Method> actual = obj.getJava().getClasses().get(0).getMethods();
+
+                for (int i = 0; i < expected.size(); i++) {
+                    assertThat(actual.get(i)).isEqualToComparingFieldByFieldRecursively(expected.get(i));
+                }
             }
         }
     }

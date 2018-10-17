@@ -41,6 +41,7 @@ public class ClassNodeDiagram extends NodeDiagram {
     private final double leftSpace = 5.0;
 
     private List<ClassDiagramGraphic> attributes = new ArrayList<>();
+    private List<RelationshipAttributeGraphic> relations = new ArrayList<>();
     private List<ClassDiagramGraphic> operations = new ArrayList<>();
 
     private int attributeNotVisibilityCount = 0;
@@ -68,6 +69,14 @@ public class ClassNodeDiagram extends NodeDiagram {
      */
     public double getClassNameSpace() {
         return classNameSpace;
+    }
+
+    public List<Attribute> extractRelations() {
+        List<Attribute> relations = new ArrayList<>();
+        for (RelationshipAttributeGraphic rag : this.relations) {
+            relations.add(rag.getAttribute());
+        }
+        return relations;
     }
 
     /**
@@ -124,10 +133,11 @@ public class ClassNodeDiagram extends NodeDiagram {
         if (type == ContentType.Title) {
             nodeText = text;
         } else if (type == ContentType.Attribute) {
-            AttributeGraphic attribute = new AttributeGraphic(text);
-            attributes.add(attribute);
+            attributes.add(new AttributeGraphic(text));
         } else if (type == ContentType.Operation) {
             operations.add(new OperationGraphic(text));
+        } else { // if (type == ContentType.Composition) {
+            relations.add(new RelationshipAttributeGraphic(text));
         }
     }
 
@@ -146,6 +156,8 @@ public class ClassNodeDiagram extends NodeDiagram {
             attributes.get(number).setText(text);
         } else if (type == ContentType.Operation) {
             operations.get(number).setText(text);
+        } else { // if (type == ContentType.Composition) {
+            relations.get(number).setText(text);
         }
     }
 
@@ -165,6 +177,8 @@ public class ClassNodeDiagram extends NodeDiagram {
             attributes.remove(number);
         } else if (type == ContentType.Operation) {
             operations.remove(number);
+        } else { // if (type == ContentType.Composition) {
+            relations.remove(number);
         }
     }
 
@@ -183,6 +197,8 @@ public class ClassNodeDiagram extends NodeDiagram {
             content = attributes.get(number).getText();
         } else if (type == ContentType.Operation) {
             content = operations.get(number).getText();
+        } else if (type == ContentType.Composition) {
+            content = relations.get(number).getText();
         } else {
             content = "";
         }
@@ -205,6 +221,10 @@ public class ClassNodeDiagram extends NodeDiagram {
         } else if (type == ContentType.Operation) {
             for (ClassDiagramGraphic operation : operations) {
                 list.add(operation.getText());
+            }
+        } else if (type == ContentType.Composition) {
+            for (RelationshipAttributeGraphic relation : relations) {
+                list.add(relation.getText());
             }
         } else {
             list = null;
@@ -235,6 +255,10 @@ public class ClassNodeDiagram extends NodeDiagram {
             if (subtype == ContentType.Indication) {
                 operations.get(contentNumber).setIndication(isChecked);
             }
+        } else { // if (type == ContentType.Composition) {
+            if (subtype == ContentType.Indication) {
+                relations.get(contentNumber).setIndication(isChecked);
+            }
         }
     }
 
@@ -259,6 +283,10 @@ public class ClassNodeDiagram extends NodeDiagram {
         } else if (type == ContentType.Operation) {
             for (ClassDiagramGraphic operation : operations) {
                 list.add(operation.isIndicate());
+            }
+        } else if (type == ContentType.Composition) {
+            for (ClassDiagramGraphic relation : relations) {
+                list.add(relation.isIndicate());
             }
         } else {
             list = null;

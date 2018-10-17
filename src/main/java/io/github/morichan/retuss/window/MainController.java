@@ -1,39 +1,35 @@
 package io.github.morichan.retuss.window;
 
-import io.github.morichan.retuss.language.cpp.Cpp;
-import io.github.morichan.retuss.language.cpp.Class;
-
-//import io.github.morichan.retuss.language.java.Class;
-import io.github.morichan.retuss.language.java.Java;
-import io.github.morichan.retuss.translator.Translator;
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.NodeDiagram;
 import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
+import io.github.morichan.retuss.language.uml.Package;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.LineNumberFactory;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * <p> RETUSSウィンドウの動作管理クラス </p>
+ * <p> RETUSSメインウィンドウの動作管理クラス </p>
  *
  * <p>
- * {@link RetussWindow}クラスで用いているFXMLファイルにおけるシグナルハンドラを扱います。
+ * {@link RetussWindow}クラスで用いているretussMain.fxmlファイルにおけるシグナルハンドラを扱います。
  * </p>
  */
-public class Controller {
+public class MainController {
     @FXML
     private Button normalButtonInCD;
     @FXML
@@ -51,16 +47,13 @@ public class Controller {
 
     private List<Button> buttonsInCD = new ArrayList<>();
 
-    @FXML
-    private TabPane codeTabPane;
-
     private TextInputDialog classNameInputDialog;
 
+    private Stage codeStage;
+    private CodeController codeController;
+
     private UtilityJavaFXComponent util = new UtilityJavaFXComponent();
-    private static Translator translator = new Translator();
-    private static ClassDiagramDrawer classDiagramDrawer = new ClassDiagramDrawer();
-    private static Java java = new Java();
-    private static Cpp cpp = new Cpp();
+    private ClassDiagramDrawer classDiagramDrawer = new ClassDiagramDrawer();
 
     /**
      * <p> JavaFXにおけるデフォルトコンストラクタ </p>
@@ -73,21 +66,81 @@ public class Controller {
     @FXML
     private void initialize() {
         buttonsInCD.addAll(Arrays.asList(normalButtonInCD, classButtonInCD, noteButtonInCD, compositionButtonInCD, generalizationButtonInCD));
-       java = new Java();
-        cpp = new Cpp();
+        GraphicsContext gc = classDiagramCanvas.getGraphicsContext2D();
+        double scrollBarBreadth = 15.0;
+        gc.getCanvas().setWidth(classDiagramScrollPane.getPrefWidth() - scrollBarBreadth);
+        gc.getCanvas().setHeight(classDiagramScrollPane.getPrefHeight() - scrollBarBreadth);
+        classDiagramDrawer = new ClassDiagramDrawer();
+        classDiagramDrawer.setGraphicsContext(gc);
+    }
+
+    /**
+     * <p> コードウィンドウを表示します </p>
+     *
+     * <p>
+     *     同時に、コードウィンドウのコントローラクラスのインスタンスを取得しています。
+     *     これはJavaFX仕様の取得方法です。
+     * </p>
+     *
+     * <p>
+     *     参照: <a href="http://hideoku.hatenablog.jp/entry/2013/06/07/205016"> FXML Controller で Stage を使うためのアレコレ - Java開発のんびり日記 </a>
+     * </p>
+     * @param mainController メインウィンドウのコントローラクラスのインスタンス
+     * @param parent 親ウィンドウ
+     * @param filePath ウィンドウFXMLファイルのパス
+     * @param title ウィンドウのタイトル
+     */
+    public void showCodeStage(MainController mainController, Stage parent, String filePath, String title) {
         try {
-            // retussCode.FXMLファイルの読み込み時にclassDiagramCanvasが設定されていないためNullPointerExceptionを投げるのを防ぐ
-            GraphicsContext gc = classDiagramCanvas.getGraphicsContext2D();
-            double scrollBarBreadth = 15.0;
-            gc.getCanvas().setWidth(classDiagramScrollPane.getPrefWidth() - scrollBarBreadth);
-            gc.getCanvas().setHeight(classDiagramScrollPane.getPrefHeight() - scrollBarBreadth);
-            translator = new Translator();
-            classDiagramDrawer = new ClassDiagramDrawer();
-            classDiagramDrawer.setGraphicsContext(gc);
-        } catch (NullPointerException e) {
-            // 結果的にこちらはretussCode.FXMLに関する変数を設定することになる
-            codeTabPane.getTabs().add(createLanguageTab("Cpp"));
+            codeStage = new Stage();
+            codeStage.initOwner(parent);
+            codeStage.setTitle(title);
+            FXMLLoader codeLoader = new FXMLLoader(getClass().getResource(filePath));
+            codeStage.setScene(new Scene(codeLoader.load()));
+            codeStage.show();
+            codeController = codeLoader.getController();
+            codeController.setMainController(mainController);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    public void writeUmlForCode(Package umlPackage) {
+        if (umlPackage.getClasses().size() <= 0) return;
+
+        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
+            classDiagramDrawer.changeDrawnNodeText(i, ContentType.Title, 0, umlPackage.getClasses().get(i).getName());
+
+            for (int j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
+                try {
+                    classDiagramDrawer.changeDrawnNodeText(i, ContentType.Attribute, j, umlPackage.getClasses().get(i).getAttributes().get(j).toString());
+                } catch (IndexOutOfBoundsException e) {
+                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Attribute, umlPackage.getClasses().get(i).getAttributes().get(j).toString());
+                }
+            }
+
+            for (int j = 0; j < umlPackage.getClasses().get(i).getOperations().size(); j++) {
+                try {
+                    classDiagramDrawer.changeDrawnNodeText(i, ContentType.Operation, j, umlPackage.getClasses().get(i).getOperations().get(j).toString());
+                } catch (IndexOutOfBoundsException e) {
+                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).getOperations().get(j).toString());
+                }
+            }
+        }
+        classDiagramDrawer.allReDrawCanvas();
+    }
+
+    /**
+     * <p> コードステージを取得します </p>
+     *
+     * <p>
+     *     テストコードでのみの使用を想定していますが、開発が進むことで変わる可能性があります。
+     * </p>
+     *
+     * @return コードステージ
+     */
+    Stage getCodeStage() {
+        return codeStage;
     }
 
     /**
@@ -194,6 +247,7 @@ public class Controller {
                     String compositionName = showCreateCompositionNameInputDialog();
                     classDiagramDrawer.addDrawnEdge(buttonsInCD, compositionName, mouseX, mouseY);
                     classDiagramDrawer.allReDrawCanvas();
+                    convertUmlToCode();
                 }
             } else if (util.searchSelectedButtonIn(buttonsInCD) == generalizationButtonInCD) {
                 if (!classDiagramDrawer.hasWaitedCorrectDrawnDiagram(ContentType.Generalization, mouseX, mouseY)) {
@@ -202,6 +256,7 @@ public class Controller {
                 } else {
                     classDiagramDrawer.addDrawnEdge(buttonsInCD, "", mouseX, mouseY);
                     classDiagramDrawer.allReDrawCanvas();
+                    convertUmlToCode();
                 }
             }
         } else {
@@ -211,6 +266,7 @@ public class Controller {
                 classDiagramDrawer.setNodeText(className);
                 classDiagramDrawer.addDrawnNode(buttonsInCD);
                 classDiagramDrawer.allReDrawCanvas();
+                convertUmlToCode();
             } else if (util.searchSelectedButtonIn(buttonsInCD) == compositionButtonInCD) {
                 classDiagramDrawer.resetNodeChosen(classDiagramDrawer.getCurrentNodeNumber());
                 classDiagramDrawer.allReDrawCanvas();
@@ -319,6 +375,13 @@ public class Controller {
     }
 
     /**
+     * <p> UMLをコードに変換してコードエリアに反映します </p>
+     */
+    private void convertUmlToCode() {
+        if (codeController != null) codeController.createCodeTabs(classDiagramDrawer.extractPackage());
+    }
+
+    /**
      * <p> クラス図キャンバス上での右クリックメニューの各メニューアイテムの動作を整形します </p>
      *
      * <p>
@@ -358,23 +421,27 @@ public class Controller {
             String className = showChangeClassNameInputDialog(classDiagramDrawer.getNodes().get(classDiagramDrawer.getCurrentNodeNumber()).getNodeText());
             classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Title, 0, className);
             classDiagramDrawer.allReDrawCanvas();
+            convertUmlToCode();
         });
         // クラスの削除
         contextMenu.getItems().get(1).setOnAction(event -> {
             classDiagramDrawer.deleteDrawnNode(classDiagramDrawer.getCurrentNodeNumber());
             classDiagramDrawer.allReDrawCanvas();
+            convertUmlToCode();
         });
         // クラスの属性の追加
         ((Menu) contextMenu.getItems().get(3)).getItems().get(0).setOnAction(event -> {
             String addAttribute = showAddClassAttributeInputDialog();
             classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, addAttribute);
             classDiagramDrawer.allReDrawCanvas();
+            convertUmlToCode();
         });
         // クラスの操作の追加
         ((Menu) contextMenu.getItems().get(4)).getItems().get(0).setOnAction(event -> {
             String addOperation = showAddClassOperationInputDialog();
             classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, addOperation);
             classDiagramDrawer.allReDrawCanvas();
+            convertUmlToCode();
         });
         List<String> attributes = classDiagramDrawer.getDrawnNodeTextList(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute);
         List<String> operations = classDiagramDrawer.getDrawnNodeTextList(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation);
@@ -385,6 +452,7 @@ public class Controller {
                 String changedAttribute = showChangeClassAttributeInputDialog(attributes.get(contentNumber));
                 classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, contentNumber, changedAttribute);
                 classDiagramDrawer.allReDrawCanvas();
+                convertUmlToCode();
             });
         }
         // クラスの各属性の削除
@@ -393,6 +461,7 @@ public class Controller {
             ((Menu) ((Menu) contextMenu.getItems().get(3)).getItems().get(2)).getItems().get(i).setOnAction(event -> {
                 classDiagramDrawer.deleteDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Attribute, contentNumber);
                 classDiagramDrawer.allReDrawCanvas();
+                convertUmlToCode();
             });
         }
         // クラスの各属性の表示選択
@@ -411,6 +480,7 @@ public class Controller {
                 String changedOperation = showChangeClassOperationInputDialog(operations.get(contentNumber));
                 classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, contentNumber, changedOperation);
                 classDiagramDrawer.allReDrawCanvas();
+                convertUmlToCode();
             });
         }
         // クラスの各操作の削除
@@ -419,6 +489,7 @@ public class Controller {
             ((Menu) ((Menu) contextMenu.getItems().get(4)).getItems().get(2)).getItems().get(i).setOnAction(event -> {
                 classDiagramDrawer.deleteDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, contentNumber);
                 classDiagramDrawer.allReDrawCanvas();
+                convertUmlToCode();
             });
         }
         // クラスの各操作の表示選択
@@ -459,83 +530,5 @@ public class Controller {
         });
 
         return contextMenu;
-    }
-
-    private Tab createLanguageTab(String tabName) {
-
-        TabPane codeTabPane = new TabPane(createCodeTab(""));
-        AnchorPane languageAnchor = new AnchorPane(codeTabPane);
-        AnchorPane.setBottomAnchor(codeTabPane, 0.0);
-        AnchorPane.setTopAnchor(codeTabPane, 0.0);
-        AnchorPane.setLeftAnchor(codeTabPane, 0.0);
-        AnchorPane.setRightAnchor(codeTabPane, 0.0);
-
-        Tab languageTab = new Tab();
-        languageTab.setContent(languageAnchor);
-        languageTab.setText(tabName);
-
-        return languageTab;
-    }
-
-    private Tab createCodeTab(String codeText) {
-        CodeArea codeArea = new CodeArea();
-        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
-        // codeArea.appendText(java.getClasses().get(0).toString());
-
-
-        AnchorPane codeAnchor = new AnchorPane(codeArea);
-        AnchorPane.setBottomAnchor(codeArea, 0.0);
-        AnchorPane.setTopAnchor(codeArea, 0.0);
-        AnchorPane.setLeftAnchor(codeArea, 0.0);
-        AnchorPane.setRightAnchor(codeArea, 0.0);
-
-        Tab codeTab = new Tab();
-        codeTab.setContent(codeAnchor);
-        codeTab.setText("<Unknown Title>");
-        codeTab.setClosable(false);
-
-
-
-        codeArea.setOnKeyTyped(event -> {
-            System.out.println("Pressed");
-            // System.out.println(((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getText());
-            // System.out.println(classDiagramDrawer.extractPackage().getClasses().get(0).getName());
-            //translator.translate(new Cpp());
-        });
-        codeArea.setOnMouseClicked(event -> {
-            translator.translate(classDiagramDrawer.extractPackage());
-//            if (translator.getJava().getClasses().size() > 0) setCodeTabs(translator.getJava());
-//            if (java.getClasses().size() > 0 && !java.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(java.getClasses().get(0).toString());
-            if (translator.getCpp().getClasses().size() > 0) setCodeTabs(translator.getCpp());
-            if (cpp.getClasses().size() > 0 && !cpp.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(cpp.getClasses().get(0).toString());
-
-                codeTab.setText(cpp.getClasses().get(0).getName());
-
-        });
-
-//        AnchorPane codeAnchor = new AnchorPane(codeArea);
-//        AnchorPane.setBottomAnchor(codeArea, 0.0);
-//        AnchorPane.setTopAnchor(codeArea, 0.0);
-//        AnchorPane.setLeftAnchor(codeArea, 0.0);
-//        AnchorPane.setRightAnchor(codeArea, 0.0);
-//
-//        Tab codeTab = new Tab();
-//        codeTab.setContent(codeAnchor);
-//        codeTab.setText("<Unknown Title>");
-//        codeTab.setClosable(false);
-
-        return codeTab;
-    }
-
-    private void setCodeTabs(Cpp cpp) {
-        this.cpp = cpp;
-//        for (Class cppClass : cpp.getClasses()) {
-//            codeTabPane = new TabPane(createLanguageTab("Cpp"));
-//            codeTabPane.getTabs().clear();
-//            Tab tab = createCodeTab(cppClass.toString());
-//            tab.setText(cppClass.getName());
-//            codeTabPane.getTabs().add(tab);
-//            // ((CodeArea) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).appendText(javaClass.toString());
-//        }
     }
 }

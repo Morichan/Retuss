@@ -24,7 +24,7 @@ class JavaLanguageTest {
             String expected = "ClassName";
 
             obj.parseForClassDiagram(code);
-            String actual = obj.getClassName();
+            String actual = obj.getJava().getClasses().get(0).getName();
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -35,7 +35,7 @@ class JavaLanguageTest {
             String expected = "ExtendedClassName";
 
             obj.parseForClassDiagram(code);
-            String actual = obj.getExtendedClassName();
+            String actual = obj.getJava().getClasses().get(0).getExtendsClassName();
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -46,7 +46,7 @@ class JavaLanguageTest {
             String expected = "Extended.ClassName";
 
             obj.parseForClassDiagram(code);
-            String actual = obj.getExtendedClassName();
+            String actual = obj.getJava().getClasses().get(0).getExtendsClassName();
 
             assertThat(actual).isEqualTo(expected);
         }
