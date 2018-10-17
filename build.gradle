@@ -9,6 +9,7 @@ apply plugin: 'spring-boot'
 // mainClassName = 'io.github.morichan.retuss.window.RetussWindow'
 
 sourceCompatibility = 9
+targetCompatibility = 9
 tasks.withType(AbstractCompile)*.options*.encoding =
         tasks.withType(GroovyCompile)*.groovyOptions*.encoding =
                 javadoc.options.encoding =
@@ -48,15 +49,15 @@ dependencies {
     testCompile 'org.assertj:assertj-core:3.10.0'
     testCompile 'net.java.quickcheck:quickcheck:0.6'
     testCompile 'org.testfx:testfx-junit5:4.0.13-alpha'
-    testCompile "org.testfx:openjfx-monocle:8u76-b04" // jdk-9+181 for Java 9
+    testCompile "org.testfx:openjfx-monocle:8u76-b04" // jdk-9+181 for Cpp 9
 
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
 }
 
-ext.antlr = [destinationDir: 'src/main/java/io/github/morichan/retuss/parser/java']
+ext.antlr = [destinationDir: 'src/main/java/io/github/morichan/retuss/parser/cpp']
 generateGrammarSource {
     outputDirectory = file(new File("${antlr.destinationDir}"))
-    arguments = ["-package", "io.github.morichan.retuss.parser.java", "-listener", "-no-visitor"].flatten()
+    arguments = ["-package", "io.github.morichan.retuss.parser.cpp", "-listener", "-no-visitor"].flatten()
 }
 
 clean {
@@ -69,17 +70,17 @@ if (gradle.startParameter.taskNames.contains('uploadArchives')) {
 
 
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-artifacts {
-    archives javadocJar, sourcesJar
-}
+//task javadocJar(type: Jar) {
+//    classifier = 'javadoc'
+//    from javadoc
+//}
+//task sourcesJar(type: Jar) {
+//    classifier = 'sources'
+//    from sourceSets.main.allSource
+//}
+//artifacts {
+//    archives javadocJar, sourcesJar
+//}
 
 jar {
     // SpringBoot pluginを利用することで邪魔になったため除外
@@ -97,6 +98,7 @@ test {
     systemProperties 'property': 'value'
 }
 
+
 // gradleでOSのアーキテクチャ情報を利用する方法を語りき, http://saygox.blogspot.com/2013/08/gradle-os.html
 class OSChecker {
     static String getFamily() {
@@ -108,9 +110,9 @@ class OSChecker {
 println ">>> This OS that test runs is " + OSChecker.getFamily()
 
 // OSがWindowsでない場合はTest実行時にGUITestsタグを付けたテストスイートを実行しない
-if (OSChecker.getFamily() != "windows") {
+// if (OSChecker.getFamily() != "windows") {
     junitPlatform.filters.tags.exclude "GUITests"
-}
+//}
 
 junitPlatform.enableStandardTestTask true
 

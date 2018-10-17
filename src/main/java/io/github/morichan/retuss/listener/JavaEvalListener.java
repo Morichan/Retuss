@@ -21,6 +21,7 @@ public class JavaEvalListener extends JavaParserBaseListener {
     private List<JavaParser.TypeDeclarationContext> typeDeclarations = new ArrayList<>();
     private Java java = new Java();
 
+
     @Override
     public void enterCompilationUnit(JavaParser.CompilationUnitContext ctx) {
         for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -46,6 +47,9 @@ public class JavaEvalListener extends JavaParserBaseListener {
                 javaClass.setExtendsClass(searchExtendsClass((JavaParser.ClassDeclarationContext) ctx.getChild(i)));
             }
         }
+
+
+
 
         java.addClass(javaClass);
     }
