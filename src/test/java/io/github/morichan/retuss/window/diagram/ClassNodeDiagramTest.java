@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
@@ -573,6 +574,56 @@ class ClassNodeDiagramTest {
         obj.setNodeContentBoolean(ContentType.Operation, ContentType.Indication, 0, false);
 
         assertThat(obj.getNodeContentsBoolean(ContentType.Operation, ContentType.Indication).get(0)).isFalse();
+    }
+
+    @Test
+    void 関係属性を追加する() {
+        String className = "ClassName";
+        String expected = "- relationAttribute";
+
+        obj.createNodeText(ContentType.Title, className);
+        obj.createNodeText(ContentType.Composition, expected);
+        String actual = obj.getNodeContentText(ContentType.Composition, 0);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 関係属性を変更する() {
+        String className = "ClassName";
+        String firstInputClassAttribute = "- relation";
+        String expected = "- changedRelation";
+
+        obj.createNodeText(ContentType.Title, className);
+        obj.createNodeText(ContentType.Composition, firstInputClassAttribute);
+        obj.changeNodeText(ContentType.Composition, 0, expected);
+        String actual = obj.getNodeContentText(ContentType.Composition, 0);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 関係属性を削除する() {
+        String className = "ClassName";
+        String expected = "- relation";
+
+        obj.createNodeText(ContentType.Title, className);
+        obj.createNodeText(ContentType.Composition, expected);
+        obj.deleteNodeText(ContentType.Composition, 0);
+
+        assertThatThrownBy(() -> obj.getNodeContentText(ContentType.Composition, 0)).isInstanceOf(IndexOutOfBoundsException.class);
+    }
+
+    @Test
+    void 関係属性を非表示にする() {
+        String className = "ClassName";
+        String classAttribute = "- relation";
+
+        obj.createNodeText(ContentType.Title, className);
+        obj.createNodeText(ContentType.Composition, classAttribute);
+        obj.setNodeContentBoolean(ContentType.Composition, ContentType.Indication, 0, false);
+
+        assertThat(obj.getNodeContentsBoolean(ContentType.Composition, ContentType.Indication).get(0)).isFalse();
     }
 
     @Test

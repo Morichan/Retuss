@@ -71,10 +71,10 @@ public class ClassDiagramDrawer {
     }
 
     /**
-     * {@link Controller} クラスからretussMain.fxmlの {@link javafx.scene.canvas.Canvas} クラスのインスタンスが持つ {@link GraphicsContext} クラスのインスタンスを受け取り、 {@link EdgeDiagram} クラスのインスタンスに渡す。
+     * {@link MainController} クラスからretussMain.fxmlの {@link javafx.scene.canvas.Canvas} クラスのインスタンスが持つ {@link GraphicsContext} クラスのインスタンスを受け取り、 {@link EdgeDiagram} クラスのインスタンスに渡す。
      * また、キャンバスの縁を描画する。
      *
-     * @param gc {@link Controller} クラスから受け取るグラフィックスコンテキスト
+     * @param gc {@link MainController} クラスから受け取るグラフィックスコンテキスト
      */
     public void setGraphicsContext(GraphicsContext gc) {
         this.gc = gc;
@@ -192,6 +192,13 @@ public class ClassDiagramDrawer {
                     }
                 }
                 extendingClass.setGeneralizationClass(extendedClass);
+            } else if (relations.getContentType(i) == ContentType.Composition) {
+                for (Class umlClass : umlPackage.getClasses()) {
+                    if (umlClass.getName().equals(nodes.get(relationSourceId).getNodeText())) {
+                        umlClass.setRelations(((ClassNodeDiagram) nodes.get(relationSourceId)).extractRelations());
+                        break;
+                    }
+                }
             }
         }
     }
@@ -426,6 +433,8 @@ public class ClassDiagramDrawer {
                 relations.setRelationSourceId(ContentType.Composition, relations.getCompositionsCount() - 1, fromNodeId);
                 relations.setRelationPoint(ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get(toNodeId).getPoint());
                 relations.setRelationSourcePoint(ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get(fromNodeId).getPoint());
+                // コンポジション関係のインスタンスを生成
+                nodes.get(fromNodeId).createNodeText(ContentType.Composition, name + " : " + nodes.get(toNodeId).getNodeText());
             }
 
         } else if (button.getText().equals("Generalization")) {

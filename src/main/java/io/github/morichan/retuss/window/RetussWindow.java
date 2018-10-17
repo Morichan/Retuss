@@ -22,7 +22,7 @@ public class RetussWindow extends Application {
      * <p> RETUSSを開始します </p>
      *
      * @param mainStage 初期ステージ：{@link Application} クラス参照
-     * @throws IOException {@link #decorateStage(Stage, String, String)} メソッド参照
+     * @throws IOException FXMLファイルの入力エラーの場合
      */
     @Override
     public void start(Stage mainStage) throws IOException {
@@ -31,50 +31,19 @@ public class RetussWindow extends Application {
         String codeFxmlFileName = "retussCode.fxml";
         String codeTitle = "new project";
 
-        mainStage = decorateStage(mainStage, mainFxmlFileName, mainTitle);
-        Stage codeStage = makeAdditionalStage(mainStage, codeFxmlFileName, codeTitle);
+        String resourcesPath = "/";
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcesPath + mainFxmlFileName));
+        Parent root = loader.load();
+        mainStage.setTitle(mainTitle);
+        mainStage.setScene(new Scene(root));
 
         mainStage.show();
-        codeStage.show();
+
+        // {@link MainController#showCodeStage(Stage, String, String)} と同様の処理
+        MainController mainController = loader.getController();
+        mainController.showCodeStage(mainController, mainStage, resourcesPath + codeFxmlFileName, codeTitle);
     }
-
-    /**
-     * <p> 追加ウィンドウのステージを作ります </p>
-     *
-     * @param ownerStage 土台となるステージ：土台ステージを消すと追加ステージも消える。
-     * @param fxmlFileName 入力FXMLファイル名：{@code null} 不可
-     * @param title ウィンドウタイトル
-     * @return 追加するステージ
-     * @throws IOException {@link #decorateStage(Stage, String, String)} メソッド参照
-     */
-    public Stage makeAdditionalStage(Stage ownerStage, String fxmlFileName, String title) throws IOException {
-        Stage addStage = new Stage();
-        addStage.initOwner(ownerStage);
-        addStage.setScene(new Scene(new BorderPane()));
-
-        addStage = decorateStage(addStage, fxmlFileName, title);
-
-        return addStage;
-    }
-
-    /**
-     * <p> 表示するステージを装飾します </p>
-     *
-     * @param stage 表示するステージ：特にメインウィンドウを表示する際は{@code null} 不可
-     * @param fxmlFileName 入力FXMLファイル名：{@code null} 不可
-     * @param title ウィンドウタイトル
-     * @return 装飾されたステージ
-     * @throws IOException FXMLファイルの入力エラーの場合
-     */
-    private Stage decorateStage(Stage stage, String fxmlFileName, String title) throws IOException {
-        String resourcesPath = "/";
-        Parent root = FXMLLoader.load(getClass().getResource(resourcesPath + fxmlFileName));
-        stage.setTitle(title);
-        stage.setScene(new Scene(root));
-
-        return stage;
-    }
-
 
     /**
      * <p> メインメソッド </p>

@@ -54,6 +54,17 @@ public class JavaTranslator {
             javaClass.addField(field);
         }
 
+        for (Attribute relation : classClass.getRelations()) {
+            Field field = new Field(new Type(relation.getType().toString()), relation.getName().toString());
+            try {
+                field.setAccessModifier(convert(relation.getVisibility()));
+            } catch (IllegalStateException e) {
+                field.setAccessModifier(AccessModifier.Private);
+            }
+            field.setValue("new " + relation.getType().toString());
+            javaClass.addField(field);
+        }
+
         for (Operation operation : classClass.getOperations()) {
             Method method = new Method(new Type(operation.getReturnType().toString()), operation.getName().toString());
             try {

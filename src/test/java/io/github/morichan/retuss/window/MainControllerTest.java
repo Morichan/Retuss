@@ -3,6 +3,7 @@ package io.github.morichan.retuss.window;
 import io.github.morichan.retuss.window.diagram.ClassNodeDiagram;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,12 +23,16 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.framework.junit5.Start;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("GUITests")
-class ControllerTest extends ApplicationTest {
+class MainControllerTest extends ApplicationTest {
     Point2D xButtonOnDialogBox;
     String okButtonOnDialogBox;
 
@@ -361,6 +366,7 @@ class ControllerTest extends ApplicationTest {
                             addAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
                             checkAttribute(firstClickedClassDiagramCanvas, "- attribute : int");
 
+                            rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
                             assertThat(((CheckMenuItem) ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(3)).getItems().get(0)).isSelected()).isFalse();
 
@@ -460,6 +466,7 @@ class ControllerTest extends ApplicationTest {
                             addOperation(firstClickedClassDiagramCanvas, "+ operation() : int");
                             checkOperation(firstClickedClassDiagramCanvas, "+ operation() : int");
 
+                            rightClickOn(firstClickedClassDiagramCanvas);
                             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(stage);
                             assertThat(((CheckMenuItem) ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(3)).getItems().get(0)).isSelected()).isFalse();
                             checkOperation(firstClickedClassDiagramCanvas, "+ operation() : int");
@@ -1314,57 +1321,139 @@ class ControllerTest extends ApplicationTest {
     class コード入力画面において extends ApplicationTest {
         Stage mainStage;
         Stage codeStage;
-        Scene mainScene;
-        Scene codeScene;
-
-        @AfterEach
-        void reset() {
-            windowStartCount = 0;
-        }
-
-        @Start
-        public void start(Stage stage) throws IOException {
-            Stage addStage = new Stage();
-            mainScene = new Scene(FXMLLoader.load(getClass().getResource("/retussMain.fxml")));
-            codeScene = new Scene(FXMLLoader.load(getClass().getResource("/retussCode.fxml")));
-            stage.setScene(mainScene);
-            addStage.setScene(codeScene);
-            if (windowStartCount == 0) {
-                stage.show();
-            } else {
-                addStage.show();
-            }
-            mainStage = stage;
-            codeStage = addStage;
-            windowStartCount++;
-        }
 
         @Nested
-        class そのまま入力する場合 {
+        class コードエリアの場合 extends ApplicationTest {
+            Point2D topLeftCorner;
+            Point2D okButtonPoint;
+
+            @Start
+            public void start(Stage stage) throws IOException {
+                mainStage = stage;
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/retussMain.fxml"));
+                Parent root = loader.load();
+                mainStage.setScene(new Scene(root));
+
+                MainController mainController = loader.getController();
+                mainController.showCodeStage(mainController, mainStage, "/retussCode.fxml", "");
+
+                mainStage.show();
+                codeStage = mainController.getCodeStage();
+            }
 
             @BeforeEach
             void setup() {
+                topLeftCorner = new Point2D(700, 200);
+                okButtonPoint = new Point2D(1000.0, 490.0);
                 moveCodeWindow();
+                deleteCodeWindow();
+                deleteCodeWindow();
+                clickOn("#classButtonInCD");
+                drawClasses(topLeftCorner, "AAA", okButtonPoint);
+                resetCodeArea(codeStage);
             }
 
             @Test
             void 何か入力する() {
                 String expected = "class Main {\n}\n";
 
-                clickOn(codeScene);
+                clickOn(codeStage);
                 write("class Main {\n}\n");
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名だけを入力するとクラス名だけのクラスを描画する() {
+                String expected = "Main";
+
+                clickOn(codeStage);
+                write("class Main {\n}\n");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(topLeftCorner);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                String actual = scrollPane.getContextMenu().getItems().get(0).getText();
+                assertThat(actual).startsWith(expected);
+            }
+
+            @Test
+            void 属性を1つ持つクラスを描画する() {
+                String expected = "- number : int";
+
+                clickOn(codeStage);
+                write("class Main {private int number;}");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(topLeftCorner);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                String actual = ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText();
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 属性を3つ持つクラスを描画する() {
+                List<String> expected = Arrays.asList("- number : double", "# text : String", "~ point : float");
+
+                clickOn(codeStage);
+                write("class Main {private double number; protected String text; float point;}");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(topLeftCorner);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                List<String> actual = new ArrayList<>();
+                for (MenuItem item : ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems()) {
+                    actual.add(item.getText());
+                }
+
+                for (int i = 0; i < expected.size(); i++) {
+                    assertThat(actual.get(i)).isEqualTo(expected.get(i));
+                }
+            }
+
+            @Test
+            void 操作を1つ持つクラスを描画する() {
+                String expected = "+ getNumber() : int";
+
+                clickOn(codeStage);
+                write("class Main {public int getNumber() {}}");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(topLeftCorner);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                String actual = ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems().get(0).getText();
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 操作を3つ持つクラスを描画する() {
+                List<String> expected = Arrays.asList("+ getNumber() : int", "# setNumber(number : int) : void", "~ print(text : String, point : float) : void");
+
+                clickOn(codeStage);
+                write("class Main {public int getNumber() {} protected void setNumber(int number) {} void print(String text, float point) {}}");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(topLeftCorner);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                List<String> actual = new ArrayList<>();
+                for (MenuItem item : ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems()) {
+                    actual.add(item.getText());
+                }
+
+                for (int i = 0; i < expected.size(); i++) {
+                    assertThat(actual.get(i)).isEqualTo(expected.get(i));
+                }
             }
         }
 
         @Nested
-        class クラス図の場合 {
+        class クラス図の場合 extends ApplicationTest {
             Point2D xButtonOnDialogBox;
             Point2D okButtonPoint;
-            Point2D topLeftCorner;
-            Point2D bottomRightCorner;
+            Point2D topLeftCornerEdge;
+            Point2D bottomRightCornerEdge;
             Point2D firstClickedClassDiagramCanvas;
             Point2D secondClickedClassDiagramCanvas;
             Point2D thirdClickedClassDiagramCanvas;
@@ -1380,10 +1469,26 @@ class ControllerTest extends ApplicationTest {
             String deleteMenu;
             String checkMenu;
 
+            @Start
+            public void start(Stage stage) throws IOException {
+                mainStage = stage;
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/retussMain.fxml"));
+                Parent root = loader.load();
+                mainStage.setScene(new Scene(root));
+
+                MainController mainController = loader.getController();
+                mainController.showCodeStage(mainController, mainStage, "/retussCode.fxml", "");
+
+                mainStage.show();
+                codeStage = mainController.getCodeStage();
+                codeStage.close();
+            }
+
             @BeforeEach
             void setup() {
-                topLeftCorner = new Point2D(650, 163);
-                bottomRightCorner = new Point2D(1583, 984);
+                topLeftCornerEdge = new Point2D(650, 163);
+                bottomRightCornerEdge = new Point2D(1583, 984);
                 xButtonOnDialogBox = new Point2D(1050.0, 350.0);
                 okButtonPoint = new Point2D(1000.0, 490.0);
                 firstClickedClassDiagramCanvas = new Point2D(900.0, 600.0);
@@ -1413,8 +1518,8 @@ class ControllerTest extends ApplicationTest {
             }
 
             @BeforeEach
-            void moveAndDeleteCodeWindow() {
-                moveCodeWindow();
+            void reset() {
+                ClassNodeDiagram.resetNodeCount();
             }
 
             @Test
@@ -1423,8 +1528,173 @@ class ControllerTest extends ApplicationTest {
 
                 clickOn("#classButtonInCD");
                 drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
-                clickOn(codeStage);
-                String actual = getCode(codeStage);
+                String actual = getCode(codeStage, 0);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名を変更したクラスを記述する() {
+                String expected = "class ChangedClassName {\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                rightClickOn(firstClickedClassDiagramCanvas);
+                clickOn("Main" + changeClassMenu);
+                write("ChangedClassName");
+                clickOn(okButtonPoint);
+                String actual = getCode(codeStage, 0);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 描画済みのクラスを除去する() {
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                rightClickOn(firstClickedClassDiagramCanvas);
+                clickOn("Main" + deleteClassMenu);
+
+                assertThatThrownBy(() -> getCode(codeStage, 0)).isInstanceOf(IndexOutOfBoundsException.class);
+            }
+
+            @Test
+            void クラス名と属性を1つ持つクラスを記述する() {
+                String expected = "class Main {\n    private int number;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- number : int");
+                clickOn(okButtonPoint);
+                String actual = getCode(codeStage, 0);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と属性を3つ持つクラスを記述する() {
+                String expected = "class Main {\n    private int number;\n    double point;\n    protected float testNumber;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- number : int");
+                addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
+                String actual = getCode(codeStage, 0);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と属性を3つ持つクラスの2番目の属性を変更する() {
+                String expected = "class Main {\n    private int number;\n    public char changedAttribute;\n    protected float testNumber;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- number : int");
+                addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
+                changeAttribute(firstClickedClassDiagramCanvas, "~ point : double", "+ changedAttribute : char");
+                String actual = getCode(codeStage, 0);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と属性を3つ持つクラスの2番目の属性を除去する() {
+                String expected = "class Main {\n    private int number;\n    protected float testNumber;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- number : int");
+                addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
+                deleteAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                String actual = getCode(codeStage, 0);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と属性を3つ持つクラスの2番目の属性を非表示化する() {
+                String expected = "class Main {\n    private int number;\n    double point;\n    protected float testNumber;\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- number : int");
+                addAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                addAttribute(firstClickedClassDiagramCanvas, "# testNumber : float");
+                disableAttribute(firstClickedClassDiagramCanvas, "~ point : double");
+                String actual = getCode(codeStage, 0);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と操作を1つ持つクラスを記述する() {
+                String expected = "class Main {\n    public int getNumber() {}\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
+                clickOn(okButtonPoint);
+                String actual = getCode(codeStage, 0);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と操作を3つ持つクラスを記述する() {
+                String expected = "class Main {\n    public int getNumber() {}\n    void setNumber(int num) {}\n    protected void print() {}\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
+                addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                addOperation(firstClickedClassDiagramCanvas, "# print() : void");
+                String actual = getCode(codeStage, 0);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と操作を3つ持つクラスの2番目の操作を変更する() {
+                String expected = "class Main {\n    public int getNumber() {}\n    void changeNumber(int num, int param) {}\n    protected void print() {}\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
+                addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                addOperation(firstClickedClassDiagramCanvas, "# print() : void");
+                changeOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void", "~ changeNumber(num : int, param : int) : void");
+                String actual = getCode(codeStage, 0);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名と操作を3つ持つクラスの2番目の操作を除去する() {
+                String expected = "class Main {\n    public int getNumber() {}\n    protected void print() {}\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
+                addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                addOperation(firstClickedClassDiagramCanvas, "# print() : void");
+                deleteOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                String actual = getCode(codeStage, 0);
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1458,10 +1728,218 @@ class ControllerTest extends ApplicationTest {
 
                 assertThat(actual).isEqualTo(expected);
             }
+
+            @Test
+            void クラス名と操作を3つ持つクラスの2番目の操作を非表示化する() {
+                String expected = "class Main {\n    public int getNumber() {}\n    void setNumber(int num) {}\n    protected void print() {}\n}\n";
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addOperation(firstClickedClassDiagramCanvas, "+ getNumber() : int");
+                addOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                addOperation(firstClickedClassDiagramCanvas, "# print() : void");
+                disableOperation(firstClickedClassDiagramCanvas, "~ setNumber(num : int) : void");
+                String actual = getCode(codeStage, 0);
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void クラス名のみのクラスを3つ記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラスを3つ記述して2番目のクラスに属性と操作を2つずつ追加する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub {\n    private int number;\n    private char text;\n\n    public void setNumber(int number) {}\n    public int getNumber() {}\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(secondClickedClassDiagramCanvas, "- number : int");
+                addAttribute(secondClickedClassDiagramCanvas, "- text : char");
+                addOperation(secondClickedClassDiagramCanvas, "+ setNumber(number : int) : void");
+                addOperation(secondClickedClassDiagramCanvas, "+ getNumber() : int");
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラス名のみのクラスを3つ記述して2番目のクラスを除去する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                rightClickOn(secondClickedClassDiagramCanvas);
+                clickOn("Sub" + deleteClassMenu);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラス名のみのクラスを3つ記述して2番目のクラスのクラス名を変更する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Subversion {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                rightClickOn(secondClickedClassDiagramCanvas);
+                clickOn("Sub" + changeClassMenu);
+                write("Subversion");
+                clickOn(okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラス名のみのクラス3つの内2つが継承関係のクラス関係を持つクラス記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub extends Super {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#generalizationButtonInCD");
+                clickOn(secondClickedClassDiagramCanvas);
+                clickOn(thirdClickedClassDiagramCanvas);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラス名のみのクラス3つの内2つがコンポジット関係のクラス関係を持つクラス記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n    private Sub sub = new Sub();\n}\n",
+                        "class Sub {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#compositionButtonInCD");
+                clickOn(firstClickedClassDiagramCanvas);
+                clickOn(secondClickedClassDiagramCanvas);
+                write("- sub");
+                clickOn(okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラス名のみのクラス3つの内3つがコンポジット関係のクラス関係を持つクラス記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n    private Sub sub = new Sub();\n}\n",
+                        "class Sub {\n    public Super super = new Super();\n}\n",
+                        "class Super {\n    Main main = new Main();\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#compositionButtonInCD");
+                clickOn(firstClickedClassDiagramCanvas);
+                clickOn(secondClickedClassDiagramCanvas);
+                write("- sub");
+                clickOn(okButtonPoint);
+                clickOn(secondClickedClassDiagramCanvas);
+                clickOn(thirdClickedClassDiagramCanvas);
+                write("+ super");
+                clickOn(okButtonPoint);
+                clickOn(thirdClickedClassDiagramCanvas);
+                clickOn(firstClickedClassDiagramCanvas);
+                write("~ main");
+                clickOn(okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            private void addAttribute(Point2D point, String attributeText) {
+                add(classAttributeMenu, addMenu, point, attributeText);
+                clickOn(okButtonPoint);
+            }
+
+            private void changeAttribute(Point2D point, String beforeAttributeText, String afterAttributeText) {
+                change(classAttributeMenu, addMenu, changeMenu, point, beforeAttributeText, afterAttributeText);
+                clickOn(okButtonPoint);
+            }
+
+            private void deleteAttribute(Point2D point, String attributeText) {
+                delete(classAttributeMenu, addMenu, deleteMenu, point, attributeText);
+            }
+
+            private void disableAttribute(Point2D point, String attributeText) {
+                disable(classAttributeMenu, addMenu, checkMenu, point, attributeText);
+            }
+
+            private void addOperation(Point2D point, String attributeText) {
+                add(classOperationMenu, addMenu, point, attributeText);
+                clickOn(okButtonPoint);
+            }
+
+            private void changeOperation(Point2D point, String beforeAttributeText, String afterAttributeText) {
+                change(classOperationMenu, addMenu, changeMenu, point, beforeAttributeText, afterAttributeText);
+                clickOn(okButtonPoint);
+            }
+
+            private void deleteOperation(Point2D point, String attributeText) {
+                delete(classOperationMenu, addMenu, deleteMenu, point, attributeText);
+            }
+
+            private void disableOperation(Point2D point, String attributeText) {
+                disable(classOperationMenu, addMenu, checkMenu, point, attributeText);
+            }
         }
 
         private void moveCodeWindow() {
             drag(new Point2D(800.0, 250.0)).dropTo(new Point2D(1700.0, 250.0));
+        }
+
+        private void deleteCodeWindow() {
+            clickOn(new Point2D(1250.0, 250.0));
         }
     }
 
@@ -1513,43 +1991,113 @@ class ControllerTest extends ApplicationTest {
     }
 
     /**
-     * <p> コード入力ウィンドウに存在するJavaタブ内の文字列を取得する。 </p>
+     * <p> コード入力ウィンドウに存在するJavaタブ内の文字列を取得します </p>
+     *
+     * <p>
+     * 具体的には、 {@link #getCodeArea(Stage, int)} で取得したコードエリア内の文字列を取得します。
+     * 上記構造のタブ内以降についてはController実行中に生成しているため、変更される恐れがあります。
+     * </p>
+     *
+     * <p>
+     * コード入力とキャンバス上との整合性テストに利用すします。
+     * </p>
+     *
+     * @param stage 大元のステージ <br> 基本的にはretussCode.fxmlのステージ以外を呼び出すことはありません
+     * @return コード入力ウィンドウに存在するJavaタブ内の文字列 <br> FXMLファイルを書き換えるか実行中にどこかのタブを消さない限り{@code null}になる可能性はありません
+     */
+    private String getCode(Stage stage, int tabNumber) {
+        return getCodeArea(stage, tabNumber).getText();
+    }
+
+    /**
+     * <p> コード入力ウィンドウに存在するJavaタブ内の文字列を消去します </p>
      *
      * <p>
      * 具体的には、ステージ上のボーダーパネル上のタブパネル上の1つ目のタブ内のアンカーパネル上の
-     * タブパネル上の1つ目のタブ内のアンカーパネル上のコードエリア内の文字列を取得する。
-     * 上記構造のタブ内以降についてはController実行中に生成しているため、変更される恐れがある。
+     * タブパネル上の1つ目のタブ内のアンカーパネル上のコードエリア内の文字列を取得します。
+     * 上記構造のタブ内以降についてはController実行中に生成しているため、変更される恐れがします。
      * </p>
      *
      * <p>
-     * コード入力とキャンバス上との整合性テストに利用する。
+     * コード入力とキャンバス上との整合性テストの前に利用します。
      * </p>
      *
-     * @param stage 大元のステージ <br> 基本的にはretussCode.fxmlのステージ以外を呼び出すことはない
-     * @return クラス図キャンバス直下のスクロールパネル <br> FXMLファイルを書き換えるか実行中にどこかのパネルを消さない限り{@code null}になる可能性はない
+     * @param stage 大元のステージ <br> 基本的にはretussCode.fxmlのステージ以外を呼び出すことはありません
      */
-    private String getCode(Stage stage) {
+    private void resetCodeArea(Stage stage) {
+        // getCodeArea(stage).replaceText("");
+        clickOn(stage);
+        drag(stage).dropTo(new Point2D(1300.0, 250.0));
+        push(KeyCode.BACK_SPACE);
+        push(KeyCode.RIGHT);
+        push(KeyCode.BACK_SPACE);
+    }
+
+    /**
+     * <p> コード入力ウィンドウに存在するJavaタブ内のコードエリアを取得します </p>
+     *
+     * <p>
+     * 具体的には、ステージ上のボーダーパネル上のタブパネル上の1つ目のタブ内のアンカーパネル上の
+     * タブパネル上の1つ目のタブ内のアンカーパネル上のコードエリアを取得します。
+     * 上記構造のタブ内以降についてはController実行中に生成しているため、変更される恐れがあります。
+     * </p>
+     *
+     * @param stage 大元のステージ <br> 基本的にはretussCode.fxmlのステージ以外を呼び出すことはありません
+     * @return コード入力ウィンドウに存在するJavaタブ内のコードエリア <br> FXMLファイルを書き換えるか実行前にどこかのタブを消さない限り{@code null}になる可能性はありません
+     */
+    private CodeArea getCodeArea(Stage stage, int tabNumber) {
         BorderPane borderPaneOnStage = (BorderPane) stage.getScene().getRoot().getChildrenUnmodifiable().get(0);
         TabPane tabPaneOnBorderPane = (TabPane) borderPaneOnStage.getCenter();
         Tab tabOnLanguageTabPane = tabPaneOnBorderPane.getTabs().get(0);
         AnchorPane anchorPaneOnLanguageTab = (AnchorPane) tabOnLanguageTabPane.getContent();
         TabPane tabPaneOnAnchorPane = (TabPane) anchorPaneOnLanguageTab.getChildren().get(0);
-        Tab tabOnCodeTabPane = tabPaneOnAnchorPane.getTabs().get(0);
+        Tab tabOnCodeTabPane = tabPaneOnAnchorPane.getTabs().get(tabNumber);
         AnchorPane anchorPaneOnCodeTab = (AnchorPane) tabOnCodeTabPane.getContent();
-        CodeArea codeArea = (CodeArea) anchorPaneOnCodeTab.getChildren().get(0);
-        return codeArea.getText();
+        return (CodeArea) anchorPaneOnCodeTab.getChildren().get(0);
     }
 
     private void drawClasses(Point2D canvasPoint, String className) {
         clickOn(canvasPoint);
         write(className);
-        clickOn(okButtonOnDialogBox);
+        clickOn(new Point2D(1000.0, 490.0));
     }
 
     private void drawClasses(Point2D canvasPoint, String className, Point2D okButtonPoint) {
         clickOn(canvasPoint);
         write(className);
         clickOn(okButtonPoint);
+    }
+
+    private void add(String featureMenu, String addMenu, Point2D point, String attributeText) {
+        rightClickOn(point);
+        moveTo(featureMenu);
+        clickOn(addMenu);
+        write(attributeText);
+    }
+
+    private void change(String featureMenu, String addMenu, String changeMenu, Point2D point, String beforeAttributeText, String afterAttributeText) {
+        rightClickOn(point);
+        moveTo(featureMenu);
+        moveTo(addMenu);
+        moveTo(changeMenu);
+        clickOn(beforeAttributeText);
+        write(afterAttributeText);
+    }
+
+    private void delete(String featureMenu, String addMenu, String deleteMenu, Point2D point, String attributeText) {
+        rightClickOn(point);
+        moveTo(featureMenu);
+        moveTo(addMenu);
+        moveTo(deleteMenu);
+        clickOn(attributeText);
+    }
+
+    private void disable(String featureMenu, String addMenu, String checkMenu, Point2D point, String attributeText) {
+        rightClickOn(point);
+        moveTo(featureMenu);
+        moveTo(addMenu);
+        moveTo(checkMenu);
+        clickOn(attributeText);
     }
 
     private void addAttribute(Point2D classPoint, Point2D okButtonPoint, String addText) {

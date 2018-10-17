@@ -398,6 +398,51 @@ class JavaTranslatorTest {
 
                 assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
             }
+
+            @Test
+            void コンポジション関係にあたる複数のクラスを持つJavaコードを返す() {
+                Java expected = new Java();
+                io.github.morichan.retuss.language.java.Class javaClass1 = new io.github.morichan.retuss.language.java.Class("ClassName1");
+                io.github.morichan.retuss.language.java.Class javaClass2 = new io.github.morichan.retuss.language.java.Class("ClassName2");
+                io.github.morichan.retuss.language.java.Class javaClass3 = new io.github.morichan.retuss.language.java.Class("ClassName3");
+                Field javaClass1Field = new Field();
+                javaClass1Field.setName("className2");
+                javaClass1Field.setType(new Type("ClassName2"));
+                javaClass1Field.setAccessModifier(AccessModifier.Private);
+                javaClass1Field.setValue("new ClassName2()");
+                Field javaClass2Field = new Field();
+                javaClass2Field.setName("className3");
+                javaClass2Field.setType(new Type("ClassName3"));
+                javaClass2Field.setAccessModifier(AccessModifier.Private);
+                javaClass2Field.setValue("new ClassName3()");
+                javaClass1.addField(javaClass1Field);
+                javaClass2.addField(javaClass2Field);
+                expected.addClass(javaClass1);
+                expected.addClass(javaClass2);
+                expected.addClass(javaClass3);
+
+                Package classPackage = new Package();
+                Class classClass1 = new Class("ClassName1");
+                Class classClass2 = new Class("ClassName2");
+                Class classClass3 = new Class("ClassName3");
+                Attribute classClass1Attribute = new Attribute(new Name("className2"));
+                classClass1Attribute.setType(new io.github.morichan.fescue.feature.type.Type("ClassName2"));
+                classClass1Attribute.setVisibility(Visibility.Private);
+                classClass1Attribute.setDefaultValue(new DefaultValue(new OneIdentifier("new ClassName2()")));
+                Attribute classClass2Attribute = new Attribute(new Name("className3"));
+                classClass2Attribute.setType(new io.github.morichan.fescue.feature.type.Type("ClassName3"));
+                classClass2Attribute.setVisibility(Visibility.Private);
+                classClass2Attribute.setDefaultValue(new DefaultValue(new OneIdentifier("new ClassName3()")));
+                classClass1.addRelation(classClass1Attribute);
+                classClass2.addRelation(classClass2Attribute);
+                classPackage.addClass(classClass1);
+                classPackage.addClass(classClass2);
+                classPackage.addClass(classClass3);
+
+                Java actual = obj.translate(classPackage);
+
+                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+            }
         }
     }
 }

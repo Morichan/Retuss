@@ -32,38 +32,4 @@ class RetussWindowTest {
         // 検証
         retussWindow.main( args );
     }
-
-    @Test
-    void メインステージにステージを追加する際はFXMLLoaderのloadを1回行う( @Mocked FXMLLoader fxmlLoader, @Mocked Stage stage, @Mocked Scene scene, @Mocked BorderPane borderPane ) throws IOException {
-        String fileName = "FxmlFile.fxml";
-        String title = "WindowTitle";
-        new Expectations( fxmlLoader ) {{
-            fxmlLoader.load( getClass().getResource( fileName ) );
-            result = borderPane;
-            times = 1;
-        }};
-
-        retussWindow.makeAdditionalStage( stage, fileName, title );
-    }
-
-    @Test
-    void mainStageとcodeStageを各1回ずつ描画するため合計2回showメソッドを実行する( @Mocked FXMLLoader fxmlLoader, @Mocked Stage mock, @Mocked Scene scene, @Mocked BorderPane borderPane ) throws IOException {
-        new Expectations( mock ) {{
-            mock.show();
-            times = 2;
-        }};
-
-        retussWindow = new MockUp< RetussWindow >() {
-            @Mock
-            Stage decorateStage( Stage stage, String fxmlFileName, String title ) {
-                return mock;
-            }
-            @Mock
-            Stage makeAdditionalStage( Stage ownerStage, String fxmlFileName, String title ) {
-                return mock;
-            }
-        }.getMockInstance();
-
-        retussWindow.start( mock );
-    }
 }
