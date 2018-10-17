@@ -38,14 +38,7 @@ class CppEvalListenerTest {
 
 
 
-    @Test
-    void 構文解析時にエラーが出ないか確認する() {
-        try {
-            walker.walk(cppEvalListener, tree);
-        } catch (NullPointerException e) {
-            fail("ParseTreeObjectNullError");
-        }
-    }
+   
 
 
 
