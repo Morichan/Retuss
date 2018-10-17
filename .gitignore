@@ -1,9 +1,9 @@
+/.gradle/
 /.idea/
 /tmp/
 /bin/
 /build/
 /out/
-/.gradle/
 *.test
 *.swp
 /src/main/gen/
