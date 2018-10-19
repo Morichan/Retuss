@@ -105,7 +105,9 @@ public class CodeController {
             convertCodeToUml(Language.Cpp);
         });
 
-        if (cpp.getClasses().size() > 0 && !cpp.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(cpp.getClasses().get(0).toString());
+       // if (cpp.getClasses().size() > 0 && !cpp.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(cpp.getClasses().get(0).toString());
+        if (cppClass != null) codeArea.replaceText(cppClass.toString());
+
 
         AnchorPane codeAnchor = new AnchorPane(codeArea);
         AnchorPane.setBottomAnchor(codeArea, 0.0);
@@ -149,9 +151,9 @@ public class CodeController {
                 umlPackage = translator.getPackage();
 
                 mainController.writeUmlForCode(umlPackage);
-            } else { // if (language == Language.Cpp) {
+            } else  if (language == Language.Cpp) {
                 cppLanguage.parseForClassDiagram(getCode(1,0));
-                // translator.translate(cppLanguage.getCpp());
+                 translator.translate(cppLanguage.getCpp());
 
                 umlPackage = translator.getPackage();
 
