@@ -107,6 +107,9 @@ public class MemberVariable {
      */
     public void setType(Type type) {
         if (type == null) throw new IllegalArgumentException();
+        if(type.getTypeName().equals("String")){
+            type.setTypesName("std::string");
+        }
         this.type = type;
     }
 
