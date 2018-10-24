@@ -58,7 +58,11 @@ public class CppEvalListener extends CPP14BaseListener {
 
                     for (int i = 0; i < ctx.getChildCount(); i++) {
                         if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
-                            memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
+                            if(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() > 1){     //stringの分岐に対応。
+                                memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getText()));
+                            }else {
+                                memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
+                            }
                         }
                         if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
                             memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
