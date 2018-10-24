@@ -146,8 +146,15 @@ public class UMLTranslator {
         Class classClass = new Class(cppClass.getName());
 
         for (MemberVariable memberVariable : cppClass.getMemberVariables()) {
+
             Attribute attribute = new Attribute(new Name(memberVariable.getName()));
-            attribute.setType(new Type(memberVariable.getType().toString()));
+            if(memberVariable.getType().toString().equals( "string")) {
+           // if(memberVariable.getType().equals(new io.github.morichan.retuss.language.cpp.Type("string"))) {
+                attribute.setType(new Type("String"));
+            }else {
+                attribute.setType(new Type(memberVariable.getType().toString()));
+            }
+    //        attribute.setType(new Type(memberVariable.getType().toString()));
             attribute.setVisibility(convert(memberVariable.getAccessSpecifier()));
             if (memberVariable.getValue() != null) {
                 attribute.setDefaultValue(new DefaultValue(new OneIdentifier(memberVariable.getValue().toString())));
