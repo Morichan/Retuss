@@ -393,6 +393,7 @@ public class ClassDiagramDrawer {
     /**
      * 描画済みの任意のノードにおける内容を全削除する。
      *
+     * @param nodeNumber    描画済みの任意のノード番号
      * @param type          描画済みの任意のノードにおける追加したい内容の種類
      */
     public void deleteAllDrawnNodeText(int nodeNumber, ContentType type) {
