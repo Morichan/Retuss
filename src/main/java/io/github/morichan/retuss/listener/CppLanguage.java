@@ -16,6 +16,10 @@ public class CppLanguage {
     private String className;
     private String extendedClassName;
 
+    public Cpp getCpp() {
+        return cpp;
+    }
+
     public void parseForClassDiagram(String code) {
         walk(code);
         className = searchClassName();

@@ -82,6 +82,17 @@ abstract public class NodeDiagram {
     abstract public void deleteNodeText(ContentType type, int number);
 
     /**
+     * <p> ノードの内容を全削除する。 </p>
+     *
+     * <p>
+     *     ノード自体の削除は、このインスタンスのリストを持つ {@link ClassDiagramDrawer} が行います。
+     * </p>
+     *
+     * @param type ノードの内容の種類
+     */
+    abstract public void deleteAllNodeText(ContentType type);
+
+    /**
      * <p> ノードの任意の内容のテキストを取得します </p>
      *
      * @param type ノードの内容の種類

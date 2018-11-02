@@ -183,6 +183,26 @@ public class ClassNodeDiagram extends NodeDiagram {
     }
 
     /**
+     * <p> クラスの属性または操作を削除します </p>
+     *
+     * <p>
+     * クラス自体の削除は、このインスタンスのリストを持つ {@link ClassDiagramDrawer} が行います。
+     * </p>
+     *
+     * @param type   クラスの内容の種類
+     */
+    @Override
+    public void deleteAllNodeText(ContentType type) {
+        if (type == ContentType.Attribute) {
+            attributes.clear();
+        } else if (type == ContentType.Operation) {
+            operations.clear();
+        } else { // if (type == ContentType.Composition) {
+            relations.clear();
+        }
+    }
+
+    /**
      * <p> クラスの内容のテキストを取得します </p>
      *
      * @param type   クラスの内容の種類

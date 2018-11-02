@@ -33,6 +33,10 @@ public class NoteNodeDiagram extends NodeDiagram {
     }
 
     @Override
+    public void deleteAllNodeText(ContentType type) {
+    }
+
+    @Override
     public void setNodeContentBoolean(ContentType type, ContentType subtype, int contentNumber, boolean isChecked) {
     }
 

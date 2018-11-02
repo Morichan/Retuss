@@ -130,36 +130,43 @@ public class CodeController {
         }
     }
 
+    private void convertCodeToUml(Language language) {
+        java = new Java();
+
+        for (int i = 0; i < ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().size(); i++) {
+            try {
+                if (language == Language.Java) {
+                    javaLanguage.parseForClassDiagram(getCode(0, i));
+                    java.addClass(javaLanguage.getJava().getClasses().get(0));
+                } else {
+                    cppLanguage.parseForClassDiagram(getCode(1, i));
+                    cpp.addClass(cppLanguage.getCpp().getClasses().get(0));
+                }
+            } catch (NullPointerException e) {
+                System.out.println("This is Parse Error because JavaEvalListener object is null, but no problem.");
+            } catch (IllegalArgumentException e) {
+                System.out.println("This is Parse Error because JavaEvalListener object was set IllegalArgument, but no problem.");
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("This is Parse Error because JavaEvalListener object was not found Class name, but no problem.");
+            }
+        }
+
+        if (language == Language.Java) {
+            translator.translate(java);
+        } else {
+            translator.translate(cpp);
+        }
+
+        umlPackage = translator.getPackage();
+
+        mainController.writeUmlForCode(umlPackage);
+    }
+
     private void setCodeTabs(Cpp cpp) {
         ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(1).getContent()).getChildren().get(0)).getTabs().clear();
         for (io.github.morichan.retuss.language.cpp.Class cppClass : cpp.getClasses()) {
             Tab tab = createCodeTab(cppClass);
             ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(1).getContent()).getChildren().get(0)).getTabs().add(tab);
-        }
-    }
-
-    private void convertCodeToUml(Language language) {
-        if (java.getClasses() == null) return;
-
-        try {
-            if (language == Language.Java) {
-                javaLanguage.parseForClassDiagram(getCode(0, 0));
-                translator.translate(javaLanguage.getJava());
-
-                umlPackage = translator.getPackage();
-
-                mainController.writeUmlForCode(umlPackage);
-            } else { // if (language == Language.Cpp) {
-                cppLanguage.parseForClassDiagram(getCode(1,0));
-                // translator.translate(cppLanguage.getCpp());
-
-                umlPackage = translator.getPackage();
-
-                mainController.writeUmlForCode(umlPackage);
-            }
-
-        } catch (NullPointerException e) {
-            System.out.println("This is Parse Error because JavaEvalListener object is null, but no problem.");
         }
     }
 

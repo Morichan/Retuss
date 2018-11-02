@@ -38,6 +38,10 @@ public class Translator {
         cpp = cppTranslator.translate(classDiagramPackage);
     }
 
+    public void translate(Cpp cpp) {
+
+    }
+
     /**
      * <p> Javaを基にクラス図へ翻訳します </p>
      *

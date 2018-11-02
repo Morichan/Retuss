@@ -270,7 +270,7 @@ public class ClassDiagramDrawer {
      * <p>
      * 追加する際には、RetussMainウィンドウにおけるどのボタンを押されていたかに応じて処理を変更するため、
      * {@link UtilityJavaFXComponent#bindAllButtonsFalseWithout(List, Button)} で生成したボタンのリストを入力する必要がある。
-     * {@link #createDrawnEdge(Button, String, double, double)}を用いる。
+     * {@link #createDrawnEdge(ContentType, String, double, double)}を用いる。
      * </p>
      *
      * @param buttons  {@link UtilityJavaFXComponent#bindAllButtonsFalseWithout(List, Button)} で生成したボタンのリスト <br> どのボタンも押されていなかった場合は何も動作しない。
@@ -281,7 +281,10 @@ public class ClassDiagramDrawer {
     public void addDrawnEdge(List<Button> buttons, String name, double toMouseX, double toMouseY) {
         for (Button button : buttons) {
             if (button.isDefaultButton()) {
-                createDrawnEdge(button, name, toMouseX, toMouseY);
+                ContentType type = ContentType.Undefined;
+                if (button.getText().equals("Generalization")) type = ContentType.Generalization;
+                else if (button.getText().equals("Composition")) type = ContentType.Composition;
+                createDrawnEdge(type, name, toMouseX, toMouseY);
                 break;
             }
         }
@@ -388,6 +391,15 @@ public class ClassDiagramDrawer {
     }
 
     /**
+     * 描画済みの任意のノードにおける内容を全削除する。
+     *
+     * @param type          描画済みの任意のノードにおける追加したい内容の種類
+     */
+    public void deleteAllDrawnNodeText(int nodeNumber, ContentType type) {
+        nodes.get(nodeNumber).deleteAllNodeText(type);
+    }
+
+    /**
      * 追加するノードの初期化を行う。
      *
      * @param button 追加したいノードとしてRetussWindow上で押しているボタン
@@ -414,19 +426,20 @@ public class ClassDiagramDrawer {
      * このメソッドを動かす前に {@link #setMouseCoordinates(double, double)} で関係元のノードのマウスのXY軸を設定しておかなければならない。
      * </p>
      *
-     * @param button   追加したいエッジとしてRetussWindow上で押しているボタン
+     * @param type   追加したいエッジとしてRetussWindow上で押しているボタンのタイプ
      * @param name     追加したいエッジ名 <br> 追加したいエッジによっては空文字では追加しない可能性がある。
      * @param toMouseX 追加したい関係先のマウスのX軸
      * @param toMouseY 追加したい関係先のマウスのY軸
      */
-    private void createDrawnEdge(Button button, String name, double toMouseX, double toMouseY) {
+    private void createDrawnEdge(ContentType type, String name, double toMouseX, double toMouseY) {
         if (nodeText.length() <= 0) return;
 
-        if (button.getText().equals("Composition")) {
-            getNodeDiagramId(operationalPoint.getX(), operationalPoint.getY());
-            int fromNodeId = currentNodeNumber;
-            getNodeDiagramId(toMouseX, toMouseY);
-            int toNodeId = currentNodeNumber;
+        getNodeDiagramId(operationalPoint.getX(), operationalPoint.getY());
+        int fromNodeId = currentNodeNumber;
+        getNodeDiagramId(toMouseX, toMouseY);
+        int toNodeId = currentNodeNumber;
+
+        if (type == ContentType.Composition) {
             if (name.length() > 0) {
                 relations.createEdgeText(ContentType.Composition, name);
                 relations.setRelationId(ContentType.Composition, relations.getCompositionsCount() - 1, toNodeId);
@@ -437,11 +450,7 @@ public class ClassDiagramDrawer {
                 nodes.get(fromNodeId).createNodeText(ContentType.Composition, name + " : " + nodes.get(toNodeId).getNodeText());
             }
 
-        } else if (button.getText().equals("Generalization")) {
-            getNodeDiagramId(operationalPoint.getX(), operationalPoint.getY());
-            int fromNodeId = currentNodeNumber;
-            getNodeDiagramId(toMouseX, toMouseY);
-            int toNodeId = currentNodeNumber;
+        } else if (type == ContentType.Generalization) {
             relations.createEdgeText(ContentType.Generalization, name);
             relations.setRelationId(ContentType.Generalization, relations.getCompositionsCount() - 1, toNodeId);
             relations.setRelationSourceId(ContentType.Generalization, relations.getCompositionsCount() - 1, fromNodeId);
@@ -449,6 +458,22 @@ public class ClassDiagramDrawer {
             relations.setRelationSourcePoint(ContentType.Generalization, relations.getCompositionsCount() - 1, nodes.get(fromNodeId).getPoint());
             relations.deleteGeneralizationFromSameRelationSourceNode(fromNodeId);
         }
+    }
+
+    public void createDrawnEdge(ContentType type, String contentName, String fromName, String toName) {
+        Point2D from = Point2D.ZERO;
+        Point2D to = Point2D.ZERO;
+
+        for (NodeDiagram node: nodes) {
+            if (node.getNodeText().equals(fromName)) {
+                from = node.getPoint();
+            } else if (node.getNodeText().equals(toName)) {
+                to = node.getPoint();
+            }
+        }
+
+        operationalPoint = from;
+        createDrawnEdge(type, contentName, to.getX(), to.getY());
     }
 
     /**
@@ -527,6 +552,10 @@ public class ClassDiagramDrawer {
      */
     public void deleteDrawnEdge(double mouseX, double mouseY) {
         relations.deleteCurrentRelation(new Point2D(mouseX, mouseY));
+    }
+
+    public void clearAllRelations() {
+        relations.deleteEdge();
     }
 
     /**

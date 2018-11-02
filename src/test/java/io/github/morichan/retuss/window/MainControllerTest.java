@@ -1324,7 +1324,9 @@ class MainControllerTest extends ApplicationTest {
 
         @Nested
         class コードエリアの場合 extends ApplicationTest {
-            Point2D topLeftCorner;
+            Point2D first;
+            Point2D second;
+            Point2D betweenFirstAndSecond;
             Point2D okButtonPoint;
 
             @Start
@@ -1344,14 +1346,21 @@ class MainControllerTest extends ApplicationTest {
 
             @BeforeEach
             void setup() {
-                topLeftCorner = new Point2D(700, 200);
+                first = new Point2D(700, 200);
+                second = new Point2D(900, 400);
+                betweenFirstAndSecond = new Point2D(first.getX() + (second.getX() - first.getX())/2, first.getY() + (second.getY() - first.getY())/2);
                 okButtonPoint = new Point2D(1000.0, 490.0);
                 moveCodeWindow();
                 deleteCodeWindow();
                 deleteCodeWindow();
                 clickOn("#classButtonInCD");
-                drawClasses(topLeftCorner, "AAA", okButtonPoint);
+                drawClasses(first, "AAA", okButtonPoint);
                 resetCodeArea(codeStage);
+            }
+
+            @AfterEach
+            void reset() {
+                ClassNodeDiagram.resetNodeCount();
             }
 
             @Test
@@ -1373,7 +1382,7 @@ class MainControllerTest extends ApplicationTest {
                 write("class Main {\n}\n");
 
                 clickOn("#normalButtonInCD");
-                rightClickOn(topLeftCorner);
+                rightClickOn(first);
                 ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
                 String actual = scrollPane.getContextMenu().getItems().get(0).getText();
                 assertThat(actual).startsWith(expected);
@@ -1387,7 +1396,7 @@ class MainControllerTest extends ApplicationTest {
                 write("class Main {private int number;}");
 
                 clickOn("#normalButtonInCD");
-                rightClickOn(topLeftCorner);
+                rightClickOn(first);
                 ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
                 String actual = ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText();
                 assertThat(actual).isEqualTo(expected);
@@ -1401,7 +1410,62 @@ class MainControllerTest extends ApplicationTest {
                 write("class Main {private double number; protected String text; float point;}");
 
                 clickOn("#normalButtonInCD");
-                rightClickOn(topLeftCorner);
+                rightClickOn(first);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                List<String> actual = new ArrayList<>();
+                for (MenuItem item : ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems()) {
+                    actual.add(item.getText());
+                }
+
+                for (int i = 0; i < expected.size(); i++) {
+                    assertThat(actual.get(i)).isEqualTo(expected.get(i));
+                }
+            }
+
+            @Test
+            void 属性を1つ持つクラスを描画した後に属性を変更する() {
+                String expected = "- changedNumber : int";
+
+                clickOn(codeStage);
+                write("class Main {private int number;}");
+                multiPush(2, KeyCode.LEFT);
+                multiPush(6, KeyCode.BACK_SPACE);
+                write("changedNumber");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(first);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                String actual = ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText();
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 属性を1つ持つクラスを描画した後に属性を削除する() {
+
+                clickOn(codeStage);
+                write("class Main {private int number;}");
+                push(KeyCode.LEFT);
+                multiPush(19, KeyCode.BACK_SPACE);
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(first);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                String actual = ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(0).getText();
+                assertThat(actual).isEqualTo("なし");
+            }
+
+            @Test
+            void 属性を3つ持つクラスを描画した後に2番目の属性を変更する() {
+                List<String> expected = Arrays.asList("- number : double", "+ changedNumber : Integer", "~ point : float");
+
+                clickOn(codeStage);
+                write("class Main {private double number; protected String text; float point;}");
+                multiPush(14, KeyCode.LEFT);
+                multiPush(22, KeyCode.BACK_SPACE);
+                write("public Integer changedNumber;");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(first);
                 ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
                 List<String> actual = new ArrayList<>();
                 for (MenuItem item : ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems()) {
@@ -1421,7 +1485,7 @@ class MainControllerTest extends ApplicationTest {
                 write("class Main {public int getNumber() {}}");
 
                 clickOn("#normalButtonInCD");
-                rightClickOn(topLeftCorner);
+                rightClickOn(first);
                 ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
                 String actual = ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems().get(0).getText();
                 assertThat(actual).isEqualTo(expected);
@@ -1435,7 +1499,7 @@ class MainControllerTest extends ApplicationTest {
                 write("class Main {public int getNumber() {} protected void setNumber(int number) {} void print(String text, float point) {}}");
 
                 clickOn("#normalButtonInCD");
-                rightClickOn(topLeftCorner);
+                rightClickOn(first);
                 ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
                 List<String> actual = new ArrayList<>();
                 for (MenuItem item : ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems()) {
@@ -1444,6 +1508,171 @@ class MainControllerTest extends ApplicationTest {
 
                 for (int i = 0; i < expected.size(); i++) {
                     assertThat(actual.get(i)).isEqualTo(expected.get(i));
+                }
+            }
+
+            @Test
+            void 操作を1つ持つクラスを描画した後に操作を変更する() {
+                String expected = "+ changedNumber() : int";
+
+                clickOn(codeStage);
+                write("class Main {public int getNumber() {}}");
+                multiPush(6, KeyCode.LEFT);
+                multiPush(9, KeyCode.BACK_SPACE);
+                write("changedNumber");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(first);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                String actual = ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems().get(0).getText();
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 操作を1つ持つクラスを描画した後に操作を削除する() {
+
+                clickOn(codeStage);
+                write("class Main {public int getNumber() {}}");
+                multiPush(1, KeyCode.LEFT);
+                multiPush(25, KeyCode.BACK_SPACE);
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(first);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                String actual = ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems().get(0).getText();
+                assertThat(actual).isEqualTo("なし");
+            }
+
+            @Test
+            void 操作を3つ持つクラスを描画した後に2番目の操作を変更する() {
+                List<String> expected = Arrays.asList("+ getNumber() : int", "- insertNumber(number : int, index : int) : int", "~ print(text : String, point : float) : void");
+
+                clickOn(codeStage);
+                write("class Main {public int getNumber() {} protected void setNumber(int number) {} void print(String text, float point) {}}");
+                multiPush(44, KeyCode.LEFT);
+                multiPush(36, KeyCode.BACK_SPACE);
+                write("private int insertNumber(int number, int index)");
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(first);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                List<String> actual = new ArrayList<>();
+                for (MenuItem item : ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems()) {
+                    actual.add(item.getText());
+                }
+
+                for (int i = 0; i < expected.size(); i++) {
+                    assertThat(actual.get(i)).isEqualTo(expected.get(i));
+                }
+            }
+
+            @Test
+            void クラスの2番目の名前を変更する() {
+                drawSecondClass();
+
+                String expectedMain = "Main";
+                String expectedSub = "Sub";
+
+                clickOn(codeStage);
+                write("class Sub {}");
+
+                clickOn("#normalButtonInCD");
+                String actualSub = getMenuText(second);
+                String actualMain = getMenuText(first);
+                assertThat(actualMain).startsWith(expectedMain);
+                assertThat(actualSub).startsWith(expectedSub);
+            }
+
+            @Test
+            void クラスの2番目に属性を追加する() {
+                drawSecondClass();
+
+                String expectedMain = "なし";
+                String expectedSub = "- attribute : String";
+
+                clickOn(codeStage);
+                write("class Sub { private String attribute; }");
+
+                clickOn("#normalButtonInCD");
+                String actualSub = getAttributeMenuText(second, 0);
+                String actualMain = getAttributeMenuText(first, 0);
+                assertThat(actualMain).startsWith(expectedMain);
+                assertThat(actualSub).startsWith(expectedSub);
+            }
+
+            @Test
+            void クラスの2番目に操作を追加する() {
+                drawSecondClass();
+
+                String expectedMain = "なし";
+                String expectedSub = "+ getText() : String";
+
+                clickOn(codeStage);
+                write("class Sub { public String getText() {} }");
+
+                clickOn("#normalButtonInCD");
+                String actualSub = getOperationMenuText(second, 0);
+                String actualMain = getOperationMenuText(first, 0);
+                assertThat(actualMain).startsWith(expectedMain);
+                assertThat(actualSub).startsWith(expectedSub);
+            }
+
+            @Test
+            void クラスの2番目から1番目との継承関係を記述する() {
+                drawSecondClass();
+
+                String expected = "汎化";
+
+                clickOn(codeStage);
+                write("class Sub extends Main {}");
+
+                clickOn("#normalButtonInCD");
+                String actual = getMenuText(betweenFirstAndSecond);
+                assertThat(actual).startsWith(expected);
+            }
+
+            @Test
+            void クラスの2番目から1番目とのコンポジション関係を記述する() {
+                drawSecondClass();
+
+                String expected = "- main";
+
+                clickOn(codeStage);
+                write("class Sub { private Main main; }");
+
+                clickOn("#normalButtonInCD");
+                String actual = getMenuText(betweenFirstAndSecond);
+                assertThat(actual).startsWith(expected);
+            }
+
+            private void drawSecondClass() {
+                write("class Main {}");
+                drawClasses(second, "BBB", okButtonPoint);
+                clickOnTab(codeStage, 1);
+                resetCodeArea(codeStage);
+            }
+
+            private String getMenuText(Point2D point) {
+                rightClickOn(point);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                return scrollPane.getContextMenu().getItems().get(0).getText();
+            }
+
+            private String getAttributeMenuText(Point2D point, int index) {
+                rightClickOn(point);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                return ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(index).getText();
+            }
+
+            private String getOperationMenuText(Point2D point, int index) {
+                rightClickOn(point);
+                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+                return ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems().get(index).getText();
+            }
+
+            private void multiPush(int count, KeyCode key) {
+                for (int i = 0; i < count; i++) {
+                    push(key);
                 }
             }
         }
@@ -2054,6 +2283,15 @@ class MainControllerTest extends ApplicationTest {
         Tab tabOnCodeTabPane = tabPaneOnAnchorPane.getTabs().get(tabNumber);
         AnchorPane anchorPaneOnCodeTab = (AnchorPane) tabOnCodeTabPane.getContent();
         return (CodeArea) anchorPaneOnCodeTab.getChildren().get(0);
+    }
+
+    private void clickOnTab(Stage stage, int tabNumber) {
+        BorderPane borderPaneOnStage = (BorderPane) stage.getScene().getRoot().getChildrenUnmodifiable().get(0);
+        TabPane tabPaneOnBorderPane = (TabPane) borderPaneOnStage.getCenter();
+        Tab tabOnLanguageTabPane = tabPaneOnBorderPane.getTabs().get(0);
+        AnchorPane anchorPaneOnLanguageTab = (AnchorPane) tabOnLanguageTabPane.getContent();
+        TabPane tabPaneOnAnchorPane = (TabPane) anchorPaneOnLanguageTab.getChildren().get(0);
+        clickOn(tabPaneOnAnchorPane.getTabs().get(tabNumber).getText());
     }
 
     private void drawClasses(Point2D canvasPoint, String className) {

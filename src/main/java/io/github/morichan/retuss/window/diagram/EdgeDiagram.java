@@ -63,6 +63,10 @@ public class EdgeDiagram {
         }
     }
 
+    public void deleteEdge() {
+        relations.clear();
+    }
+
     /**
      * <p> 関係を削除します </p>
      *

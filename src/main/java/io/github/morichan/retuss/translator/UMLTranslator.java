@@ -96,7 +96,12 @@ public class UMLTranslator {
                         classPackage.getClasses().stream().filter(
                                 cp -> cp.getName().equals(javaClasses.get(finalI).getExtendsClassName())
                         ).collect(Collectors.toList());
-                classPackage.getClasses().get(finalI).setGeneralizationClass(oneExtendsClass.get(0));
+                try {
+                    io.github.morichan.retuss.language.uml.Class oneClass = oneExtendsClass.get(0);
+                    classPackage.getClasses().get(finalI).setGeneralizationClass(oneClass);
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("This is Set Error because same class wasn't had, so don't set.");
+                }
             }
         }
     }
