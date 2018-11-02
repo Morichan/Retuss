@@ -71,63 +71,39 @@ public class CodeController {
     private Tab createCodeTab(io.github.morichan.retuss.language.java.Class javaClass) {
         CodeArea codeArea = new CodeArea();
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
-        // codeArea.appendText(java.getClasses().get(0).toString());
-        codeArea.setOnKeyTyped(event -> {
-            convertCodeToUml(Language.Java);
-        });
-        codeArea.setOnMouseClicked(event -> {
-            //translator.translate(classDiagramDrawer.extractPackage());
-        });
+        codeArea.setOnKeyTyped(event -> convertCodeToUml(Language.Java));
 
-        // if (translator.getJava().getClasses().size() > 0) setCodeTabs(translator.getJava());
-        // if (java.getClasses().size() > 0 && !java.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(java.getClasses().get(0).toString());
         if (javaClass != null) codeArea.replaceText(javaClass.toString());
 
-        AnchorPane codeAnchor = new AnchorPane(codeArea);
-        AnchorPane.setBottomAnchor(codeArea, 0.0);
-        AnchorPane.setTopAnchor(codeArea, 0.0);
-        AnchorPane.setLeftAnchor(codeArea, 0.0);
-        AnchorPane.setRightAnchor(codeArea, 0.0);
-
-        Tab codeTab = new Tab();
-        codeTab.setContent(codeAnchor);
-        if (javaClass == null) codeTab.setText("<Unknown Title>");
-        else codeTab.setText(javaClass.getName());
-        codeTab.setClosable(false);
-
-        return codeTab;
+        if (javaClass == null) return createTab(codeArea, null);
+        else return createTab(codeArea, javaClass.getName());
     }
 
     private Tab createCodeTab(io.github.morichan.retuss.language.cpp.Class cppClass) {
         CodeArea codeArea = new CodeArea();
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
-        codeArea.setOnKeyTyped(event -> {
-            convertCodeToUml(Language.Cpp);
-        });
+        codeArea.setOnKeyTyped(event -> convertCodeToUml(Language.Cpp));
 
         if (cpp.getClasses().size() > 0 && !cpp.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(cpp.getClasses().get(0).toString());
 
-        AnchorPane codeAnchor = new AnchorPane(codeArea);
-        AnchorPane.setBottomAnchor(codeArea, 0.0);
-        AnchorPane.setTopAnchor(codeArea, 0.0);
-        AnchorPane.setLeftAnchor(codeArea, 0.0);
-        AnchorPane.setRightAnchor(codeArea, 0.0);
+        if (cppClass == null) return createTab(codeArea, null);
+        else return createTab(codeArea, cppClass.getName());
+    }
+
+    private Tab createTab(CodeArea area, String title) {
+        AnchorPane codeAnchor = new AnchorPane(area);
+        AnchorPane.setBottomAnchor(area, 0.0);
+        AnchorPane.setTopAnchor(area, 0.0);
+        AnchorPane.setLeftAnchor(area, 0.0);
+        AnchorPane.setRightAnchor(area, 0.0);
 
         Tab codeTab = new Tab();
         codeTab.setContent(codeAnchor);
-        if (cppClass == null) codeTab.setText("<Unknown Title>");
-        else codeTab.setText(cppClass.getName());
+        if (title == null) codeTab.setText("<Unknown Title>");
+        else codeTab.setText(title);
         codeTab.setClosable(false);
 
         return codeTab;
-    }
-
-    private void setCodeTabs(Java java) {
-        ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().clear();
-        for (io.github.morichan.retuss.language.java.Class javaClass : java.getClasses()) {
-            Tab tab = createCodeTab(javaClass);
-            ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().add(tab);
-        }
     }
 
     private void convertCodeToUml(Language language) {
@@ -160,6 +136,14 @@ public class CodeController {
         umlPackage = translator.getPackage();
 
         mainController.writeUmlForCode(umlPackage);
+    }
+
+    private void setCodeTabs(Java java) {
+        ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().clear();
+        for (io.github.morichan.retuss.language.java.Class javaClass : java.getClasses()) {
+            Tab tab = createCodeTab(javaClass);
+            ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().add(tab);
+        }
     }
 
     private void setCodeTabs(Cpp cpp) {

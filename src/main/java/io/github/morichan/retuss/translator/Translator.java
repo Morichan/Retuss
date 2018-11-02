@@ -39,7 +39,6 @@ public class Translator {
     }
 
     public void translate(Cpp cpp) {
-
     }
 
     /**

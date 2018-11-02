@@ -1632,6 +1632,24 @@ class MainControllerTest extends ApplicationTest {
             }
 
             @Test
+            void クラスの1番目から2番目との継承関係を記述する() {
+                drawSecondClass();
+                clickOn(codeStage);
+                write("class Sub {}");
+
+                String expected = "汎化";
+
+                clickOnTab(codeStage, 0);
+                resetCodeArea(codeStage);
+                clickOn(codeStage);
+                write("class Main extends Sub {}");
+
+                clickOn("#normalButtonInCD");
+                String actual = getMenuText(betweenFirstAndSecond);
+                assertThat(actual).startsWith(expected);
+            }
+
+            @Test
             void クラスの2番目から1番目とのコンポジション関係を記述する() {
                 drawSecondClass();
 
@@ -1639,6 +1657,24 @@ class MainControllerTest extends ApplicationTest {
 
                 clickOn(codeStage);
                 write("class Sub { private Main main; }");
+
+                clickOn("#normalButtonInCD");
+                String actual = getMenuText(betweenFirstAndSecond);
+                assertThat(actual).startsWith(expected);
+            }
+
+            @Test
+            void クラスの1番目から2番目とのコンポジション関係を記述する() {
+                drawSecondClass();
+                clickOn(codeStage);
+                write("class Sub {}");
+
+                String expected = "- sub";
+
+                clickOnTab(codeStage, 0);
+                resetCodeArea(codeStage);
+                clickOn(codeStage);
+                write("class Main { private Sub sub; }");
 
                 clickOn("#normalButtonInCD");
                 String actual = getMenuText(betweenFirstAndSecond);

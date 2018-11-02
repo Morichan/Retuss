@@ -113,7 +113,7 @@ public class MainController {
             Map<Integer, Integer> relationIds = new HashMap<>();
             for (int j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
                 for (int k = 0; k < umlPackage.getClasses().size(); k++) {
-                    if (isDataType(umlPackage.getClasses().get(k), umlPackage.getClasses().get(i).getAttributes().get(j).getType().getName().getNameText())) {
+                    if (umlPackage.getClasses().get(k).getName().equals(umlPackage.getClasses().get(i).getAttributes().get(j).getType().getName().getNameText())) {
                         relationIds.put(j, k);
                         break;
                     }
@@ -122,10 +122,10 @@ public class MainController {
             relationsIds.put(i, relationIds);
         }
 
-        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
+        classDiagramDrawer.clearAllRelations();
 
+        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
             classDiagramDrawer.changeDrawnNodeText(i, ContentType.Title, i, umlPackage.getClasses().get(i).getName());
-            classDiagramDrawer.clearAllRelations();
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Attribute);
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Operation);
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Composition);
@@ -149,10 +149,6 @@ public class MainController {
         }
 
         classDiagramDrawer.allReDrawCanvas();
-    }
-
-    private boolean isDataType(Class umlClass, String type) {
-        return umlClass.getName().equals(type);
     }
 
     /**
