@@ -109,6 +109,7 @@ public class CodeController {
 
     private void convertCodeToUml(Language language) {
         java = new Java();
+        cpp = new Cpp();
 
         for (int i = 0; i < ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().size(); i++) {
             try {

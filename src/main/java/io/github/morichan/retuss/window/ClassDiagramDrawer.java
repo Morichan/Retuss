@@ -432,7 +432,7 @@ public class ClassDiagramDrawer {
      * @param toMouseY 追加したい関係先のマウスのY軸
      */
     private void createDrawnEdge(ContentType type, String name, double toMouseX, double toMouseY) {
-        if (nodeText.length() <= 0) return;
+        if (type != ContentType.Generalization && name.length() <= 0) return;
 
         getNodeDiagramId(operationalPoint.getX(), operationalPoint.getY());
         int fromNodeId = currentNodeNumber;
@@ -440,15 +440,13 @@ public class ClassDiagramDrawer {
         int toNodeId = currentNodeNumber;
 
         if (type == ContentType.Composition) {
-            if (name.length() > 0) {
-                relations.createEdgeText(ContentType.Composition, name);
-                relations.setRelationId(ContentType.Composition, relations.getCompositionsCount() - 1, toNodeId);
-                relations.setRelationSourceId(ContentType.Composition, relations.getCompositionsCount() - 1, fromNodeId);
-                relations.setRelationPoint(ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get(toNodeId).getPoint());
-                relations.setRelationSourcePoint(ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get(fromNodeId).getPoint());
-                // コンポジション関係のインスタンスを生成
-                nodes.get(fromNodeId).createNodeText(ContentType.Composition, name + " : " + nodes.get(toNodeId).getNodeText());
-            }
+            relations.createEdgeText(ContentType.Composition, name);
+            relations.setRelationId(ContentType.Composition, relations.getCompositionsCount() - 1, toNodeId);
+            relations.setRelationSourceId(ContentType.Composition, relations.getCompositionsCount() - 1, fromNodeId);
+            relations.setRelationPoint(ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get(toNodeId).getPoint());
+            relations.setRelationSourcePoint(ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get(fromNodeId).getPoint());
+            // コンポジション関係のインスタンスを生成
+            nodes.get(fromNodeId).createNodeText(ContentType.Composition, name + " : " + nodes.get(toNodeId).getNodeText());
 
         } else if (type == ContentType.Generalization) {
             relations.createEdgeText(ContentType.Generalization, name);

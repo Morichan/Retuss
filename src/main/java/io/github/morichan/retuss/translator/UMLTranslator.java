@@ -46,8 +46,23 @@ public class UMLTranslator {
         return classPackage;
     }
 
+    /**
+     * <p> Cppからクラス図のパッケージに翻訳します </p>
+     *
+     * @param cpp C++ソースコード
+     * @return クラス図のパッケージ
+     */
+    public Package translate(Cpp cpp) {
+        classPackage = new Package();
 
+        for (io.github.morichan.retuss.language.cpp.Class cppClass : cpp.getClasses()) {
+            classPackage.addClass(createClass(cppClass));
+        }
 
+        searchGeneralizationClass_Cpp(cpp.getClasses());
+
+        return classPackage;
+    }
 
     private Class createClass(io.github.morichan.retuss.language.java.Class javaClass) {
         Class classClass = new Class(javaClass.getName());
@@ -115,38 +130,6 @@ public class UMLTranslator {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * <p> Cppからクラス図のパッケージに翻訳します </p>
-     *
-     * @param  cpp
-     * @return クラス図のパッケージ
-     */
-    public Package translate(Cpp cpp) {
-        classPackage = new Package();
-
-        for (io.github.morichan.retuss.language.cpp.Class cppClass : cpp.getClasses()) {
-            classPackage.addClass(createClass(cppClass));
-        }
-
-        searchGeneralizationClass_Cpp(cpp.getClasses());
-
-        return classPackage;
-    }
-
     private Class createClass(io.github.morichan.retuss.language.cpp.Class cppClass) {
         Class classClass = new Class(cppClass.getName());
 
@@ -154,12 +137,10 @@ public class UMLTranslator {
 
             Attribute attribute = new Attribute(new Name(memberVariable.getName()));
             if(memberVariable.getType().toString().equals( "string")) {
-           // if(memberVariable.getType().equals(new io.github.morichan.retuss.language.cpp.Type("string"))) {
                 attribute.setType(new Type("String"));
             }else {
                 attribute.setType(new Type(memberVariable.getType().toString()));
             }
-    //        attribute.setType(new Type(memberVariable.getType().toString()));
             attribute.setVisibility(convert(memberVariable.getAccessSpecifier()));
             if (memberVariable.getValue() != null) {
                 attribute.setDefaultValue(new DefaultValue(new OneIdentifier(memberVariable.getValue().toString())));
@@ -213,15 +194,13 @@ public class UMLTranslator {
                         classPackage.getClasses().stream().filter(
                                 cp -> cp.getName().equals(cppClasses.get(finalI).getExtendsClassName())
                         ).collect(Collectors.toList());
-                classPackage.getClasses().get(finalI).setGeneralizationClass(oneExtendsClass.get(0));
+                try {
+                    io.github.morichan.retuss.language.uml.Class oneClass = oneExtendsClass.get(0);
+                    classPackage.getClasses().get(finalI).setGeneralizationClass(oneClass);
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("This is Set Error because same class wasn't had, so don't set.");
+                }
             }
         }
     }
-
-
-
-
-
-
-
 }

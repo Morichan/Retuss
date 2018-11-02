@@ -1326,7 +1326,9 @@ class MainControllerTest extends ApplicationTest {
         class コードエリアの場合 extends ApplicationTest {
             Point2D first;
             Point2D second;
+            Point2D third;
             Point2D betweenFirstAndSecond;
+            Point2D betweenFirstAndThird;
             Point2D okButtonPoint;
 
             @Start
@@ -1348,7 +1350,9 @@ class MainControllerTest extends ApplicationTest {
             void setup() {
                 first = new Point2D(700, 200);
                 second = new Point2D(900, 400);
+                third = new Point2D(800, 600);
                 betweenFirstAndSecond = new Point2D(first.getX() + (second.getX() - first.getX())/2, first.getY() + (second.getY() - first.getY())/2);
+                betweenFirstAndThird = new Point2D(first.getX() + (third.getX() - first.getX())/2, first.getY() + (third.getY() - first.getY())/2);
                 okButtonPoint = new Point2D(1000.0, 490.0);
                 moveCodeWindow();
                 deleteCodeWindow();
@@ -1679,6 +1683,34 @@ class MainControllerTest extends ApplicationTest {
                 clickOn("#normalButtonInCD");
                 String actual = getMenuText(betweenFirstAndSecond);
                 assertThat(actual).startsWith(expected);
+            }
+
+            @Test
+            void クラスの1番目から2番目とのコンポジション関係と3番目との汎化関係を記述する() {
+                drawSecondClass();
+                drawThirdClass();
+                clickOn(codeStage);
+                write("class Super {}");
+
+                String expectedComposition = "- sub";
+                String expectedGeneralization = "汎化";
+
+                clickOnTab(codeStage, 0);
+                resetCodeArea(codeStage);
+                clickOn(codeStage);
+                write("class Main extends Super { private Sub sub; }");
+
+                clickOn("#normalButtonInCD");
+                String actualComposition = getMenuText(betweenFirstAndSecond);
+                String actualGeneralization = getMenuText(betweenFirstAndThird);
+                assertThat(actualComposition).startsWith(expectedComposition);
+                assertThat(actualGeneralization).startsWith(expectedGeneralization);
+            }
+            private void drawThirdClass() {
+                write("class Sub {}");
+                drawClasses(third, "CCC", okButtonPoint);
+                clickOnTab(codeStage, 2);
+                resetCodeArea(codeStage);
             }
 
             private void drawSecondClass() {

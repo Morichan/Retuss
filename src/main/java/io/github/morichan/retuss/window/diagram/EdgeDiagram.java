@@ -248,7 +248,7 @@ public class EdgeDiagram {
     public void deleteGeneralizationFromSameRelationSourceNode(int id) {
         // 最後に設定した汎化関係は無視
         for (int i = 0; i < relations.size() - 1; i++) {
-            if (relations.get(i).getRelationSourceId() == id) {
+            if (relations.get(i).getType() == ContentType.Generalization && relations.get(i).getRelationSourceId() == id) {
                 relations.remove(i);
                 i--;
             }

@@ -73,10 +73,7 @@ public class CppTranslator {
 
 
 
-/**
- * コンポジションｎ￥の変換
- *
- */
+        //コンポジションｎ￥の変換
         for (Attribute relation : classClass.getRelations()) {
             MemberVariable memberVariable = new MemberVariable(new Type(relation.getType().toString()), relation.getName().toString());
             try {
@@ -108,90 +105,7 @@ public class CppTranslator {
      *
      * <p>
      *     {@link #translate(Package)} 内の最後で用いています。
-     * </p>
-     *
-     * <p>
-     *     例えば、 {@code A -|> B -|> C} のような関係になっているとします。
-     *     なお、 {@code -|>} は汎化関係にあたります。
-     * </p>
-     *
-     * <p>
-     *     このメソッドを利用する前には {@link #translate(Package)} 内で、
-     *     {@link #cpp} にそれぞれクラスA、クラスB、クラスCが継承関係なしの状態で格納されています。
-     * </p>
-     *
-     * <pre>
-     *     {@code
-     *     {"cpp":
-     *         [
-     *             {"A": {"extends": null}},
-     *             {"B": {"extends": null}},
-     *             {"C": {"extends": null}}
-     *         ]
-     *     }
-     *     }
-     * </pre>
-     *
-     * <p>
-     *     まず、クラスAを見ると、クラスBが汎化関係にあることが {@code classClasses} からわかります。
-     *     そこで、クラスBという名前と一致する {@link #cpp} 内におけるクラスBを抽出します
-     *     （これを {@code cpp.getClasses.stream().filter(...).collection(Collectors.toList())} によるラムダ式で表現しています）。
-     *     名前が一致するクラスBは唯一のはずですから、そのまま {@code oneGeneralizationCppClass} リストに存在する0番目の要素を抽出し、
-     *     {@link #cpp} のクラスAの継承クラスに格納します。
-     *     参照渡しのため、{@code cpp.A.extends == cpp.B} です。
-     * </p>
-     *
-     * <pre>
-     *     {@code
-     *     {"cpp":
-     *         [
-     *             {"A": {"extends": {"B": {"extends": null}}}},
-     *             {"B": {"extends": null}},
-     *             {"C": {"extends": null}}
-     *         ]
-     *     }
-     *     }
-     * </pre>
-     *
-     * <p>
-     *     次に、クラスBを見ると、クラスCが汎化関係にあることが {@code classClasses} からわかります。
-     *     そこで、クラスCという名前と一致する {@link #cpp} 内におけるクラスCを抽出します（同上）。
-     *     名前が一致するクラスCもやはり唯一のはずですから、そのまま {@code oneGeneralizationCppClass} リストに存在する0番目の要素を抽出し、
-     *     {@link #cpp} のクラスBの継承クラスに格納します。
-     *     参照渡しのため、 {@code cpp.B.extends == cpp.C} です。
-     * </p>
-     *
-     * <pre>
-     *     {@code
-     *     {"cpp":
-     *         [
-     *             {"A": {"extends": {"B": {"extends": null}}}},
-     *             {"B": {"extends": {"C": {"extends": null}}}},
-     *             {"C": {"extends": null}}
-     *         ]
-     *     }
-     *     }
-     * </pre>
-     *
-     * <p>
-     *     さて、どちらも参照渡しですから、 {@code cpp.B.extends} に {@code cpp.C} の参照が入った瞬間、なんと {@code cpp.A.extends.B.extends} にも参照渡しが入ります。
-     * </p>
-     *
-     * <pre>
-     *     {@code
-     *     {"cpp":
-     *         [
-     *             {"A": {"extends": {"B": {"extends": {"C": {"extends": null}}}}}},
-     *             {"B": {"extends": {"C": {"extends": null}}}},
-     *             {"C": {"extends": null}}
-     *         ]
-     *     }
-     *     }
-     * </pre>
-     *
-     * <p>
-     *     これにより、どのクラスから見ても継承関係がわかるような構造になりました。
-     *     この手法は、どのクラスがどのような順序で格納していたとしても上手く処理できます。
+     *     実装自体はほぼ {@link JavaTranslator#searchGeneralizationClass(List)} と同じです。
      * </p>
      *
      * @param classClasses クラス図のクラスのリスト
