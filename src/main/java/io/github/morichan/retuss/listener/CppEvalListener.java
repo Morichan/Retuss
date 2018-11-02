@@ -21,6 +21,7 @@ public class CppEvalListener extends CPP14BaseListener {
     private AccessSpecifier accessSpecifier=null;
     boolean isAlreadySearchedAccessSpecifier = false;
     boolean functiondefinitionFlag=false;
+    boolean memberdeclarationFlag=false;
 
     @Override
     public void enterTranslationunit(CPP14Parser.TranslationunitContext ctx) {
@@ -35,7 +36,6 @@ public class CppEvalListener extends CPP14BaseListener {
     public void enterMemberspecification(CPP14Parser.MemberspecificationContext ctx) {
      //   accessSpecifier = null;
 
-
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (ctx.getChild(i) instanceof CPP14Parser.AccessspecifierContext) {
                 accessSpecifier=accessSpecifier.choose(ctx.getChild(i).getChild(0).getText());
@@ -45,29 +45,59 @@ public class CppEvalListener extends CPP14BaseListener {
 //        cpp.addClass(cppClass);
     }
 
-    @Override public void enterMemberdeclaration(CPP14Parser.MemberdeclarationContext ctx) {
-        MemberVariable memberVariable = new MemberVariable();
+           @Override public void enterMemberdeclaration(CPP14Parser.MemberdeclarationContext ctx) {
+            // MemberVariable memberVariable = new MemberVariable();
+            memberdeclarationFlag=true;
+            if((ctx.getChild(0) instanceof CPP14Parser.FunctiondefinitionContext) == false) {
+                if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() == 1) {     //メンバ変数の時
+                    MemberVariable memberVariable = new MemberVariable();
+                    if (accessSpecifier != null) {
+                        memberVariable.setAccessSpecifier(accessSpecifier);
+                        // accessSpecifier = null;
+                    }
 
+                    for (int i = 0; i < ctx.getChildCount(); i++) {
+                        if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
+                            if(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() > 1){     //stringの分岐に対応。
+                                memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getText()));
+                            }else {
+                                memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
+                            }
+                        }
+                        if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
+                            memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+                        }
+                    }
+                    cpp.getClasses().get(cpp.getClasses().size() - 1).addMemberVariable(memberVariable);
+                }
 
-        if (accessSpecifier != null) {
-            memberVariable.setAccessSpecifier(accessSpecifier);
-           // accessSpecifier = null;
+                if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChild(1) instanceof CPP14Parser.ParametersandqualifiersContext) {      //メンバ関数のとき
+                    MemberFunction memberFunction = new MemberFunction();
+                    if (accessSpecifier != null) {
+                        memberFunction.setAccessSpecifier(accessSpecifier);
+                        // accessSpecifier = null;
+                    }
+                    for (int i = 0; i < ctx.getChildCount(); i++) {
+                        if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
+                            memberFunction.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
+                        }
+                        if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
+                            memberFunction.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+                        }
+                    }
+                    cpp.getClasses().get(cpp.getClasses().size() - 1).addMemberFunction(memberFunction);
+                }
+
+            }
+
         }
 
-        for (int i = 0; i < ctx.getChildCount(); i++) {
-            if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
-                memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
-            }
-            if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
-                memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
-            }
-        }
-        cpp.getClasses().get(cpp.getClasses().size()-1).addMemberVariable(memberVariable);
-    }
+    @Override
+    public void exitMemberdeclaration(CPP14Parser.MemberdeclarationContext ctx) { memberdeclarationFlag=false; }
 
     @Override
     public void enterFunctiondefinition(CPP14Parser.FunctiondefinitionContext ctx) {
-        functiondefinitionFlag=true;
+      //  functiondefinitionFlag=true;
         MemberFunction memberFunction = new MemberFunction();
 
         if (accessSpecifier != null) {
@@ -88,12 +118,12 @@ public class CppEvalListener extends CPP14BaseListener {
 
     }
 
-    @Override public void exitFunctiondefinition(CPP14Parser.FunctiondefinitionContext ctx) { functiondefinitionFlag=true; }
+   // @Override public void exitFunctiondefinition(CPP14Parser.FunctiondefinitionContext ctx) { functiondefinitionFlag=true; }     //ここfalseじゃね？
 
     @Override
     public void enterParameterdeclaration(CPP14Parser.ParameterdeclarationContext ctx) {
 //        if (! (ctx.getParent().getParent().getParent().getParent().getParent().getParent().getParent() instanceof CPP14Parser.FunctiondefinitionContext)) return;
-        if (functiondefinitionFlag == true) {
+        if (memberdeclarationFlag == true) {
             Argument argument = new Argument();
 
             if (ctx.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0) instanceof CPP14Parser.SimpletypespecifierContext) {

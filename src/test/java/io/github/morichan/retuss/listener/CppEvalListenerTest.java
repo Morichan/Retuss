@@ -52,7 +52,7 @@ class CppEvalListenerTest {
         assertThat(actual).isEqualTo(expected);
     }
     @Test
-    void 一番最後のメンバ変数を返す() {
+    void メンバ変数を１つ返す() {
         init("class cppClassName {private: int x;};");
         String expected = "x";
 

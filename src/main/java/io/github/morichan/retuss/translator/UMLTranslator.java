@@ -12,6 +12,12 @@ import io.github.morichan.retuss.language.java.*;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.language.uml.Package;
 
+import  io.github.morichan.retuss.language.cpp.Cpp;
+import  io.github.morichan.retuss.language.cpp.MemberVariable;
+import  io.github.morichan.retuss.language.cpp.MemberFunction;
+import  io.github.morichan.retuss.language.cpp.AccessSpecifier;
+
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +45,9 @@ public class UMLTranslator {
 
         return classPackage;
     }
+
+
+
 
     private Class createClass(io.github.morichan.retuss.language.java.Class javaClass) {
         Class classClass = new Class(javaClass.getName());
@@ -100,4 +109,114 @@ public class UMLTranslator {
             }
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * <p> Cppからクラス図のパッケージに翻訳します </p>
+     *
+     * @param  cpp
+     * @return クラス図のパッケージ
+     */
+    public Package translate(Cpp cpp) {
+        classPackage = new Package();
+
+        for (io.github.morichan.retuss.language.cpp.Class cppClass : cpp.getClasses()) {
+            classPackage.addClass(createClass(cppClass));
+        }
+
+        searchGeneralizationClass_Cpp(cpp.getClasses());
+
+        return classPackage;
+    }
+
+    private Class createClass(io.github.morichan.retuss.language.cpp.Class cppClass) {
+        Class classClass = new Class(cppClass.getName());
+
+        for (MemberVariable memberVariable : cppClass.getMemberVariables()) {
+
+            Attribute attribute = new Attribute(new Name(memberVariable.getName()));
+            if(memberVariable.getType().toString().equals( "string")) {
+           // if(memberVariable.getType().equals(new io.github.morichan.retuss.language.cpp.Type("string"))) {
+                attribute.setType(new Type("String"));
+            }else {
+                attribute.setType(new Type(memberVariable.getType().toString()));
+            }
+    //        attribute.setType(new Type(memberVariable.getType().toString()));
+            attribute.setVisibility(convert(memberVariable.getAccessSpecifier()));
+            if (memberVariable.getValue() != null) {
+                attribute.setDefaultValue(new DefaultValue(new OneIdentifier(memberVariable.getValue().toString())));
+            }
+            classClass.addAttribute(attribute);
+        }
+        for (MemberFunction memberFunction : cppClass.getMemberFunctions()) {
+            Operation operation = new Operation(new Name(memberFunction.getName()));
+            operation.setReturnType(new Type(memberFunction.getType().toString()));
+            operation.setVisibility(convert(memberFunction.getAccessSpecifier()));
+            for (io.github.morichan.retuss.language.cpp.Argument argument : memberFunction.getArguments()) {
+                Parameter parameter = new Parameter(new Name(argument.getName()));
+                parameter.setType(new Type(argument.getType().toString()));
+                operation.addParameter(parameter);
+            }
+            classClass.addOperation(operation);
+        }
+
+        return classClass;
+    }
+
+
+    private Visibility convert(AccessSpecifier accessSpecifier) {
+        if (accessSpecifier == AccessSpecifier.Public) {
+            return Visibility.Public;
+        } else if (accessSpecifier == AccessSpecifier.Protected) {
+            return Visibility.Protected;
+        }
+//        else if (accessSpecifier == AccessSpecifier.Package) {
+//            return Visibility.Package;
+//        }
+        else {
+            return Visibility.Private;
+        }
+    }
+
+    /**
+     * <p> 汎化関係のクラスをディープコピーします </p>
+     *
+     * <p>
+     *     手法について詳しくは {@link CppTranslator#searchGeneralizationClass(List)} を参照してください。
+     * </p>
+     *
+     * @param cppClasses Cppのクラスリスト
+     */
+    private void searchGeneralizationClass_Cpp(List<io.github.morichan.retuss.language.cpp.Class> cppClasses) {
+        for (int i = 0; i < cppClasses.size(); i++) {
+            if (cppClasses.get(i).getExtendsClassName() != null) {
+                int finalI = i;
+                List<io.github.morichan.retuss.language.uml.Class> oneExtendsClass =
+                        classPackage.getClasses().stream().filter(
+                                cp -> cp.getName().equals(cppClasses.get(finalI).getExtendsClassName())
+                        ).collect(Collectors.toList());
+                classPackage.getClasses().get(finalI).setGeneralizationClass(oneExtendsClass.get(0));
+            }
+        }
+    }
+
+
+
+
+
+
+
 }

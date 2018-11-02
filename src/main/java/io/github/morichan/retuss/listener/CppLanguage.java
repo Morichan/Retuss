@@ -13,36 +13,19 @@ public class CppLanguage {
 
     private Cpp cpp;
 
-    private String className;
-    private String extendedClassName;
+//    private String className;
+//    private String extendedClassName;
 
     public void parseForClassDiagram(String code) {
         walk(code);
-        className = searchClassName();
-        extendedClassName = searchExtendedClassName();
         cpp = cppEvalListener.getCpp();
     }
 
-    private String searchClassName() {
-        String name = "";
-        return name;
+
+    public Cpp getCpp() {
+        return cpp;
     }
 
-    /**
-     * <p> 継承先クラス名を探索する。 </p>
-     *
-     * <p>
-     * 事前に{@link #walk(String)}を実行する必要がある。
-     * 走査後、予約語 "extends" 以降 "implements" または "{" 以前の文字列を抽出する。
-     * その際に、実際に文法的に使えるかどうかはともかく、間のスペースやアノテーション、カギ括弧 "[]" は無視する。
-     * </p>
-     *
-     * @return 予約語 "extends" 以降 "implements" または "{" 以前の文字列（間のスペース、アノテーションおよびカギ括弧 "[]" は無視）
-     */
-    private String searchExtendedClassName() {
-        String name = "";
-        return name;
-    }
 
 
     private void walk(String code) {

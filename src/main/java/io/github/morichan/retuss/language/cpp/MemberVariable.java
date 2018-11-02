@@ -9,6 +9,7 @@ public class MemberVariable {
     private Type type;
     private String name;
     private Value value;
+    private boolean flagString=false;
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -107,6 +108,10 @@ public class MemberVariable {
      */
     public void setType(Type type) {
         if (type == null) throw new IllegalArgumentException();
+        if(type.getTypeName().equals("String")){
+            type.setTypesName("std::string");
+            flagString=true;
+        }
         this.type = type;
     }
 
@@ -148,6 +153,9 @@ public class MemberVariable {
     public Value getValue() {
         return value;
     }
+
+
+    public boolean getFlagString(){return  flagString;}
 
     @Override
     public String toString() {
