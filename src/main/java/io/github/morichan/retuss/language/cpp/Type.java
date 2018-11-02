@@ -48,6 +48,18 @@ public class Type {
     }
 
     /**
+     * <p> 型名を取得します </p>
+     */
+public String getTypeName(){return types.get(types.size()-1);}
+
+
+    /**
+     * <p> 型名を変更します </p>
+     */
+public void setTypesName(String typesName){types.set(types.size()-1,typesName);}
+
+
+    /**
      * <p> 配列の次元数を設定します </p>
      *
      * @param count 配列の次元数
@@ -79,6 +91,11 @@ public class Type {
         if (types.size() <= 0) {
             sb.append("int");
         } else if (dataTypes.size() <= 0) {
+//            for(int i=0;i<types.size();i++) {
+//                if (types.get(i) == "String") {
+//                    types.set(i,"std::string");
+//                }
+//            }
             sb.append(String.join(".", types));
         } else {
             List<String> data = new ArrayList<>();

@@ -84,7 +84,8 @@ public class CodeController {
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
         codeArea.setOnKeyTyped(event -> convertCodeToUml(Language.Cpp));
 
-        if (cpp.getClasses().size() > 0 && !cpp.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(cpp.getClasses().get(0).toString());
+        if (cppClass != null) codeArea.replaceText(cppClass.toString());
+
 
         if (cppClass == null) return createTab(codeArea, null);
         else return createTab(codeArea, cppClass.getName());

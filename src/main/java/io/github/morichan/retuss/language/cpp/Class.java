@@ -188,6 +188,17 @@ public class Class {
     private String manufacture() {
         StringBuilder sb = new StringBuilder();
         boolean flagProtected =false;
+boolean flagString=false;
+        for(MemberVariable memberVariable : memberVariables){
+            if(memberVariable.getFlagString()== true){
+               flagString= true;
+            }
+        }
+if(flagString == true){
+            sb.append("#include <string>");
+    sb.append(" \n");
+        }
+
         sb.append("class ");
         sb.append(name);
 
