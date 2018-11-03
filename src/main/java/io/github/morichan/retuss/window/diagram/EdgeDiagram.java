@@ -14,6 +14,7 @@ import javafx.scene.text.TextAlignment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * <p> クラス図に関するエッジクラス </p>
@@ -65,6 +66,10 @@ public class EdgeDiagram {
 
     public void deleteEdge() {
         relations.clear();
+    }
+
+    public void deleteEdge(int index) {
+        relations.remove(index);
     }
 
     /**

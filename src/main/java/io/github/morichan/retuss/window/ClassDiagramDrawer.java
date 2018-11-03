@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /**
  * <p> クラス図描画クラス </p>
@@ -31,7 +32,7 @@ public class ClassDiagramDrawer {
      * <p> マウスでクリックした座標 </p>
      *
      * <p>
-     *     {@link #operationalPoint} との違いについての詳細は {@link #checkPointFromCanvas(Point2D)} を参照してください。
+     * {@link #operationalPoint} との違いについての詳細は {@link #checkPointFromCanvas(Point2D)} を参照してください。
      * </p>
      */
     private Point2D mousePoint = new Point2D(0.0, 0.0);
@@ -40,7 +41,7 @@ public class ClassDiagramDrawer {
      * <p> キャンバス内での操作対象となる座標 </p>
      *
      * <p>
-     *     {@link #mousePoint} との違いについての詳細は {@link #checkPointFromCanvas(Point2D)} を参照してください。
+     * {@link #mousePoint} との違いについての詳細は {@link #checkPointFromCanvas(Point2D)} を参照してください。
      * </p>
      */
     private Point2D operationalPoint = new Point2D(0.0, 0.0);
@@ -52,7 +53,7 @@ public class ClassDiagramDrawer {
      * <p> パッケージインスタンスを抽出します </p>
      *
      * <p>
-     *     正確には {@link #allReDrawCanvas()} メソッド、およびその内部で呼び出している {@link #allReDrawNode()} メソッドないで整形しています。
+     * 正確には {@link #allReDrawCanvas()} メソッド、およびその内部で呼び出している {@link #allReDrawNode()} メソッドないで整形しています。
      * </p>
      *
      * @return パッケージインスタンス
@@ -157,7 +158,8 @@ public class ClassDiagramDrawer {
     public void allReDrawNode() {
         for (int i = 0; i < nodes.size(); i++) {
             drawNode(i);
-            if (nodes.get(i) instanceof ClassNodeDiagram) umlPackage.addClass(((ClassNodeDiagram) nodes.get(i)).extractClass());
+            if (nodes.get(i) instanceof ClassNodeDiagram)
+                umlPackage.addClass(((ClassNodeDiagram) nodes.get(i)).extractClass());
         }
     }
 
@@ -357,14 +359,34 @@ public class ClassDiagramDrawer {
      */
     public void changeDrawnNodeText(int nodeNumber, ContentType type, int contentNumber, String text) {
         if (text.length() <= 0) return;
+        String beforeChangedNodeName = nodes.get(nodeNumber).getNodeText();
+        if (beforeChangedNodeName.equals(text)) return;
         nodes.get(nodeNumber).changeNodeText(type, contentNumber, text);
+        changeDrawnEdgeToChangedRelationSourceNode(beforeChangedNodeName, type);
+    }
+
+    private void changeDrawnEdgeToChangedRelationSourceNode(String before, ContentType type) {
+        if (type == ContentType.Title) {
+            Pattern p = Pattern.compile("[:]\\s*" + before + "$");
+            for (NodeDiagram node : nodes) {
+                List<String> relation = node.getNodeContents(ContentType.Composition);
+                for (int i = 0; i < relation.size(); i++) {
+                    if (p.matcher(relation.get(i)).find()) {
+                        node.createNodeText(ContentType.Attribute, relation.get(i));
+                        node.deleteNodeText(type, i);
+                        relation.remove(i);
+                        i--;
+                    }
+                }
+            }
+        }
     }
 
     /**
      * 描画済みの任意のノードにおける座標位置を変更する。
      *
-     * @param nodeNumber    描画済みの任意のノード番号
-     * @param point         変更先の座標
+     * @param nodeNumber 描画済みの任意のノード番号
+     * @param point      変更先の座標
      */
     public void moveTo(int nodeNumber, Point2D point) {
         nodes.get(nodeNumber).moveTo(checkPointFromCanvas(point));
@@ -376,7 +398,15 @@ public class ClassDiagramDrawer {
      * @param number 描画済みの任意のノード番号
      */
     public void deleteDrawnNode(int number) {
+        String beforeChangedNodeName = nodes.get(number).getNodeText();
         nodes.remove(number);
+        changeDrawnEdgeToChangedRelationSourceNode(beforeChangedNodeName, ContentType.Title);
+        for (int i = 0; i < relations.getCompositionsCount(); i++) {
+            if (relations.getRelationId(ContentType.Composition, i) == number) {
+                relations.deleteEdge(i);
+                i--;
+            }
+        }
     }
 
     /**
@@ -393,8 +423,8 @@ public class ClassDiagramDrawer {
     /**
      * 描画済みの任意のノードにおける内容を全削除する。
      *
-     * @param nodeNumber    描画済みの任意のノード番号
-     * @param type          描画済みの任意のノードにおける追加したい内容の種類
+     * @param nodeNumber 描画済みの任意のノード番号
+     * @param type       描画済みの任意のノードにおける追加したい内容の種類
      */
     public void deleteAllDrawnNodeText(int nodeNumber, ContentType type) {
         nodes.get(nodeNumber).deleteAllNodeText(type);
@@ -427,7 +457,7 @@ public class ClassDiagramDrawer {
      * このメソッドを動かす前に {@link #setMouseCoordinates(double, double)} で関係元のノードのマウスのXY軸を設定しておかなければならない。
      * </p>
      *
-     * @param type   追加したいエッジとしてRetussWindow上で押しているボタンのタイプ
+     * @param type     追加したいエッジとしてRetussWindow上で押しているボタンのタイプ
      * @param name     追加したいエッジ名 <br> 追加したいエッジによっては空文字では追加しない可能性がある。
      * @param toMouseX 追加したい関係先のマウスのX軸
      * @param toMouseY 追加したい関係先のマウスのY軸
@@ -463,7 +493,7 @@ public class ClassDiagramDrawer {
         Point2D from = Point2D.ZERO;
         Point2D to = Point2D.ZERO;
 
-        for (NodeDiagram node: nodes) {
+        for (NodeDiagram node : nodes) {
             if (node.getNodeText().equals(fromName)) {
                 from = node.getPoint();
             } else if (node.getNodeText().equals(toName)) {
@@ -555,7 +585,7 @@ public class ClassDiagramDrawer {
 
     public void clearAllRelations() {
         relations.deleteEdge();
-        for (NodeDiagram node: nodes) {
+        for (NodeDiagram node : nodes) {
             node.deleteAllNodeText(ContentType.Composition);
         }
     }
@@ -719,25 +749,25 @@ public class ClassDiagramDrawer {
      * <p> キャンバス内での操作対象となる座標を設定します </p>
      *
      * <p>
-     *     例えば、クラスを記述する際にキャンバスの枠外をマウスでクリックしたとします。
-     *     この場合、マウスでクリックした座標とクラスを表示する座標は異なります。
-     *     なぜなら、マウスでクリックした座標 {@code x = 0.0, y = 0.0} にクラスを表示するのではなく、キャンバスの枠に収まるべき {@code x = 60.0, y = 50.0} に表示するからです。
+     * 例えば、クラスを記述する際にキャンバスの枠外をマウスでクリックしたとします。
+     * この場合、マウスでクリックした座標とクラスを表示する座標は異なります。
+     * なぜなら、マウスでクリックした座標 {@code x = 0.0, y = 0.0} にクラスを表示するのではなく、キャンバスの枠に収まるべき {@code x = 60.0, y = 50.0} に表示するからです。
      * </p>
      *
      * <p>
-     *     一方で、マウスをクリックした座標の変数いらなくなるかと言うとそんなことはありません。
-     *     例えば、枠内 {@code x = 60.0, y = 50.0} にクラスを記述している状態で座標 {@code x = 0.0, y = 0.0} を右クリックしたとします。
-     *     この場合、マウスでクリックした座標の変数が存在しなかった場合、キャンバス内での操作対象となる座標を基にクラスを探索し、枠内 {@code x = 60.0, y = 50.0} のクラスのメニューを表示してしまいます。
-     *     しかし、厳密には右クリックした座標 {@code x = 0.0, y = 0.0} には何も表示していないため、メニューを呼び出すべきではありません。
+     * 一方で、マウスをクリックした座標の変数いらなくなるかと言うとそんなことはありません。
+     * 例えば、枠内 {@code x = 60.0, y = 50.0} にクラスを記述している状態で座標 {@code x = 0.0, y = 0.0} を右クリックしたとします。
+     * この場合、マウスでクリックした座標の変数が存在しなかった場合、キャンバス内での操作対象となる座標を基にクラスを探索し、枠内 {@code x = 60.0, y = 50.0} のクラスのメニューを表示してしまいます。
+     * しかし、厳密には右クリックした座標 {@code x = 0.0, y = 0.0} には何も表示していないため、メニューを呼び出すべきではありません。
      * </p>
      *
      * <p>
-     *     上記の対応を行うために、このクラスでは、次のように設定しています。
+     * 上記の対応を行うために、このクラスでは、次のように設定しています。
      * </p>
      *
      * <ui>
-     *     <li> {@link #mousePoint} : マウスでクリックした座標 </li>
-     *     <li> {@link #operationalPoint} : キャンバス内での操作対象となる座標 </li>
+     * <li> {@link #mousePoint} : マウスでクリックした座標 </li>
+     * <li> {@link #operationalPoint} : キャンバス内での操作対象となる座標 </li>
      * </ui>
      *
      * @param mouse マウスでクリックした座標
@@ -752,8 +782,10 @@ public class ClassDiagramDrawer {
         if (mouse.getX() < minClassWidth) setPointX = 10.0 + (100.0 / 2);
         if (mouse.getY() < minClassHeight) setPointY = 10.0 + (80.0 / 2);
 
-        if (mouse.getX() > gc.getCanvas().getWidth() - minClassWidth) setPointX = gc.getCanvas().getWidth() - minClassWidth;
-        if (mouse.getY() > gc.getCanvas().getHeight() - minClassHeight) setPointY = gc.getCanvas().getHeight() - minClassHeight;
+        if (mouse.getX() > gc.getCanvas().getWidth() - minClassWidth)
+            setPointX = gc.getCanvas().getWidth() - minClassWidth;
+        if (mouse.getY() > gc.getCanvas().getHeight() - minClassHeight)
+            setPointY = gc.getCanvas().getHeight() - minClassHeight;
 
         return new Point2D(setPointX, setPointY);
     }

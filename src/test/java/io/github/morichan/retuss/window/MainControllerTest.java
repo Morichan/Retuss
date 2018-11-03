@@ -1743,18 +1743,6 @@ class MainControllerTest extends ApplicationTest {
                 resetCodeArea(codeStage);
             }
 
-            private String getAttributeMenuText(Point2D point, int index) {
-                rightClickOn(point);
-                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
-                return ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(index).getText();
-            }
-
-            private String getOperationMenuText(Point2D point, int index) {
-                rightClickOn(point);
-                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
-                return ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems().get(index).getText();
-            }
-
             private void multiPush(int count, KeyCode key) {
                 for (int i = 0; i < count; i++) {
                     push(key);
@@ -2260,6 +2248,59 @@ class MainControllerTest extends ApplicationTest {
                 }
             }
 
+            @Test
+            void 属性を1つ持つクラスを記述後にその型名を持つクラスを記述してコンポジション関係を描画した後にコンポジション先のクラス名を変更すると関係を消す() {
+                String expected = "- subClass";
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n    private Sub subClass;\n}\n",
+                        "class Subversion {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- subClass : Sub");
+                clickOn("#classButtonInCD");
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                change(secondClickedClassDiagramCanvas, "Sub", "Subversion");
+                clickOn(okButtonPoint);
+
+                assertThatThrownBy(() -> getMenuText(betweenFirstAndSecondClickedClassDiagramCanvas)).isInstanceOf(NullPointerException.class);
+
+                String actual = getAttributeMenuText(firstClickedClassDiagramCanvas, 0);
+                assertThat(actual).startsWith(expected);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void 属性を1つ持つクラスを記述後にその型名を持つクラスを記述してコンポジション関係を描画した後にコンポジション先のクラスを削除すると関係を消す() {
+                String expected = "- subClass";
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n    private Sub subClass;\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- subClass : Sub");
+                clickOn("#classButtonInCD");
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                delete(secondClickedClassDiagramCanvas, "Sub");
+                clickOn("#normalButtonInCD");
+
+                assertThatThrownBy(() -> getMenuText(betweenFirstAndSecondClickedClassDiagramCanvas)).isInstanceOf(NullPointerException.class);
+
+                String actual = getAttributeMenuText(firstClickedClassDiagramCanvas, 0);
+                assertThat(actual).startsWith(expected);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
             private void addAttribute(Point2D point, String attributeText) {
                 add(classAttributeMenu, addMenu, point, attributeText);
                 clickOn(okButtonPoint);
@@ -2301,6 +2342,18 @@ class MainControllerTest extends ApplicationTest {
             rightClickOn(point);
             ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
             return scrollPane.getContextMenu().getItems().get(0).getText();
+        }
+
+        private String getAttributeMenuText(Point2D point, int index) {
+            rightClickOn(point);
+            ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+            return ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(3)).getItems().get(1)).getItems().get(index).getText();
+        }
+
+        private String getOperationMenuText(Point2D point, int index) {
+            rightClickOn(point);
+            ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+            return ((Menu) ((Menu) scrollPane.getContextMenu().getItems().get(4)).getItems().get(1)).getItems().get(index).getText();
         }
 
         private void moveCodeWindow() {
@@ -2446,6 +2499,17 @@ class MainControllerTest extends ApplicationTest {
         clickOn(okButtonPoint);
     }
 
+    private void change(Point2D point, String beforeAttributeText, String afterAttributeText) {
+        rightClickOn(point);
+        clickOn(beforeAttributeText + "クラスの名前の変更");
+        write(afterAttributeText);
+    }
+
+    private void delete(Point2D point, String text) {
+        rightClickOn(point);
+        clickOn(text + "クラスをモデルから削除");
+    }
+
     private void add(String featureMenu, String addMenu, Point2D point, String attributeText) {
         rightClickOn(point);
         moveTo(featureMenu);
@@ -2476,22 +2540,6 @@ class MainControllerTest extends ApplicationTest {
         moveTo(addMenu);
         moveTo(checkMenu);
         clickOn(attributeText);
-    }
-
-    private void addAttribute(Point2D classPoint, Point2D okButtonPoint, String addText) {
-        addFeature(classPoint, okButtonPoint, "属性", addText);
-    }
-
-    private void addOperation(Point2D classPoint, Point2D okButtonPoint, String addText) {
-        addFeature(classPoint, okButtonPoint, "操作", addText);
-    }
-
-    private void addFeature(Point2D classPoint, Point2D okButtonPoint, String menu, String addText) {
-        rightClickOn(classPoint);
-        moveTo(menu);
-        clickOn("追加");
-        write(addText);
-        clickOn(okButtonPoint);
     }
 
     private void addAttribute(Point2D classPoint, String addText) {
