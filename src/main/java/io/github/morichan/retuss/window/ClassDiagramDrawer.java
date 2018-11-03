@@ -194,7 +194,7 @@ public class ClassDiagramDrawer {
                 extendingClass.setGeneralizationClass(extendedClass);
             } else if (relations.getContentType(i) == ContentType.Composition) {
                 for (Class umlClass : umlPackage.getClasses()) {
-                    if (umlClass.getName().equals(nodes.get(relationSourceId).getNodeText())) {
+                    if (umlClass.getName().equals(nodes.get(relationSourceId).getNodeText()) && (umlClass.getRelations() == null || umlClass.getRelations().size() == 0)) {
                         umlClass.setRelations(((ClassNodeDiagram) nodes.get(relationSourceId)).extractRelations());
                         break;
                     }
@@ -555,6 +555,9 @@ public class ClassDiagramDrawer {
 
     public void clearAllRelations() {
         relations.deleteEdge();
+        for (NodeDiagram node: nodes) {
+            node.deleteAllNodeText(ContentType.Composition);
+        }
     }
 
     /**

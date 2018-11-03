@@ -1706,6 +1706,29 @@ class MainControllerTest extends ApplicationTest {
                 assertThat(actualComposition).startsWith(expectedComposition);
                 assertThat(actualGeneralization).startsWith(expectedGeneralization);
             }
+
+            @Test
+            void クラスの1番目から2番目と3番目とのコンポジション関係を記述する() {
+                drawSecondClass();
+                drawThirdClass();
+                clickOn(codeStage);
+                write("class Super {}");
+
+                String expected1 = "- subClass";
+                String expected2 = "# superClass";
+
+                clickOnTab(codeStage, 0);
+                resetCodeArea(codeStage);
+                clickOn(codeStage);
+                write("class Main { private Sub subClass; protected Super superClass; }");
+
+                clickOn("#normalButtonInCD");
+                String actual1 = getMenuText(betweenFirstAndSecond);
+                String actual2 = getMenuText(betweenFirstAndThird);
+                assertThat(actual1).startsWith(expected1);
+                assertThat(actual2).startsWith(expected2);
+            }
+
             private void drawThirdClass() {
                 write("class Sub {}");
                 drawClasses(third, "CCC", okButtonPoint);
@@ -2166,6 +2189,32 @@ class MainControllerTest extends ApplicationTest {
 
             @Test
             void クラス名のみのクラス3つの内3つがコンポジット関係のクラス関係を持つクラス記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n    private Sub subClass = new Sub();\n    private Super superClass = new Super();\n}\n",
+                        "class Sub {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#compositionButtonInCD");
+                clickOn(firstClickedClassDiagramCanvas);
+                clickOn(secondClickedClassDiagramCanvas);
+                write("- subClass");
+                clickOn(okButtonPoint);
+                clickOn(firstClickedClassDiagramCanvas);
+                clickOn(thirdClickedClassDiagramCanvas);
+                write("- superClass");
+                clickOn(okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void クラス名のみのクラス3つの内3つが互いにコンポジット関係のクラス関係を持つクラス記述する() {
                 List<String> expectedList = Arrays.asList(
                         "class Main {\n    private Sub sub = new Sub();\n}\n",
                         "class Sub {\n    public Super super = new Super();\n}\n",

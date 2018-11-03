@@ -130,13 +130,17 @@ public class MainController {
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Operation);
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Composition);
 
-            for (int j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
-                if (relationsIds.get(i).containsKey(j)) {
+            for (int count = 0, j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
+                if (relationsIds.get(i).containsKey(count)) {
                     String content = umlPackage.getClasses().get(i).getAttributes().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).getAttributes().get(j).getName().getNameText();
-                    classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(relationsIds.get(i).get(j)).getName());
+                    classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(relationsIds.get(i).get(count)).getName());
+                    umlPackage.getClasses().get(i).getRelations().add(umlPackage.getClasses().get(i).getAttributes().get(j));
+                    umlPackage.getClasses().get(i).getAttributes().remove(j);
+                    j--;
                 } else {
                     classDiagramDrawer.addDrawnNodeText(i, ContentType.Attribute, umlPackage.getClasses().get(i).getAttributes().get(j).toString());
                 }
+                count++;
             }
 
             for (int j = 0; j < umlPackage.getClasses().get(i).getOperations().size(); j++) {
