@@ -292,6 +292,7 @@ public class MainController {
                 classDiagramDrawer.addDrawnNode(buttonsInCD);
                 classDiagramDrawer.allReDrawCanvas();
                 convertUmlToCode();
+                writeUmlForCode(classDiagramDrawer.extractPackage());
             } else if (util.searchSelectedButtonIn(buttonsInCD) == compositionButtonInCD) {
                 classDiagramDrawer.resetNodeChosen(classDiagramDrawer.getCurrentNodeNumber());
                 classDiagramDrawer.allReDrawCanvas();
@@ -405,7 +406,6 @@ public class MainController {
     private void convertUmlToCode() {
         if (codeController == null) return;
         codeController.createCodeTabs(classDiagramDrawer.extractPackage());
-        writeUmlForCode(classDiagramDrawer.extractPackage());
     }
 
     /**
@@ -449,12 +449,14 @@ public class MainController {
             classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Title, 0, className);
             classDiagramDrawer.allReDrawCanvas();
             convertUmlToCode();
+            writeUmlForCode(classDiagramDrawer.extractPackage());
         });
         // クラスの削除
         contextMenu.getItems().get(1).setOnAction(event -> {
             classDiagramDrawer.deleteDrawnNode(classDiagramDrawer.getCurrentNodeNumber());
             classDiagramDrawer.allReDrawCanvas();
             convertUmlToCode();
+            writeUmlForCode(classDiagramDrawer.extractPackage());
         });
         // クラスの属性の追加
         ((Menu) contextMenu.getItems().get(3)).getItems().get(0).setOnAction(event -> {
