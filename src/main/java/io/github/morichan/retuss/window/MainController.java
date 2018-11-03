@@ -403,7 +403,9 @@ public class MainController {
      * <p> UMLをコードに変換してコードエリアに反映します </p>
      */
     private void convertUmlToCode() {
-        if (codeController != null) codeController.createCodeTabs(classDiagramDrawer.extractPackage());
+        if (codeController == null) return;
+        codeController.createCodeTabs(classDiagramDrawer.extractPackage());
+        writeUmlForCode(classDiagramDrawer.extractPackage());
     }
 
     /**

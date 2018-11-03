@@ -1729,13 +1729,6 @@ class MainControllerTest extends ApplicationTest {
                 assertThat(actual2).startsWith(expected2);
             }
 
-            private void drawThirdClass() {
-                write("class Sub {}");
-                drawClasses(third, "CCC", okButtonPoint);
-                clickOnTab(codeStage, 2);
-                resetCodeArea(codeStage);
-            }
-
             private void drawSecondClass() {
                 write("class Main {}");
                 drawClasses(second, "BBB", okButtonPoint);
@@ -1743,10 +1736,11 @@ class MainControllerTest extends ApplicationTest {
                 resetCodeArea(codeStage);
             }
 
-            private String getMenuText(Point2D point) {
-                rightClickOn(point);
-                ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
-                return scrollPane.getContextMenu().getItems().get(0).getText();
+            private void drawThirdClass() {
+                write("class Sub {}");
+                drawClasses(third, "CCC", okButtonPoint);
+                clickOnTab(codeStage, 2);
+                resetCodeArea(codeStage);
             }
 
             private String getAttributeMenuText(Point2D point, int index) {
@@ -2243,6 +2237,29 @@ class MainControllerTest extends ApplicationTest {
                 }
             }
 
+            @Test
+            void 属性を1つ持つクラスを記述後にその型名を持つクラスを記述するとコンポジション関係を描画する() {
+                String expected = "- subClass";
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n    private Sub subClass;\n}\n",
+                        "class Sub {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                clickOn("#normalButtonInCD");
+                addAttribute(firstClickedClassDiagramCanvas, "- subClass : Sub");
+                clickOn("#classButtonInCD");
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                clickOn("#normalButtonInCD");
+
+                String actual = getMenuText(betweenFirstAndSecondClickedClassDiagramCanvas);
+                assertThat(actual).startsWith(expected);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
             private void addAttribute(Point2D point, String attributeText) {
                 add(classAttributeMenu, addMenu, point, attributeText);
                 clickOn(okButtonPoint);
@@ -2278,6 +2295,12 @@ class MainControllerTest extends ApplicationTest {
             private void disableOperation(Point2D point, String attributeText) {
                 disable(classOperationMenu, addMenu, checkMenu, point, attributeText);
             }
+        }
+
+        private String getMenuText(Point2D point) {
+            rightClickOn(point);
+            ScrollPane scrollPane = getScrollPaneBelowClassDiagramCanvas(mainStage);
+            return scrollPane.getContextMenu().getItems().get(0).getText();
         }
 
         private void moveCodeWindow() {
