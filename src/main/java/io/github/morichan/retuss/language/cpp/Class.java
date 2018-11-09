@@ -295,4 +295,24 @@ if(flagString == true){
     public String toString() {
         return manufacture();
     }
+
+    public  String cppFile_toString(){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(" \n");
+        sb.append(" \n");
+        sb.append(" \n");
+
+        for (MemberFunction memberFunction : memberFunctions) {
+            sb.append(" \n");
+            sb.append(name);
+            sb.append("::");
+            sb.append(memberFunction.getName());
+            sb.append("(){");
+            sb.append(" \n");
+            sb.append("}\n");
+        }
+
+        return sb.toString();
+    }
 }
