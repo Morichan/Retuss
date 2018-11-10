@@ -22,6 +22,7 @@ public class CppEvalListener extends CPP14BaseListener {
     boolean isAlreadySearchedAccessSpecifier = false;
     boolean functiondefinitionFlag=false;
     boolean memberdeclarationFlag=false;
+    boolean classspecifierFlag=false;
 
     @Override
     public void enterTranslationunit(CPP14Parser.TranslationunitContext ctx) {
@@ -31,6 +32,9 @@ public class CppEvalListener extends CPP14BaseListener {
     public void enterTypespecifier(CPP14Parser.TypespecifierContext ctx) {
     }
 
+/*
+*メンバ変数 orメンバ関数の指定子を取得
+ */
 
     @Override
     public void enterMemberspecification(CPP14Parser.MemberspecificationContext ctx) {
@@ -44,6 +48,10 @@ public class CppEvalListener extends CPP14BaseListener {
 
 //        cpp.addClass(cppClass);
     }
+
+    /*
+    メンバ変数か関数の判別して、適切な処理へ（";"で宣言するメンバのとき）
+     */
 
            @Override public void enterMemberdeclaration(CPP14Parser.MemberdeclarationContext ctx) {
             // MemberVariable memberVariable = new MemberVariable();
@@ -95,27 +103,34 @@ public class CppEvalListener extends CPP14BaseListener {
     @Override
     public void exitMemberdeclaration(CPP14Parser.MemberdeclarationContext ctx) { memberdeclarationFlag=false; }
 
+
+    /*
+    メソッドの"{}"で実装まで宣言する処理のとき
+     */
+
     @Override
     public void enterFunctiondefinition(CPP14Parser.FunctiondefinitionContext ctx) {
       //  functiondefinitionFlag=true;
-        MemberFunction memberFunction = new MemberFunction();
+        if(classspecifierFlag == true) {
+            MemberFunction memberFunction = new MemberFunction();
 
-        if (accessSpecifier != null) {
-            memberFunction.setAccessSpecifier(accessSpecifier);
-            // accessSpecifier = null;
-        }
+            if (accessSpecifier != null) {
+                memberFunction.setAccessSpecifier(accessSpecifier);
+                // accessSpecifier = null;
+            }
 
-        if (ctx.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0) instanceof CPP14Parser.SimpletypespecifierContext) {
-        memberFunction.setType(new Type(ctx.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
-        }
+            if (ctx.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0) instanceof CPP14Parser.SimpletypespecifierContext) {
+                memberFunction.setType(new Type(ctx.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
+            }
 
-        if (ctx.getChild(1).getChild(0).getChild(0) instanceof CPP14Parser.NoptrdeclaratorContext) {
-            memberFunction.setName(ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
-        }
+            if (ctx.getChild(1).getChild(0).getChild(0) instanceof CPP14Parser.NoptrdeclaratorContext) {
+                memberFunction.setName(ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+            }
 
 
-        cpp.getClasses().get(cpp.getClasses().size()-1).addMemberFunction(memberFunction);
+            cpp.getClasses().get(cpp.getClasses().size() - 1).addMemberFunction(memberFunction);
 
+      }
     }
 
    // @Override public void exitFunctiondefinition(CPP14Parser.FunctiondefinitionContext ctx) { functiondefinitionFlag=true; }     //ここfalseじゃね？
@@ -183,7 +198,7 @@ public class CppEvalListener extends CPP14BaseListener {
     @Override
     public void enterClassspecifier(CPP14Parser.ClassspecifierContext ctx) {
         Class cppClass = new Class();
-
+        classspecifierFlag=true;
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (ctx.getChild(i) instanceof CPP14Parser.ClassheadContext) {
                 cppClass.setName(ctx.getChild(i).getChild(1).getChild(0).getChild(0).getText());
@@ -194,6 +209,24 @@ public class CppEvalListener extends CPP14BaseListener {
         cpp.addClass(cppClass);
     }
 
+
+    @Override
+    public void exitClassspecifier(CPP14Parser.ClassspecifierContext ctx) { classspecifierFlag=false; }
+
+    /**
+     * メソッドの実装を文字列として保持
+     * @param ctx
+     */
+    @Override
+    public void enterFunctionbody(CPP14Parser.FunctionbodyContext ctx) {
+      //  MemberFunction memberFunction = new MemberFunction();
+String functionbody;
+functionbody="defo\n";
+functionbody = ctx.getText();
+
+        cpp.getClasses().get(cpp.getClasses().size() - 1).getMemberFunctions()
+                .get(cpp.getClasses().get(cpp.getClasses().size() - 1).getMemberFunctions().size() - 1).setFunctionbody(functionbody);
+    }
 
 
 

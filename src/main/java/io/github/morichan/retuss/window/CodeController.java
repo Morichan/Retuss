@@ -106,8 +106,8 @@ public class CodeController {
         });
 
        // if (cpp.getClasses().size() > 0 && !cpp.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(cpp.getClasses().get(0).toString());
-        //if (cppClass != null) codeArea.replaceText(cppClass.toString());
-        if (cppClass != null) codeArea.replaceText(cppClass.cppFile_toString());
+        if (cppClass != null) codeArea.replaceText(cppClass.toString());
+       // if (cppClass != null) codeArea.replaceText(cppClass.cppFile_toString());
 
         AnchorPane codeAnchor = new AnchorPane(codeArea);
         AnchorPane.setBottomAnchor(codeArea, 0.0);

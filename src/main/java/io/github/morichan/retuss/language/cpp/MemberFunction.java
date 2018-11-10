@@ -10,7 +10,7 @@ public class MemberFunction {
     private Type type;
     private String name;
     private List<Argument> arguments;
-
+private String functionbody;
     /**
      * <p> デフォルトコンストラクタ </p>
      *
@@ -23,6 +23,7 @@ public class MemberFunction {
         type = new Type("void");
         name = "method";
         arguments = new ArrayList<>();
+        functionbody = null;
     }
 
     /**
@@ -36,6 +37,7 @@ public class MemberFunction {
         setType(type);
         setName(name);
         arguments = new ArrayList<>();
+        functionbody = null;
     }
 
     /**
@@ -51,7 +53,25 @@ public class MemberFunction {
         setName(name);
         this.arguments = new ArrayList<>();
         setArguments(new ArrayList<>(Arrays.asList(arguments)));
+        functionbody = null;
     }
+
+    /**
+     * <p> 型とメソッド名と引数とボディを設定するコンストラクタ </p>
+     *
+     * @param type 型 <br> {@link #setType(Type)} を利用します
+     * @param name メソッド名 <br> {@link #setName(String)} を利用します
+     * @param arguments 複数の引数 <br> {@link #setArguments(List)} を利用します
+     */
+    public MemberFunction(Type type, String name,String functionbody, Argument... arguments) {
+        accessSpecifier = AccessSpecifier.Public;
+        setType(type);
+        setName(name);
+        this.arguments = new ArrayList<>();
+        setArguments(new ArrayList<>(Arrays.asList(arguments)));
+        this.functionbody = functionbody;
+    }
+
 
     /**
      * <p> アクセス修飾子を設定します </p>
@@ -169,6 +189,15 @@ public class MemberFunction {
      */
     public void emptyArguments() {
         setArguments(null);
+    }
+
+    public void setFunctionbody(String functionbody) {
+        if (functionbody == null) throw new IllegalArgumentException();
+        this.functionbody = functionbody;
+    }
+
+    public String getFunctionbody(){
+       return functionbody;
     }
 
     @Override
