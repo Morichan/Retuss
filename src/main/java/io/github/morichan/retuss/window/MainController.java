@@ -1,5 +1,6 @@
 package io.github.morichan.retuss.window;
 
+import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.NodeDiagram;
 import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
@@ -17,10 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <p> RETUSSメインウィンドウの動作管理クラス </p>
@@ -108,25 +106,52 @@ public class MainController {
     public void writeUmlForCode(Package umlPackage) {
         if (umlPackage.getClasses().size() <= 0) return;
 
-        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
-            classDiagramDrawer.changeDrawnNodeText(i, ContentType.Title, 0, umlPackage.getClasses().get(i).getName());
+        // i番目のクラスが持つj番目の属性はk番目のクラスとコンポジション関係を持つ
+        Map<Integer, Map<Integer, Integer>> relationsIds = new HashMap<>();
 
+        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
+            Map<Integer, Integer> relationIds = new HashMap<>();
             for (int j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
-                try {
-                    classDiagramDrawer.changeDrawnNodeText(i, ContentType.Attribute, j, umlPackage.getClasses().get(i).getAttributes().get(j).toString());
-                } catch (IndexOutOfBoundsException e) {
+                for (int k = 0; k < umlPackage.getClasses().size(); k++) {
+                    if (umlPackage.getClasses().get(k).getName().equals(umlPackage.getClasses().get(i).getAttributes().get(j).getType().getName().getNameText())) {
+                        relationIds.put(j, k);
+                        break;
+                    }
+                }
+            }
+            relationsIds.put(i, relationIds);
+        }
+
+        classDiagramDrawer.clearAllRelations();
+
+        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
+            classDiagramDrawer.changeDrawnNodeText(i, ContentType.Title, i, umlPackage.getClasses().get(i).getName());
+            classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Attribute);
+            classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Operation);
+            classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Composition);
+
+            for (int count = 0, j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
+                if (relationsIds.get(i).containsKey(count)) {
+                    String content = umlPackage.getClasses().get(i).getAttributes().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).getAttributes().get(j).getName().getNameText();
+                    classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(relationsIds.get(i).get(count)).getName());
+                    umlPackage.getClasses().get(i).getRelations().add(umlPackage.getClasses().get(i).getAttributes().get(j));
+                    umlPackage.getClasses().get(i).getAttributes().remove(j);
+                    j--;
+                } else {
                     classDiagramDrawer.addDrawnNodeText(i, ContentType.Attribute, umlPackage.getClasses().get(i).getAttributes().get(j).toString());
                 }
+                count++;
             }
 
             for (int j = 0; j < umlPackage.getClasses().get(i).getOperations().size(); j++) {
-                try {
-                    classDiagramDrawer.changeDrawnNodeText(i, ContentType.Operation, j, umlPackage.getClasses().get(i).getOperations().get(j).toString());
-                } catch (IndexOutOfBoundsException e) {
-                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).getOperations().get(j).toString());
-                }
+                classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).getOperations().get(j).toString());
+            }
+
+            if (umlPackage.getClasses().get(i).getGeneralizationClass() != null) {
+                classDiagramDrawer.createDrawnEdge(ContentType.Generalization, "", umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(i).getGeneralizationClass().getName());
             }
         }
+
         classDiagramDrawer.allReDrawCanvas();
     }
 
@@ -267,6 +292,7 @@ public class MainController {
                 classDiagramDrawer.addDrawnNode(buttonsInCD);
                 classDiagramDrawer.allReDrawCanvas();
                 convertUmlToCode();
+                writeUmlForCode(classDiagramDrawer.extractPackage());
             } else if (util.searchSelectedButtonIn(buttonsInCD) == compositionButtonInCD) {
                 classDiagramDrawer.resetNodeChosen(classDiagramDrawer.getCurrentNodeNumber());
                 classDiagramDrawer.allReDrawCanvas();
@@ -378,7 +404,8 @@ public class MainController {
      * <p> UMLをコードに変換してコードエリアに反映します </p>
      */
     private void convertUmlToCode() {
-        if (codeController != null) codeController.createCodeTabs(classDiagramDrawer.extractPackage());
+        if (codeController == null) return;
+        codeController.createCodeTabs(classDiagramDrawer.extractPackage());
     }
 
     /**
@@ -422,12 +449,14 @@ public class MainController {
             classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Title, 0, className);
             classDiagramDrawer.allReDrawCanvas();
             convertUmlToCode();
+            writeUmlForCode(classDiagramDrawer.extractPackage());
         });
         // クラスの削除
         contextMenu.getItems().get(1).setOnAction(event -> {
             classDiagramDrawer.deleteDrawnNode(classDiagramDrawer.getCurrentNodeNumber());
             classDiagramDrawer.allReDrawCanvas();
             convertUmlToCode();
+            writeUmlForCode(classDiagramDrawer.extractPackage());
         });
         // クラスの属性の追加
         ((Menu) contextMenu.getItems().get(3)).getItems().get(0).setOnAction(event -> {

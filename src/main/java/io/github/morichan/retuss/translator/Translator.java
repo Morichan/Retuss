@@ -49,7 +49,6 @@ public class Translator {
         classDiagramPackage = umlTranslator.translate(java);
     }
 
-
     /**
      * <p> Cppを基にクラス図へ翻訳します </p>
      *
@@ -60,6 +59,4 @@ public class Translator {
 
         classDiagramPackage = umlTranslator.translate(cpp);
     }
-
-
 }

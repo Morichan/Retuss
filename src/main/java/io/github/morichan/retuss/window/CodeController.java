@@ -71,57 +71,73 @@ public class CodeController {
     private Tab createCodeTab(io.github.morichan.retuss.language.java.Class javaClass) {
         CodeArea codeArea = new CodeArea();
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
-        // codeArea.appendText(java.getClasses().get(0).toString());
-        codeArea.setOnKeyTyped(event -> {
-            convertCodeToUml(Language.Java);
-        });
-        codeArea.setOnMouseClicked(event -> {
-            //translator.translate(classDiagramDrawer.extractPackage());
-        });
+        codeArea.setOnKeyTyped(event -> convertCodeToUml(Language.Java));
 
-        // if (translator.getJava().getClasses().size() > 0) setCodeTabs(translator.getJava());
-        // if (java.getClasses().size() > 0 && !java.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(java.getClasses().get(0).toString());
         if (javaClass != null) codeArea.replaceText(javaClass.toString());
 
-        AnchorPane codeAnchor = new AnchorPane(codeArea);
-        AnchorPane.setBottomAnchor(codeArea, 0.0);
-        AnchorPane.setTopAnchor(codeArea, 0.0);
-        AnchorPane.setLeftAnchor(codeArea, 0.0);
-        AnchorPane.setRightAnchor(codeArea, 0.0);
-
-        Tab codeTab = new Tab();
-        codeTab.setContent(codeAnchor);
-        if (javaClass == null) codeTab.setText("<Unknown Title>");
-        else codeTab.setText(javaClass.getName());
-        codeTab.setClosable(false);
-
-        return codeTab;
+        if (javaClass == null) return createTab(codeArea, null);
+        else return createTab(codeArea, javaClass.getName());
     }
 
     private Tab createCodeTab(io.github.morichan.retuss.language.cpp.Class cppClass) {
         CodeArea codeArea = new CodeArea();
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
-        codeArea.setOnKeyTyped(event -> {
-            convertCodeToUml(Language.Cpp);
-        });
+        codeArea.setOnKeyTyped(event -> convertCodeToUml(Language.Cpp));
 
-       // if (cpp.getClasses().size() > 0 && !cpp.getClasses().get(0).toString().equals(codeArea.getText())) codeArea.replaceText(cpp.getClasses().get(0).toString());
         if (cppClass != null) codeArea.replaceText(cppClass.toString());
        // if (cppClass != null) codeArea.replaceText(cppClass.cppFile_toString());
 
-        AnchorPane codeAnchor = new AnchorPane(codeArea);
-        AnchorPane.setBottomAnchor(codeArea, 0.0);
-        AnchorPane.setTopAnchor(codeArea, 0.0);
-        AnchorPane.setLeftAnchor(codeArea, 0.0);
-        AnchorPane.setRightAnchor(codeArea, 0.0);
+        if (cppClass == null) return createTab(codeArea, null);
+        else return createTab(codeArea, cppClass.getName());
+    }
+
+    private Tab createTab(CodeArea area, String title) {
+        AnchorPane codeAnchor = new AnchorPane(area);
+        AnchorPane.setBottomAnchor(area, 0.0);
+        AnchorPane.setTopAnchor(area, 0.0);
+        AnchorPane.setLeftAnchor(area, 0.0);
+        AnchorPane.setRightAnchor(area, 0.0);
 
         Tab codeTab = new Tab();
         codeTab.setContent(codeAnchor);
-        if (cppClass == null) codeTab.setText("<Unknown Title>");
-        else codeTab.setText(cppClass.getName());
+        if (title == null) codeTab.setText("<Unknown Title>");
+        else codeTab.setText(title);
         codeTab.setClosable(false);
 
         return codeTab;
+    }
+
+    private void convertCodeToUml(Language language) {
+        java = new Java();
+        cpp = new Cpp();
+
+        for (int i = 0; i < ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(0).getContent()).getChildren().get(0)).getTabs().size(); i++) {
+            try {
+                if (language == Language.Java) {
+                    javaLanguage.parseForClassDiagram(getCode(0, i));
+                    java.addClass(javaLanguage.getJava().getClasses().get(0));
+                } else {
+                    cppLanguage.parseForClassDiagram(getCode(1, i));
+                    cpp.addClass(cppLanguage.getCpp().getClasses().get(0));
+                }
+            } catch (NullPointerException e) {
+                System.out.println("This is Parse Error because JavaEvalListener object is null, but no problem.");
+            } catch (IllegalArgumentException e) {
+                System.out.println("This is Parse Error because JavaEvalListener object was set IllegalArgument, but no problem.");
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("This is Parse Error because JavaEvalListener object was not found Class name, but no problem.");
+            }
+        }
+
+        if (language == Language.Java) {
+            translator.translate(java);
+        } else {
+            translator.translate(cpp);
+        }
+
+        umlPackage = translator.getPackage();
+
+        mainController.writeUmlForCode(umlPackage);
     }
 
     private void setCodeTabs(Java java) {
@@ -137,31 +153,6 @@ public class CodeController {
         for (io.github.morichan.retuss.language.cpp.Class cppClass : cpp.getClasses()) {
             Tab tab = createCodeTab(cppClass);
             ((TabPane) ((AnchorPane) codeTabPane.getTabs().get(1).getContent()).getChildren().get(0)).getTabs().add(tab);
-        }
-    }
-
-    private void convertCodeToUml(Language language) {
-        if (java.getClasses() == null) return;
-
-        try {
-            if (language == Language.Java) {
-                javaLanguage.parseForClassDiagram(getCode(0, 0));
-                translator.translate(javaLanguage.getJava());
-
-                umlPackage = translator.getPackage();
-
-                mainController.writeUmlForCode(umlPackage);
-            } else  if (language == Language.Cpp) {
-                cppLanguage.parseForClassDiagram(getCode(1,0));
-                 translator.translate(cppLanguage.getCpp());
-
-                umlPackage = translator.getPackage();
-
-                mainController.writeUmlForCode(umlPackage);
-            }
-
-        } catch (NullPointerException e) {
-            System.out.println("This is Parse Error because JavaEvalListener object is null, but no problem.");
         }
     }
 

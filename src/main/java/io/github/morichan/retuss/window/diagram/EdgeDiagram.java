@@ -14,6 +14,7 @@ import javafx.scene.text.TextAlignment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * <p> クラス図に関するエッジクラス </p>
@@ -61,6 +62,14 @@ public class EdgeDiagram {
         if (text.length() > 0) {
             relations.get(number).setText(text);
         }
+    }
+
+    public void deleteEdge() {
+        relations.clear();
+    }
+
+    public void deleteEdge(int index) {
+        relations.remove(index);
     }
 
     /**
@@ -244,7 +253,7 @@ public class EdgeDiagram {
     public void deleteGeneralizationFromSameRelationSourceNode(int id) {
         // 最後に設定した汎化関係は無視
         for (int i = 0; i < relations.size() - 1; i++) {
-            if (relations.get(i).getRelationSourceId() == id) {
+            if (relations.get(i).getType() == ContentType.Generalization && relations.get(i).getRelationSourceId() == id) {
                 relations.remove(i);
                 i--;
             }

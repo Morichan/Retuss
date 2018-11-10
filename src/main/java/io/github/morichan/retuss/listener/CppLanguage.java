@@ -13,20 +13,14 @@ public class CppLanguage {
 
     private Cpp cpp;
 
-//    private String className;
-//    private String extendedClassName;
+    public Cpp getCpp() {
+        return cpp;
+    }
 
     public void parseForClassDiagram(String code) {
         walk(code);
         cpp = cppEvalListener.getCpp();
     }
-
-
-    public Cpp getCpp() {
-        return cpp;
-    }
-
-
 
     private void walk(String code) {
         CPP14Lexer lexer = new CPP14Lexer(CharStreams.fromString(code));
@@ -37,5 +31,4 @@ public class CppLanguage {
         cppEvalListener = new CppEvalListener();
         walker.walk(cppEvalListener, tree);
     }
-
 }

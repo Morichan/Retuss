@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p> Javaにおける型クラス </p>
+ * <p> C++における型クラス </p>
  */
 public class Type {
 
@@ -49,14 +49,18 @@ public class Type {
 
     /**
      * <p> 型名を取得します </p>
+     *
+     * @return 型名
      */
-public String getTypeName(){return types.get(types.size()-1);}
+    public String getTypeName(){return types.get(types.size()-1);}
 
 
     /**
      * <p> 型名を変更します </p>
+     *
+     * @param typesName 型名
      */
-public void setTypesName(String typesName){types.set(types.size()-1,typesName);}
+    public void setTypesName(String typesName){types.set(types.size()-1,typesName);}
 
 
     /**
