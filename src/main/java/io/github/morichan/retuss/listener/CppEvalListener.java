@@ -113,7 +113,7 @@ public class CppEvalListener extends CPP14BaseListener {
       //  functiondefinitionFlag=true;
         if(classspecifierFlag == true) {
             MemberFunction memberFunction = new MemberFunction();
-
+            memberFunction.setFlagImplementation(true);
             if (accessSpecifier != null) {
                 memberFunction.setAccessSpecifier(accessSpecifier);
                 // accessSpecifier = null;

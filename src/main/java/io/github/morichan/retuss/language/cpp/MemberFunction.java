@@ -11,6 +11,7 @@ public class MemberFunction {
     private String name;
     private List<Argument> arguments;
 private String functionbody;
+private boolean flagImplementation;
     /**
      * <p> デフォルトコンストラクタ </p>
      *
@@ -200,6 +201,12 @@ private String functionbody;
        return functionbody;
     }
 
+    public void setFlagImplementation(boolean flagImplementation){
+        this.flagImplementation=flagImplementation;
+    }
+
+    public  boolean getFlagImplementation(){return flagImplementation;}
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -222,7 +229,20 @@ private String functionbody;
             sb.append(String.join(", ", args));
         }
 
-        sb.append(") {}");
+//        sb.append(") {}");
+        sb.append(") ");
+
+//        if(functionbody ==null) {
+//        sb.append(";");
+//        }else {
+//            sb.append(functionbody);
+//        }
+
+        if(flagImplementation ==true){
+            sb.append("{}");
+        }else {
+            sb.append(";");
+        }
 
         return sb.toString();
     }

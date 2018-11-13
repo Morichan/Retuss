@@ -45,6 +45,12 @@ public class CodeController {
     }
 
     public void createCodeTabs(Package classPackage) {
+
+        //ためし
+        if(umlPackage.getClasses().size() >= 1) {
+            classPackage.getClasses().get(0).addFlagOperationsImplementation(umlPackage.getClasses().get(0).getFlagOperationsImplementations().get(0));
+        }
+
         translator.translate(classPackage);
         java = translator.getJava();
         cpp = translator.getCpp();
@@ -137,7 +143,7 @@ public class CodeController {
 
         umlPackage = translator.getPackage();
 
-        mainController.writeUmlForCode(umlPackage);
+        mainController.writeUmlForCode(umlPackage);     //ここで受け渡す際に消えている。
     }
 
     private void setCodeTabs(Java java) {

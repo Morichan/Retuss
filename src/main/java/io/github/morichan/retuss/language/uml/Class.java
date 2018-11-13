@@ -16,7 +16,8 @@ public class Class {
     private List<Attribute> attributes;
     private List<Attribute> relations;
     private List<Operation> operations;
-
+ //   private String functionbody = null;
+ private List<Boolean> flagOperationsImplementations;
     /**
      * <p> デフォルトコンストラクタ </p>
      *
@@ -29,6 +30,7 @@ public class Class {
         attributes = new ArrayList<>();
         relations = new ArrayList<>();
         operations = new ArrayList<>();
+        flagOperationsImplementations = new ArrayList<>();
     }
 
     /**
@@ -41,6 +43,7 @@ public class Class {
         attributes = new ArrayList<>();
         relations = new ArrayList<>();
         operations = new ArrayList<>();
+        flagOperationsImplementations = new ArrayList<>();
     }
 
     /**
@@ -235,4 +238,43 @@ public class Class {
     public void emptyOperation() {
         setOperations(null);
     }
+
+
+    /**
+     * <p> 操作のリストに属性を追加します </p>
+     *
+     * <p>
+     * {@code null} を追加しようとしても反映しません。
+     * </p>
+     *
+     * @param flagOperationsImplementations 操作 <br> {@code null} 無視
+     */
+    public void addFlagOperationsImplementation(Boolean flagOperationsImplementation) {
+        if (flagOperationsImplementation != null) flagOperationsImplementations.add(flagOperationsImplementation);
+    }
+
+    /**
+     * <p> 操作のリストを設定します </p>
+     *
+     * <p>
+     * リスト内に {@code null} を含んでいた場合はその要素を無視します。
+     * また、 {@code null} を設定しようとした場合はリストを空にします。
+     * </p>
+     *
+     * @param flagOperationsImplementations 操作のリスト
+     */
+    public void setFlagOperationsImplementations(List<Boolean> flagOperationsImplementations) {
+        if (flagOperationsImplementations != null) for (Boolean flagOperationsImplementation : flagOperationsImplementations) addFlagOperationsImplementation(flagOperationsImplementation);
+        else this.flagOperationsImplementations.clear();
+    }
+
+    /**
+     * <p> 操作のリストを取得します </p>
+     *
+     * @return 操作のリスト <br> 要素数0の可能性あり
+     */
+    public List<Boolean> getFlagOperationsImplementations() {
+        return flagOperationsImplementations;
+    }
+
 }

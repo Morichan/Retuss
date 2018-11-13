@@ -196,6 +196,7 @@ public class MainController {
     @FXML
     private void selectNoteInCD() {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, noteButtonInCD);
+        System.out.println("Note 押されたで！");
     }
 
     /**

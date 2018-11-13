@@ -53,6 +53,7 @@ public class UMLTranslator {
      * @return クラス図のパッケージ
      */
     public Package translate(Cpp cpp) {
+      //  List<Boolean> flagOperationImplementations = classPackage.getClasses().get(0).getFlagOperationsImplementations();
         classPackage = new Package();
 
         for (io.github.morichan.retuss.language.cpp.Class cppClass : cpp.getClasses()) {
@@ -156,6 +157,9 @@ public class UMLTranslator {
                 parameter.setType(new Type(argument.getType().toString()));
                 operation.addParameter(parameter);
             }
+           // Boolean flagOperationsImplementation = memberFunction.getFlagImplementation();
+            Boolean flagOperationsImplementation = Boolean.valueOf(memberFunction.getFlagImplementation());
+            classClass.addFlagOperationsImplementation(flagOperationsImplementation);
             classClass.addOperation(operation);
         }
 
