@@ -103,6 +103,10 @@ public class MainController {
         }
     }
 
+    public Package extractClassDiagramDrawerUmlPackage() {
+        return classDiagramDrawer.extractPackage();
+    }
+
     public void writeUmlForCode(Package umlPackage) {
         if (umlPackage.getClasses().size() <= 0) return;
 
