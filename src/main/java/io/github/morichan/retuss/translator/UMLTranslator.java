@@ -18,6 +18,7 @@ import  io.github.morichan.retuss.language.cpp.MemberFunction;
 import  io.github.morichan.retuss.language.cpp.AccessSpecifier;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,7 +86,7 @@ public class UMLTranslator {
                 parameter.setType(new Type(argument.getType().toString()));
                 operation.addParameter(parameter);
             }
-            classClass.addOperation(operation);
+            classClass.addOperation(operation, method.isAbstract());
         }
 
         return classClass;

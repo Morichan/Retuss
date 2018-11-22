@@ -192,7 +192,11 @@ public class MainController {
             classDiagramDrawer.setMouseCoordinates(mouseX, mouseY);
             if (util.searchSelectedButtonIn(buttonsInCD) == classButtonInCD) {
                 String className = showCreateClassNameInputDialog();
-                createClass(className);
+                classDiagramDrawer.setNodeText(className);
+                classDiagramDrawer.addDrawnNode(buttonsInCD);
+                classDiagramDrawer.allReDrawCanvas();
+                convertUmlToCode();
+                writeUmlForCode(classDiagramDrawer.extractPackage());
             } else if (util.searchSelectedButtonIn(buttonsInCD) == compositionButtonInCD) {
                 classDiagramDrawer.resetNodeChosen(classDiagramDrawer.getCurrentNodeNumber());
                 classDiagramDrawer.allReDrawCanvas();
@@ -320,6 +324,11 @@ public class MainController {
 
             for (int j = 0; j < umlPackage.getClasses().get(i).getOperations().size(); j++) {
                 classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).getOperations().get(j).toString());
+                if (umlPackage.getClasses().get(i).getHasAbstractOperations().get(j)) {
+                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Abstraction, "abstract");
+                } else {
+                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Abstraction, "not abstract");
+                }
             }
 
             if (umlPackage.getClasses().get(i).getGeneralizationClass() != null) {
@@ -447,6 +456,7 @@ public class MainController {
         ((Menu) contextMenu.getItems().get(4)).getItems().get(0).setOnAction(event -> {
             String addOperation = showAddClassOperationInputDialog();
             classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, addOperation);
+            classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Abstraction, "not abstract");
             classDiagramDrawer.allReDrawCanvas();
             convertUmlToCode();
         });

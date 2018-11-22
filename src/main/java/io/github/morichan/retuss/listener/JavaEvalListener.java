@@ -21,8 +21,14 @@ public class JavaEvalListener extends JavaParserBaseListener {
     private List<JavaParser.TypeDeclarationContext> typeDeclarations = new ArrayList<>();
     private Java java = new Java();
     private AccessModifier accessModifier = null;
+    private boolean isAbstractMethod = false;
+    private boolean hasAbstractMethods = false;
 
-
+    /**
+     * <p> 構文木のルートノードに入った際の操作を行います </p>
+     *
+     * @param ctx 構文木のルートノードのコンテキスト
+     */
     @Override
     public void enterCompilationUnit(JavaParser.CompilationUnitContext ctx) {
         for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -40,6 +46,7 @@ public class JavaEvalListener extends JavaParserBaseListener {
 
     @Override
     public void enterTypeDeclaration(JavaParser.TypeDeclarationContext ctx) {
+        hasAbstractMethods = false;
         Class javaClass = new Class();
 
         for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -53,9 +60,15 @@ public class JavaEvalListener extends JavaParserBaseListener {
     }
 
     @Override
+    public void exitTypeDeclaration(JavaParser.TypeDeclarationContext ctx) {
+        java.getClasses().get(java.getClasses().size() - 1).setAbstract(hasAbstractMethods);
+    }
+
+    @Override
     public void enterClassBodyDeclaration(JavaParser.ClassBodyDeclarationContext ctx) {
         accessModifier = null;
         boolean isAlreadySearchedAccessModifier = false;
+        isAbstractMethod = false;
 
         if (ctx.getChildCount() >= 2 && ctx.getChild(ctx.getChildCount() - 1) instanceof JavaParser.MemberDeclarationContext) {
             for (int i = 0; i < ctx.getChildCount() - 1; i++) {
@@ -66,6 +79,10 @@ public class JavaEvalListener extends JavaParserBaseListener {
                         break;
                     } catch (IllegalArgumentException e) {
                         // static, abstract, final, strictfp or Annotation
+                        if (ctx.getChild(i).getChild(0).getChild(0).getText().equals("abstract")) {
+                            isAbstractMethod = true;
+                            hasAbstractMethods = true;
+                        }
                     }
                 }
             }
@@ -105,6 +122,8 @@ public class JavaEvalListener extends JavaParserBaseListener {
             method.setAccessModifier(accessModifier);
             accessModifier = null;
         }
+
+        if (isAbstractMethod) method.setAbstract(true);
 
         if (ctx.getChild(0).getChild(0) instanceof JavaParser.TypeTypeContext) {
             if (ctx.getChild(0).getChild(0).getChild(0) instanceof JavaParser.AnnotationContext) {

@@ -16,6 +16,7 @@ public class Class {
     private List<Attribute> attributes;
     private List<Attribute> relations;
     private List<Operation> operations;
+    private List<Boolean> hasAbstractOperations;
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -29,6 +30,7 @@ public class Class {
         attributes = new ArrayList<>();
         relations = new ArrayList<>();
         operations = new ArrayList<>();
+        hasAbstractOperations = new ArrayList<>();
     }
 
     /**
@@ -41,6 +43,7 @@ public class Class {
         attributes = new ArrayList<>();
         relations = new ArrayList<>();
         operations = new ArrayList<>();
+        hasAbstractOperations = new ArrayList<>();
     }
 
     /**
@@ -198,7 +201,27 @@ public class Class {
      * @param operation 操作 <br> {@code null} 無視
      */
     public void addOperation(Operation operation) {
-        if (operation != null) operations.add(operation);
+        if (operation == null) return;
+
+        operations.add(operation);
+        addWhetherOperationIsAbstract(false);
+    }
+
+    /**
+     * <p> 操作のリストに属性を追加します </p>
+     *
+     * <p>
+     * {@code null} を追加しようとしても反映しません。
+     * </p>
+     *
+     * @param operation 操作 <br> {@code null} 無視
+     * @param isAbstract 操作が抽象操作の場合は真を持つ真偽値
+     */
+    public void addOperation(Operation operation, boolean isAbstract) {
+        if (operation == null) return;
+
+        operations.add(operation);
+        addWhetherOperationIsAbstract(isAbstract);
     }
 
     /**
@@ -213,7 +236,10 @@ public class Class {
      */
     public void setOperations(List<Operation> operations) {
         if (operations != null) for (Operation operation : operations) addOperation(operation);
-        else this.operations.clear();
+        else {
+            this.operations.clear();
+            this.hasAbstractOperations.clear();
+        }
     }
 
     /**
@@ -225,6 +251,10 @@ public class Class {
         return operations;
     }
 
+    public List<Boolean> getHasAbstractOperations() {
+        return hasAbstractOperations;
+    }
+
     /**
      * <p> 操作のリストを空にします </p>
      *
@@ -234,5 +264,9 @@ public class Class {
      */
     public void emptyOperation() {
         setOperations(null);
+    }
+
+    public void addWhetherOperationIsAbstract(boolean isAbstract) {
+        hasAbstractOperations.add(isAbstract);
     }
 }

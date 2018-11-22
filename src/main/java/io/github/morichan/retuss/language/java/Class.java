@@ -10,6 +10,7 @@ public class Class {
 
     private String name;
     private Class extendsClass;
+    private boolean isAbstract = false;
     private List<Field> fields;
     private List<Method> methods;
 
@@ -179,6 +180,13 @@ public class Class {
         setMethod(null);
     }
 
+    public void setAbstract(boolean abstractFlag) {
+        isAbstract = abstractFlag;
+    }
+
+    public boolean isAbstract() {
+        return isAbstract;
+    }
 
     /**
      * <p> ソースコードの文字列を組立てます </p>
@@ -187,6 +195,8 @@ public class Class {
      */
     private String manufacture() {
         StringBuilder sb = new StringBuilder();
+
+        if (isAbstract) sb.append("abstract ");
 
         sb.append("class ");
         sb.append(name);
