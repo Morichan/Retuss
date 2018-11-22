@@ -559,6 +559,7 @@ class ClassNodeDiagramTest {
 
         obj.createNodeText(ContentType.Title, className);
         obj.createNodeText(ContentType.Operation, expected);
+        obj.createNodeText(ContentType.Abstraction, "not abstract");
         obj.deleteNodeText(ContentType.Operation, 0);
 
         assertThrows(IndexOutOfBoundsException.class, () -> obj.getNodeContentText(ContentType.Operation, 0));
@@ -683,6 +684,7 @@ class ClassNodeDiagramTest {
 
         obj.createNodeText(ContentType.Title, "ClassName");
         obj.createNodeText(ContentType.Operation, "operation()");
+        obj.createNodeText(ContentType.Abstraction, "not abstract");
         obj.draw();
         Class actual = obj.extractClass();
 

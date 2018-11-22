@@ -536,6 +536,7 @@ class ClassDiagramDrawerTest {
 
                 cdd.getNodeDiagramId(100.0, 200.0);
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Operation, "- content() : int");
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Abstraction, "not abstract");
                 int id = cdd.getNodeDiagramId(100.0, 200.0);
                 cdd.deleteDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Operation, 0);
 
@@ -1195,6 +1196,7 @@ class ClassDiagramDrawerTest {
                 expected.addOperation(operation);
 
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Operation, "+ operationFromFirst() : float");
+                cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Abstraction, "not abstract");
                 cdd.allReDrawCanvas();
                 Package actual = cdd.extractPackage();
 

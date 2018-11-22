@@ -54,15 +54,16 @@ dependencies {
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
 }
 
+/*
 ext.antlr = [destinationDir: 'src/main/java/io/github/morichan/retuss/parser/cpp']
 generateGrammarSource {
     outputDirectory = file(new File("${antlr.destinationDir}"))
     arguments = ["-package", "io.github.morichan.retuss.parser.cpp", "-listener", "-no-visitor"].flatten()
 }
-
 clean {
     delete antlr.destinationDir
 }
+*/
 
 if (gradle.startParameter.taskNames.contains('uploadArchives')) {
     apply from: 'build.publish.gradle'
