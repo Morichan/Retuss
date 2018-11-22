@@ -34,10 +34,18 @@ public class CodeController {
     private JavaLanguage javaLanguage = new JavaLanguage();
     private CppLanguage cppLanguage = new CppLanguage();
 
+    private int createdClassCount = 0;
+
     @FXML
     private void initialize() {
         codeTabPane.getTabs().add(createLanguageTab(Language.Java));
         codeTabPane.getTabs().add(createLanguageTab(Language.Cpp));
+    }
+
+    @FXML
+    private void createClass() {
+        mainController.createClass("NewClass" + createdClassCount);
+        createdClassCount++;
     }
 
     public void setMainController(MainController mainController) {
