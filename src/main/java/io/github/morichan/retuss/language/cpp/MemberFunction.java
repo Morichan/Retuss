@@ -10,6 +10,7 @@ public class MemberFunction {
     private Type type;
     private String name;
     private List<Argument> arguments;
+    private boolean isVirtualMemberFunction0= false;
 private String functionbody;
 private boolean flagImplementation;
     /**
@@ -207,6 +208,13 @@ private boolean flagImplementation;
 
     public  boolean getFlagImplementation(){return flagImplementation;}
 
+    public void setVirtualMemberFunction0(boolean abstractFlag) {
+        isVirtualMemberFunction0 = abstractFlag;
+    }
+    public boolean isAbstract() {
+        return isVirtualMemberFunction0;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -215,6 +223,9 @@ private boolean flagImplementation;
 //            sb.append(accessSpecifier);
 //            sb.append(" ");
       //  }
+
+        if (isVirtualMemberFunction0) sb.append("virtual ");
+
 
         sb.append(type);
         sb.append(" ");
@@ -238,12 +249,15 @@ private boolean flagImplementation;
 //            sb.append(functionbody);
 //        }
 
-        if(flagImplementation ==true){
-            sb.append("{}");
+        if(isVirtualMemberFunction0) {
+        sb.append("= 0;");
         }else {
-            sb.append(";");
+            if (flagImplementation == true) {
+                sb.append("{}");
+            } else {
+                sb.append(";");
+            }
         }
-
         return sb.toString();
     }
 }

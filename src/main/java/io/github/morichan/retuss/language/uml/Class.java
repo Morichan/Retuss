@@ -240,15 +240,7 @@ public class Class {
     }
 
 
-    /**
-     * <p> 操作のリストに属性を追加します </p>
-     *
-     * <p>
-     * {@code null} を追加しようとしても反映しません。
-     * </p>
-     *
-     * @param flagOperationsImplementations 操作 <br> {@code null} 無視
-     */
+
     public void addFlagOperationsImplementation(Boolean flagOperationsImplementation) {
         if (flagOperationsImplementation != null) flagOperationsImplementations.add(flagOperationsImplementation);
     }
