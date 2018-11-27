@@ -213,7 +213,7 @@ public class CppEvalListener extends CPP14BaseListener {
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (ctx.getChild(i) instanceof CPP14Parser.ClassheadContext) {
                if(ctx.getChild(i).getChild(0) instanceof  CPP14Parser.ClasskeyContext){
-                    cppClass.setClassType(ctx.getChild(i).getChild(0).getChild(0).getText());
+                 //   cppClass.setClassType(ctx.getChild(i).getChild(0).getChild(0).getText());
                 }
                 cppClass.setName(ctx.getChild(i).getChild(1).getChild(0).getChild(0).getText());
                 cppClass.setExtendsClass(searchExtendsClass((CPP14Parser.ClassheadContext) ctx.getChild(i)));

@@ -7,6 +7,7 @@ import java.util.List;
 public class Method {
 
     private AccessModifier accessModifier;
+    private boolean isAbstract = false;
     private Type type;
     private String name;
     private List<Argument> arguments;
@@ -171,9 +172,19 @@ public class Method {
         setArguments(null);
     }
 
+    public void setAbstract(boolean abstractFlag) {
+        isAbstract = abstractFlag;
+    }
+
+    public boolean isAbstract() {
+        return isAbstract;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+
+        if (isAbstract) sb.append("abstract ");
 
         if (!accessModifier.is(AccessModifier.Package.toString())) {
             sb.append(accessModifier);
@@ -193,7 +204,10 @@ public class Method {
             sb.append(String.join(", ", args));
         }
 
-        sb.append(") {}");
+        sb.append(")");
+
+        if (isAbstract) sb.append(";");
+        else sb.append(" {}");
 
         return sb.toString();
     }

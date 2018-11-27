@@ -7,10 +7,7 @@ import io.github.morichan.retuss.window.ClassDiagramDrawer;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.text.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +40,7 @@ public class ClassNodeDiagram extends NodeDiagram {
     private List<ClassDiagramGraphic> attributes = new ArrayList<>();
     private List<RelationshipAttributeGraphic> relations = new ArrayList<>();
     private List<ClassDiagramGraphic> operations = new ArrayList<>();
+    private List<Boolean> hasAbstractOperations = new ArrayList<>();
 
     private int attributeNotVisibilityCount = 0;
 
@@ -136,8 +134,14 @@ public class ClassNodeDiagram extends NodeDiagram {
             attributes.add(new AttributeGraphic(text));
         } else if (type == ContentType.Operation) {
             operations.add(new OperationGraphic(text));
-        } else { // if (type == ContentType.Composition) {
+        } else if (type == ContentType.Composition) {
             relations.add(new RelationshipAttributeGraphic(text));
+        } else { //if (type == ContentType.Abstraction) {
+            if (text.equals("abstract")) {
+                hasAbstractOperations.add(true);
+            } else {
+                hasAbstractOperations.add(false);
+            }
         }
     }
 
@@ -177,6 +181,7 @@ public class ClassNodeDiagram extends NodeDiagram {
             attributes.remove(number);
         } else if (type == ContentType.Operation) {
             operations.remove(number);
+            hasAbstractOperations.remove(number);
         } else { // if (type == ContentType.Composition) {
             relations.remove(number);
         }
@@ -197,6 +202,7 @@ public class ClassNodeDiagram extends NodeDiagram {
             attributes.clear();
         } else if (type == ContentType.Operation) {
             operations.clear();
+            hasAbstractOperations.clear();
         } else { // if (type == ContentType.Composition) {
             relations.clear();
         }
@@ -222,6 +228,7 @@ public class ClassNodeDiagram extends NodeDiagram {
         } else {
             content = "";
         }
+
         return content;
     }
 
@@ -328,7 +335,8 @@ public class ClassNodeDiagram extends NodeDiagram {
         if (nodeText.length() <= 0) return;
 
         Text classNameText = new Text(nodeText);
-        classNameText.setFont(Font.font(diagramFont, FontWeight.BOLD, classNameFontSize));
+        if (hasAbstractOperations.contains(true)) classNameText.setFont(Font.font(diagramFont, FontWeight.BOLD, FontPosture.ITALIC, classNameFontSize));
+        else classNameText.setFont(Font.font(diagramFont, FontWeight.BOLD, classNameFontSize));
         umlClass = new Class(nodeText);
 
         List<Text> attributesText = new ArrayList<>();
@@ -340,11 +348,17 @@ public class ClassNodeDiagram extends NodeDiagram {
         }
 
         List<Text> operationsText = new ArrayList<>();
+        int operationCount = 0;
         for (ClassDiagramGraphic operation : operations) {
             Text text = new Text(operation.getText());
-            text.setFont(Font.font(diagramFont, FontWeight.LIGHT, classOperationFontSize));
+            if (hasAbstractOperations.get(operationCount)) {
+                text.setFont(Font.font(diagramFont, FontWeight.LIGHT, FontPosture.ITALIC, classOperationFontSize));
+            } else {
+                text.setFont(Font.font(diagramFont, FontWeight.LIGHT, classOperationFontSize));
+            }
             operationsText.add(text);
-            umlClass.addOperation(((OperationGraphic) operation).getOperation());
+            umlClass.addOperation(((OperationGraphic) operation).getOperation(), hasAbstractOperations.get(operationCount));
+            operationCount++;
         }
 
         double maxWidth = calculateMaxWidth(classNameText, attributesText, operationsText);
@@ -411,10 +425,10 @@ public class ClassNodeDiagram extends NodeDiagram {
 
         if (operationsText.size() > 0) {
             gc.setTextAlign(TextAlignment.LEFT);
-            gc.setFont(operationsText.get(0).getFont());
             int notDrawOperationCount = 0;
             boolean isExistedNoIndication = false;
             for (int i = 0; i < operationsText.size(); i++) {
+                gc.setFont(operationsText.get(i).getFont());
                 if (operations.get(i).isIndicate()) {
                     gc.fillText(operationsText.get(i).getText(),
                             topLeftCorner.getX() + leftSpace, topLeftCorner.getY() + classHeight + 15.0 + (defaultOperationHeight * (i - notDrawOperationCount)) + operationStartHeight);
@@ -539,7 +553,7 @@ public class ClassNodeDiagram extends NodeDiagram {
      * <p> クラス図キャンバスにおいて描画するクラス操作の箇所の高さを算出します </p>
      *
      * <p>
-     * クラス操作が複数ある場合は最大高さを高くする必要があります。
+     * クラス操作が複数ある場合は最大高を高くする必要があります。
      * ただし、1つ以上非表示のクラス操作が存在する場合は、高さを {@code (非表示の操作の個数 - 1) * defaultOperationHeight} 分減らします。
      * ここにおける {@code -1} とは、非表示の操作の個数を表示する列の分です。
      * クラス操作が存在しない場合、またはクラス操作が1つだけ存在する場合、または全てのクラス操作が非表示の場合は {@link ClassNodeDiagram#defaultOperationHeight} を返します。

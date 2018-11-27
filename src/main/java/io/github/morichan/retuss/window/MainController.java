@@ -73,102 +73,6 @@ public class MainController {
     }
 
     /**
-     * <p> コードウィンドウを表示します </p>
-     *
-     * <p>
-     *     同時に、コードウィンドウのコントローラクラスのインスタンスを取得しています。
-     *     これはJavaFX仕様の取得方法です。
-     * </p>
-     *
-     * <p>
-     *     参照: <a href="http://hideoku.hatenablog.jp/entry/2013/06/07/205016"> FXML Controller で Stage を使うためのアレコレ - Java開発のんびり日記 </a>
-     * </p>
-     * @param mainController メインウィンドウのコントローラクラスのインスタンス
-     * @param parent 親ウィンドウ
-     * @param filePath ウィンドウFXMLファイルのパス
-     * @param title ウィンドウのタイトル
-     */
-    public void showCodeStage(MainController mainController, Stage parent, String filePath, String title) {
-        try {
-            codeStage = new Stage();
-            codeStage.initOwner(parent);
-            codeStage.setTitle(title);
-            FXMLLoader codeLoader = new FXMLLoader(getClass().getResource(filePath));
-            codeStage.setScene(new Scene(codeLoader.load()));
-            codeStage.show();
-            codeController = codeLoader.getController();
-            codeController.setMainController(mainController);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void writeUmlForCode(Package umlPackage) {
-        if (umlPackage.getClasses().size() <= 0) return;
-
-        // i番目のクラスが持つj番目の属性はk番目のクラスとコンポジション関係を持つ
-        Map<Integer, Map<Integer, Integer>> relationsIds = new HashMap<>();
-
-        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
-            Map<Integer, Integer> relationIds = new HashMap<>();
-            for (int j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
-                for (int k = 0; k < umlPackage.getClasses().size(); k++) {
-                    if (umlPackage.getClasses().get(k).getName().equals(umlPackage.getClasses().get(i).getAttributes().get(j).getType().getName().getNameText())) {
-                        relationIds.put(j, k);
-                        break;
-                    }
-                }
-            }
-            relationsIds.put(i, relationIds);
-        }
-
-        classDiagramDrawer.clearAllRelations();
-
-        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
-            classDiagramDrawer.changeDrawnNodeText(i, ContentType.Title, i, umlPackage.getClasses().get(i).getName());
-            classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Attribute);
-            classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Operation);
-            classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Composition);
-
-            for (int count = 0, j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
-                if (relationsIds.get(i).containsKey(count)) {
-                    String content = umlPackage.getClasses().get(i).getAttributes().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).getAttributes().get(j).getName().getNameText();
-                    classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(relationsIds.get(i).get(count)).getName());
-                    umlPackage.getClasses().get(i).getRelations().add(umlPackage.getClasses().get(i).getAttributes().get(j));
-                    umlPackage.getClasses().get(i).getAttributes().remove(j);
-                    j--;
-                } else {
-                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Attribute, umlPackage.getClasses().get(i).getAttributes().get(j).toString());
-                }
-                count++;
-            }
-
-            for (int j = 0; j < umlPackage.getClasses().get(i).getOperations().size(); j++) {
-                classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).getOperations().get(j).toString());
-            }
-
-            if (umlPackage.getClasses().get(i).getGeneralizationClass() != null) {
-                classDiagramDrawer.createDrawnEdge(ContentType.Generalization, "", umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(i).getGeneralizationClass().getName());
-            }
-        }
-
-        classDiagramDrawer.allReDrawCanvas();
-    }
-
-    /**
-     * <p> コードステージを取得します </p>
-     *
-     * <p>
-     *     テストコードでのみの使用を想定していますが、開発が進むことで変わる可能性があります。
-     * </p>
-     *
-     * @return コードステージ
-     */
-    Stage getCodeStage() {
-        return codeStage;
-    }
-
-    /**
      * <p> Normalボタン選択時のシグナルハンドラ </p>
      *
      * <p> ClassDiagramTabにおけるToolBar内のNormalボタンで参照 </p>
@@ -304,63 +208,6 @@ public class MainController {
         }
     }
 
-    private String showCreateClassNameInputDialog() {
-        return showClassDiagramInputDialog("クラスの追加", "追加するクラスのクラス名を入力してください。", "");
-    }
-
-    private String showChangeClassNameInputDialog(String className) {
-        return showClassDiagramInputDialog("クラス名の変更", "変更後のクラス名を入力してください。", className);
-    }
-
-    private String showAddClassAttributeInputDialog() {
-        return showClassDiagramInputDialog("属性の追加", "追加する属性を入力してください。", "");
-    }
-
-    private String showChangeClassAttributeInputDialog(String attribute) {
-        return showClassDiagramInputDialog("属性の変更", "変更後の属性を入力してください。", attribute);
-    }
-
-    private String showAddClassOperationInputDialog() {
-        return showClassDiagramInputDialog("操作の追加", "追加する操作を入力してください。", "");
-    }
-
-    private String showChangeClassOperationInputDialog(String operation) {
-        return showClassDiagramInputDialog("操作の変更", "変更後の操作を入力してください。", operation);
-    }
-
-    private String showCreateCompositionNameInputDialog() {
-        return showClassDiagramInputDialog("コンポジションの追加", "コンポジション先の関連端名を入力してください。", "");
-    }
-
-    private String showChangeCompositionNameInputDialog(String composition) {
-        return showClassDiagramInputDialog("コンポジションの変更", "変更後のコンポジション先の関連端名を入力してください。", composition);
-    }
-
-    /**
-     * <p> クラス図のテキスト入力ダイアログを表示します </p>
-     *
-     * <p>
-     * 入力ダイアログ表示中は、ダイアログ以外の本機能における他ウィンドウは入力を受付ません。
-     * テキスト入力ダイアログを消去または入力を受付た場合は、他ウィンドウの入力受付を再開します。
-     * </p>
-     *
-     * @param title      テキスト入力ダイアログのタイトル
-     * @param headerText テキスト入力ダイアログのヘッダーテキスト
-     * @return 入力された文字列 入力せずにOKボタンを押した場合やxボタンを押した場合は空文字を返します。
-     */
-    private String showClassDiagramInputDialog(String title, String headerText, String contentText) {
-        classNameInputDialog = new TextInputDialog(contentText);
-        classNameInputDialog.setTitle(title);
-        classNameInputDialog.setHeaderText(headerText);
-        Optional<String> result = classNameInputDialog.showAndWait();
-
-        if (result.isPresent()) {
-            return classNameInputDialog.getEditor().getText();
-        } else {
-            return "";
-        }
-    }
-
     /**
      * <p> クラス図キャンバス上で（通常）右クリックした際に実行します </p>
      *
@@ -398,6 +245,146 @@ public class MainController {
             RelationshipAttributeGraphic relation = classDiagramDrawer.searchDrawnEdge(mouseX, mouseY);
             ContextMenu contextMenu = util.createClassContextMenuInCD("", relation.getType());
             classDiagramScrollPane.setContextMenu(formatContextMenuInCD(contextMenu, relation.getType(), mouseX, mouseY));
+        }
+    }
+
+    /**
+     * <p> コードウィンドウを表示します </p>
+     *
+     * <p>
+     *     同時に、コードウィンドウのコントローラクラスのインスタンスを取得しています。
+     *     これはJavaFX仕様の取得方法です。
+     * </p>
+     *
+     * <p>
+     *     参照: <a href="http://hideoku.hatenablog.jp/entry/2013/06/07/205016"> FXML Controller で Stage を使うためのアレコレ - Java開発のんびり日記 </a>
+     * </p>
+     * @param mainController メインウィンドウのコントローラクラスのインスタンス
+     * @param parent 親ウィンドウ
+     * @param filePath ウィンドウFXMLファイルのパス
+     * @param title ウィンドウのタイトル
+     */
+    public void showCodeStage(MainController mainController, Stage parent, String filePath, String title) {
+        try {
+            codeStage = new Stage();
+            codeStage.initOwner(parent);
+            codeStage.setTitle(title);
+            FXMLLoader codeLoader = new FXMLLoader(getClass().getResource(filePath));
+            codeStage.setScene(new Scene(codeLoader.load()));
+            codeStage.show();
+            codeController = codeLoader.getController();
+            codeController.setMainController(mainController);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Package extractClassDiagramDrawerUmlPackage() {
+        return classDiagramDrawer.extractPackage();
+    }
+
+    public void writeUmlForCode(Package umlPackage) {
+        if (umlPackage.getClasses().size() <= 0) return;
+
+        // i番目のクラスが持つj番目の属性はk番目のクラスとコンポジション関係を持つ
+        Map<Integer, Map<Integer, Integer>> relationsIds = new HashMap<>();
+
+        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
+            Map<Integer, Integer> relationIds = new HashMap<>();
+            for (int j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
+                for (int k = 0; k < umlPackage.getClasses().size(); k++) {
+                    if (umlPackage.getClasses().get(k).getName().equals(umlPackage.getClasses().get(i).getAttributes().get(j).getType().getName().getNameText())) {
+                        relationIds.put(j, k);
+                        break;
+                    }
+                }
+            }
+            relationsIds.put(i, relationIds);
+        }
+
+        classDiagramDrawer.clearAllRelations();
+
+        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
+            classDiagramDrawer.changeDrawnNodeText(i, ContentType.Title, i, umlPackage.getClasses().get(i).getName());
+            classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Attribute);
+            classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Operation);
+            classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Composition);
+
+            for (int count = 0, j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
+                if (relationsIds.get(i).containsKey(count)) {
+                    String content = umlPackage.getClasses().get(i).getAttributes().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).getAttributes().get(j).getName().getNameText();
+                    classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(relationsIds.get(i).get(count)).getName());
+                    umlPackage.getClasses().get(i).getRelations().add(umlPackage.getClasses().get(i).getAttributes().get(j));
+                    umlPackage.getClasses().get(i).getAttributes().remove(j);
+                    j--;
+                } else {
+                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Attribute, umlPackage.getClasses().get(i).getAttributes().get(j).toString());
+                }
+                count++;
+            }
+
+            for (int j = 0; j < umlPackage.getClasses().get(i).getOperations().size(); j++) {
+                classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).getOperations().get(j).toString());
+                if (umlPackage.getClasses().get(i).getHasAbstractOperations().get(j)) {
+                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Abstraction, "abstract");
+                } else {
+                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Abstraction, "not abstract");
+                }
+            }
+
+            if (umlPackage.getClasses().get(i).getGeneralizationClass() != null) {
+                classDiagramDrawer.createDrawnEdge(ContentType.Generalization, "", umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(i).getGeneralizationClass().getName());
+            }
+        }
+
+        classDiagramDrawer.allReDrawCanvas();
+    }
+
+    public void createClass(String className) {
+        buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, classButtonInCD);
+        classDiagramDrawer.setNodeText(className);
+        classDiagramDrawer.addDrawnNode(buttonsInCD);
+        classDiagramDrawer.allReDrawCanvas();
+        convertUmlToCode();
+        writeUmlForCode(classDiagramDrawer.extractPackage());
+        buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, normalButtonInCD);
+    }
+
+    /**
+     * <p> コードステージを取得します </p>
+     *
+     * <p>
+     *     テストコードでのみの使用を想定していますが、開発が進むことで変わる可能性があります。
+     * </p>
+     *
+     * @return コードステージ
+     */
+    Stage getCodeStage() {
+        return codeStage;
+    }
+
+    /**
+     * <p> クラス図のテキスト入力ダイアログを表示します </p>
+     *
+     * <p>
+     * 入力ダイアログ表示中は、ダイアログ以外の本機能における他ウィンドウは入力を受付ません。
+     * テキスト入力ダイアログを消去または入力を受付た場合は、他ウィンドウの入力受付を再開します。
+     * </p>
+     *
+     * @param title      テキスト入力ダイアログのタイトル
+     * @param headerText テキスト入力ダイアログのヘッダーテキスト
+     * @return 入力された文字列 入力せずにOKボタンを押した場合やxボタンを押した場合は空文字を返します。
+     */
+    private String showClassDiagramInputDialog(String title, String headerText, String contentText) {
+        classNameInputDialog = new TextInputDialog(contentText);
+        classNameInputDialog.setTitle(title);
+        classNameInputDialog.setHeaderText(headerText);
+        Optional<String> result = classNameInputDialog.showAndWait();
+
+        if (result.isPresent()) {
+            return classNameInputDialog.getEditor().getText();
+        } else {
+            return "";
         }
     }
 
@@ -470,6 +457,7 @@ public class MainController {
         ((Menu) contextMenu.getItems().get(4)).getItems().get(0).setOnAction(event -> {
             String addOperation = showAddClassOperationInputDialog();
             classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, addOperation);
+            classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Abstraction, "not abstract");
             classDiagramDrawer.allReDrawCanvas();
             convertUmlToCode();
         });
@@ -560,5 +548,37 @@ public class MainController {
         });
 
         return contextMenu;
+    }
+
+    private String showCreateClassNameInputDialog() {
+        return showClassDiagramInputDialog("クラスの追加", "追加するクラスのクラス名を入力してください。", "");
+    }
+
+    private String showChangeClassNameInputDialog(String className) {
+        return showClassDiagramInputDialog("クラス名の変更", "変更後のクラス名を入力してください。", className);
+    }
+
+    private String showAddClassAttributeInputDialog() {
+        return showClassDiagramInputDialog("属性の追加", "追加する属性を入力してください。", "");
+    }
+
+    private String showChangeClassAttributeInputDialog(String attribute) {
+        return showClassDiagramInputDialog("属性の変更", "変更後の属性を入力してください。", attribute);
+    }
+
+    private String showAddClassOperationInputDialog() {
+        return showClassDiagramInputDialog("操作の追加", "追加する操作を入力してください。", "");
+    }
+
+    private String showChangeClassOperationInputDialog(String operation) {
+        return showClassDiagramInputDialog("操作の変更", "変更後の操作を入力してください。", operation);
+    }
+
+    private String showCreateCompositionNameInputDialog() {
+        return showClassDiagramInputDialog("コンポジションの追加", "コンポジション先の関連端名を入力してください。", "");
+    }
+
+    private String showChangeCompositionNameInputDialog(String composition) {
+        return showClassDiagramInputDialog("コンポジションの変更", "変更後のコンポジション先の関連端名を入力してください。", composition);
     }
 }

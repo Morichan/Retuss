@@ -34,10 +34,18 @@ public class CodeController {
     private JavaLanguage javaLanguage = new JavaLanguage();
     private CppLanguage cppLanguage = new CppLanguage();
 
+    private int createdClassCount = 0;
+
     @FXML
     private void initialize() {
-        codeTabPane.getTabs().add(createLanguageTab("Java"));
-        codeTabPane.getTabs().add(createLanguageTab("C++"));
+        codeTabPane.getTabs().add(createLanguageTab(Language.Java));
+        codeTabPane.getTabs().add(createLanguageTab(Language.Cpp));
+    }
+
+    @FXML
+    private void createClass() {
+        mainController.createClass("NewClass" + createdClassCount);
+        createdClassCount++;
     }
 
     public void setMainController(MainController mainController) {
@@ -58,7 +66,7 @@ public class CodeController {
         setCodeTabs(cpp);
     }
 
-    private Tab createLanguageTab(String tabName) {
+    private Tab createLanguageTab(Language language) {
 
         TabPane codeTabPane = new TabPane();
         AnchorPane languageAnchor = new AnchorPane(codeTabPane);
@@ -69,7 +77,20 @@ public class CodeController {
 
         Tab languageTab = new Tab();
         languageTab.setContent(languageAnchor);
-        languageTab.setText(tabName);
+
+        languageTab.setOnSelectionChanged(event -> {
+            try {
+                createCodeTabs(mainController.extractClassDiagramDrawerUmlPackage());
+            } catch (NullPointerException e) {
+                System.out.println("This is null problem because ClassDiagramDrawer's umlPackage is null, so event was not set.");
+            }
+        });
+
+        if (language == Language.Java) {
+            languageTab.setText("Java");
+        } else { // if (language == Language.Cpp) {
+            languageTab.setText("C++");
+        }
 
         return languageTab;
     }
