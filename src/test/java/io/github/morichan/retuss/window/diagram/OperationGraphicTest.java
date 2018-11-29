@@ -73,4 +73,13 @@ class OperationGraphicTest {
 
         assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
     }
+
+    @Test
+    void 抽象操作であることを設定する() {
+        operation.setAbstract(true);
+
+        boolean actual = operation.isAbstract();
+
+        assertThat(actual).isTrue();
+    }
 }

@@ -40,7 +40,6 @@ public class ClassNodeDiagram extends NodeDiagram {
     private List<ClassDiagramGraphic> attributes = new ArrayList<>();
     private List<RelationshipAttributeGraphic> relations = new ArrayList<>();
     private List<ClassDiagramGraphic> operations = new ArrayList<>();
-    private List<Boolean> hasAbstractOperations = new ArrayList<>();
 
     private int attributeNotVisibilityCount = 0;
 
@@ -137,11 +136,7 @@ public class ClassNodeDiagram extends NodeDiagram {
         } else if (type == ContentType.Composition) {
             relations.add(new RelationshipAttributeGraphic(text));
         } else { //if (type == ContentType.Abstraction) {
-            if (text.equals("abstract")) {
-                hasAbstractOperations.add(true);
-            } else {
-                hasAbstractOperations.add(false);
-            }
+            throw new IllegalArgumentException();
         }
     }
 
@@ -160,6 +155,8 @@ public class ClassNodeDiagram extends NodeDiagram {
             attributes.get(number).setText(text);
         } else if (type == ContentType.Operation) {
             operations.get(number).setText(text);
+        } else if (type == ContentType.Abstraction) {
+            ((OperationGraphic) operations.get(number)).setAbstract(text.equals("abstract"));
         } else { // if (type == ContentType.Composition) {
             relations.get(number).setText(text);
         }
@@ -181,7 +178,6 @@ public class ClassNodeDiagram extends NodeDiagram {
             attributes.remove(number);
         } else if (type == ContentType.Operation) {
             operations.remove(number);
-            hasAbstractOperations.remove(number);
         } else { // if (type == ContentType.Composition) {
             relations.remove(number);
         }
@@ -202,7 +198,6 @@ public class ClassNodeDiagram extends NodeDiagram {
             attributes.clear();
         } else if (type == ContentType.Operation) {
             operations.clear();
-            hasAbstractOperations.clear();
         } else { // if (type == ContentType.Composition) {
             relations.clear();
         }
@@ -334,8 +329,16 @@ public class ClassNodeDiagram extends NodeDiagram {
     public void draw() {
         if (nodeText.length() <= 0) return;
 
+        boolean isAbstractClass = false;
+        for (ClassDiagramGraphic operation : operations) {
+            if (((OperationGraphic) operation).isAbstract()) {
+                isAbstractClass = true;
+                break;
+            }
+        }
+
         Text classNameText = new Text(nodeText);
-        if (hasAbstractOperations.contains(true)) classNameText.setFont(Font.font(diagramFont, FontWeight.BOLD, FontPosture.ITALIC, classNameFontSize));
+        if (isAbstractClass) classNameText.setFont(Font.font(diagramFont, FontWeight.BOLD, FontPosture.ITALIC, classNameFontSize));
         else classNameText.setFont(Font.font(diagramFont, FontWeight.BOLD, classNameFontSize));
         umlClass = new Class(nodeText);
 
@@ -348,17 +351,15 @@ public class ClassNodeDiagram extends NodeDiagram {
         }
 
         List<Text> operationsText = new ArrayList<>();
-        int operationCount = 0;
         for (ClassDiagramGraphic operation : operations) {
             Text text = new Text(operation.getText());
-            if (hasAbstractOperations.get(operationCount)) {
+            if (((OperationGraphic) operation).isAbstract()) {
                 text.setFont(Font.font(diagramFont, FontWeight.LIGHT, FontPosture.ITALIC, classOperationFontSize));
             } else {
                 text.setFont(Font.font(diagramFont, FontWeight.LIGHT, classOperationFontSize));
             }
             operationsText.add(text);
-            umlClass.addOperation(((OperationGraphic) operation).getOperation(), hasAbstractOperations.get(operationCount));
-            operationCount++;
+            umlClass.addOperation(((OperationGraphic) operation).getOperation(), ((OperationGraphic) operation).isAbstract());
         }
 
         double maxWidth = calculateMaxWidth(classNameText, attributesText, operationsText);

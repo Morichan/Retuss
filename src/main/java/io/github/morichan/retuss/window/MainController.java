@@ -325,9 +325,9 @@ public class MainController {
             for (int j = 0; j < umlPackage.getClasses().get(i).getOperations().size(); j++) {
                 classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).getOperations().get(j).toString());
                 if (umlPackage.getClasses().get(i).getHasAbstractOperations().get(j)) {
-                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Abstraction, "abstract");
+                    classDiagramDrawer.changeDrawnNodeText(i, ContentType.Abstraction, j, "abstract");
                 } else {
-                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Abstraction, "not abstract");
+                    classDiagramDrawer.changeDrawnNodeText(i, ContentType.Abstraction, j, "not abstract");
                 }
             }
 
@@ -456,7 +456,6 @@ public class MainController {
         ((Menu) contextMenu.getItems().get(4)).getItems().get(0).setOnAction(event -> {
             String addOperation = showAddClassOperationInputDialog();
             classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, addOperation);
-            classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Abstraction, "not abstract");
             classDiagramDrawer.allReDrawCanvas();
             convertUmlToCode();
         });
