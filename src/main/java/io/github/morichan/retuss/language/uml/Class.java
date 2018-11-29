@@ -2,6 +2,7 @@ package io.github.morichan.retuss.language.uml;
 
 import io.github.morichan.fescue.feature.Attribute;
 import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class Class {
     private Class generalizationClass;
     private List<Attribute> attributes;
     private List<Attribute> relations;
-    private List<Operation> operations;
+    private List<OperationGraphic> operationGraphics;
     private List<Boolean> hasAbstractOperations;
 
     /**
@@ -29,7 +30,7 @@ public class Class {
         setName("ClassName");
         attributes = new ArrayList<>();
         relations = new ArrayList<>();
-        operations = new ArrayList<>();
+        operationGraphics = new ArrayList<>();
         hasAbstractOperations = new ArrayList<>();
     }
 
@@ -42,7 +43,7 @@ public class Class {
         setName(className);
         attributes = new ArrayList<>();
         relations = new ArrayList<>();
-        operations = new ArrayList<>();
+        operationGraphics = new ArrayList<>();
         hasAbstractOperations = new ArrayList<>();
     }
 
@@ -203,7 +204,7 @@ public class Class {
     public void addOperation(Operation operation) {
         if (operation == null) return;
 
-        operations.add(operation);
+        operationGraphics.add(new OperationGraphic(operation));
         addWhetherOperationIsAbstract(false);
     }
 
@@ -218,9 +219,9 @@ public class Class {
      * @param isAbstract 操作が抽象操作の場合は真を持つ真偽値
      */
     public void addOperation(Operation operation, boolean isAbstract) {
-        if (operation == null) return;
+        if (operation == null || operation.toString().isEmpty()) return;
 
-        operations.add(operation);
+        operationGraphics.add(new OperationGraphic(operation));
         addWhetherOperationIsAbstract(isAbstract);
     }
 
@@ -232,12 +233,12 @@ public class Class {
      * また、 {@code null} を設定しようとした場合はリストを空にします。
      * </p>
      *
-     * @param operations 操作のリスト
+     * @param operationGraphics 操作のリスト
      */
-    public void setOperations(List<Operation> operations) {
-        if (operations != null) for (Operation operation : operations) addOperation(operation);
+    public void setOperationGraphics(List<Operation> operationGraphics) {
+        if (operationGraphics != null) for (Operation operation : operationGraphics) addOperation(operation);
         else {
-            this.operations.clear();
+            this.operationGraphics.clear();
             this.hasAbstractOperations.clear();
         }
     }
@@ -247,7 +248,13 @@ public class Class {
      *
      * @return 操作のリスト <br> 要素数0の可能性あり
      */
-    public List<Operation> getOperations() {
+    public List<OperationGraphic> getOperationGraphics() {
+        return operationGraphics;
+    }
+
+    public List<Operation> extractOperations() {
+        List<Operation> operations = new ArrayList<>();
+        for (OperationGraphic operationGraphic : operationGraphics) operations.add(operationGraphic.getOperation());
         return operations;
     }
 
@@ -259,11 +266,11 @@ public class Class {
      * <p> 操作のリストを空にします </p>
      *
      * <p>
-     * {@link #setOperations(List)} に{@code null} を設定しています。
+     * {@link #setOperationGraphics(List)} に{@code null} を設定しています。
      * </p>
      */
     public void emptyOperation() {
-        setOperations(null);
+        setOperationGraphics(null);
     }
 
     public void addWhetherOperationIsAbstract(boolean isAbstract) {

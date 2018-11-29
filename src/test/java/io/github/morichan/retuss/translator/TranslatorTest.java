@@ -10,7 +10,6 @@ import io.github.morichan.retuss.language.java.*;
 import io.github.morichan.retuss.language.uml.Package;
 import io.github.morichan.retuss.language.uml.Class;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -108,8 +107,8 @@ class TranslatorTest {
                     () -> assertThat(actual.getClasses().get(0).getName()).hasToString(expected.get(0)),
                     () -> assertThat(actual.getClasses().get(0).getAttributes().get(0)).hasToString(expected.get(1)),
                     () -> assertThat(actual.getClasses().get(0).getAttributes().get(1)).hasToString(expected.get(2)),
-                    () -> assertThat(actual.getClasses().get(0).getOperations().get(0)).hasToString(expected.get(3)),
-                    () -> assertThat(actual.getClasses().get(0).getOperations().get(1)).hasToString(expected.get(4))
+                    () -> assertThat(actual.getClasses().get(0).extractOperations().get(0)).hasToString(expected.get(3)),
+                    () -> assertThat(actual.getClasses().get(0).extractOperations().get(1)).hasToString(expected.get(4))
             );
         }
     }

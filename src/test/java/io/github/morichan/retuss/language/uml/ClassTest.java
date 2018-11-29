@@ -3,8 +3,8 @@ package io.github.morichan.retuss.language.uml;
 import io.github.morichan.fescue.feature.Attribute;
 import io.github.morichan.fescue.feature.Operation;
 import io.github.morichan.fescue.feature.name.Name;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ClassTest {
 
@@ -157,7 +156,7 @@ class ClassTest {
             @Test
             void 操作が全くない初期値として要素数0のリストを返す() {
 
-                List<Operation> actual = obj.getOperations();
+                List<OperationGraphic> actual = obj.getOperationGraphics();
 
                 assertThat(actual).isEmpty();
             }
@@ -167,7 +166,7 @@ class ClassTest {
                 Operation expected = new Operation(new Name("operation"));
 
                 obj.addOperation(expected);
-                List<Operation> actual = obj.getOperations();
+                List<Operation> actual = obj.extractOperations();
 
                 assertThat(actual).containsOnly(expected);
             }
@@ -179,17 +178,17 @@ class ClassTest {
                         new Operation(new Name("operation1")),
                         new Operation(new Name("operation2")));
 
-                obj.setOperations(expected);
-                List<Operation> actual = obj.getOperations();
+                obj.setOperationGraphics(expected);
+                List<Operation> actual = obj.extractOperations();
 
                 assertThat(actual).containsSequence(expected);
             }
 
             @Test
             void nullを設定すると要素数0のリストを返す() {
-                obj.setOperations(null);
+                obj.setOperationGraphics(null);
 
-                List<Operation> actual = obj.getOperations();
+                List<Operation> actual = obj.extractOperations();
 
                 assertThat(actual).isEmpty();
             }
@@ -198,7 +197,7 @@ class ClassTest {
             void リセットすると要素数0のリストを返す() {
                 obj.emptyOperation();
 
-                List<Operation> actual = obj.getOperations();
+                List<Operation> actual = obj.extractOperations();
 
                 assertThat(actual).isEmpty();
             }
@@ -269,7 +268,7 @@ class ClassTest {
             void nullを設定しようとしても反映しない() {
 
                 obj.addOperation(null);
-                List<Operation> actual = obj.getOperations();
+                List<Operation> actual = obj.extractOperations();
 
                 assertThat(actual).isEmpty();
             }
@@ -281,8 +280,8 @@ class ClassTest {
                         null,
                         new Operation(new Name("operation2")));
 
-                obj.setOperations(expected);
-                List<Operation> actual = obj.getOperations();
+                obj.setOperationGraphics(expected);
+                List<Operation> actual = obj.extractOperations();
                 assertThat(actual).doesNotContainNull();
             }
         }

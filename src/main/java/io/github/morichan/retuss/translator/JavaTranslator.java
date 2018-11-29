@@ -7,6 +7,7 @@ import io.github.morichan.fescue.feature.visibility.Visibility;
 import io.github.morichan.retuss.language.java.*;
 import io.github.morichan.retuss.language.java.Class;
 import io.github.morichan.retuss.language.uml.Package;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,7 +66,8 @@ public class JavaTranslator {
             javaClass.addField(field);
         }
 
-        for (Operation operation : classClass.getOperations()) {
+        for (OperationGraphic operationGraphic : classClass.getOperationGraphics()) {
+            Operation operation = operationGraphic.getOperation();
             Method method = new Method(new Type(operation.getReturnType().toString()), operation.getName().toString());
             try {
                 method.setAccessModifier(convert(operation.getVisibility()));

@@ -1,6 +1,5 @@
 package io.github.morichan.retuss.window;
 
-import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.NodeDiagram;
 import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
@@ -322,8 +321,8 @@ public class MainController {
                 count++;
             }
 
-            for (int j = 0; j < umlPackage.getClasses().get(i).getOperations().size(); j++) {
-                classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).getOperations().get(j).toString());
+            for (int j = 0; j < umlPackage.getClasses().get(i).extractOperations().size(); j++) {
+                classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).extractOperations().get(j).toString());
                 if (umlPackage.getClasses().get(i).getHasAbstractOperations().get(j)) {
                     classDiagramDrawer.changeDrawnNodeText(i, ContentType.Abstraction, j, "abstract");
                 } else {

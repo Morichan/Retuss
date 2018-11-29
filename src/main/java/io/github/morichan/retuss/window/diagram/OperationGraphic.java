@@ -25,6 +25,11 @@ public class OperationGraphic extends ClassDiagramGraphic {
         isIndicate = true;
     }
 
+    public OperationGraphic(Operation operation) {
+        this.operation = operation;
+        isIndicate = true;
+    }
+
     public Operation getOperation() {
         return operation;
     }

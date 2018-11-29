@@ -11,14 +11,12 @@ import io.github.morichan.retuss.language.java.*;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.language.uml.Package;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class UMLTranslatorTest {
 
@@ -250,7 +248,7 @@ class UMLTranslatorTest {
                     protectedOperation.setVisibility(Visibility.Protected);
                     packageOperation.setVisibility(Visibility.Package);
                     privateOperation.setVisibility(Visibility.Private);
-                    classClass.setOperations(Arrays.asList(publicOperation, protectedOperation, packageOperation, privateOperation));
+                    classClass.setOperationGraphics(Arrays.asList(publicOperation, protectedOperation, packageOperation, privateOperation));
                     expected.addClass(classClass);
 
                     Java java = new Java();

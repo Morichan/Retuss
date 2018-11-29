@@ -7,6 +7,7 @@ import io.github.morichan.fescue.feature.visibility.Visibility;
 import io.github.morichan.retuss.language.cpp.*;
 import io.github.morichan.retuss.language.cpp.Class;
 import io.github.morichan.retuss.language.uml.Package;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,7 +55,8 @@ public class CppTranslator {
             cppClass.addMemberVariable(memberVariable);
         }
 
-        for (Operation operation : classClass.getOperations()) {
+        for (OperationGraphic operationGraphic : classClass.getOperationGraphics()) {
+            Operation operation = operationGraphic.getOperation();
             MemberFunction memberFunction = new MemberFunction(new Type(operation.getReturnType().toString()), operation.getName().toString());
             try {
                 memberFunction.setAccessSpecifier(convert(operation.getVisibility()));
