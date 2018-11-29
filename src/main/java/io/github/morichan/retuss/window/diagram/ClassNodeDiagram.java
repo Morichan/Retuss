@@ -135,7 +135,7 @@ public class ClassNodeDiagram extends NodeDiagram {
             operations.add(new OperationGraphic(text));
         } else if (type == ContentType.Composition) {
             relations.add(new RelationshipAttributeGraphic(text));
-        } else { //if (type == ContentType.Abstraction) {
+        } else {
             throw new IllegalArgumentException();
         }
     }

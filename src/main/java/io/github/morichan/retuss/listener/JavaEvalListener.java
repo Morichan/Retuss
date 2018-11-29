@@ -76,7 +76,6 @@ public class JavaEvalListener extends JavaParserBaseListener {
                     try {
                         accessModifier = AccessModifier.choose(ctx.getChild(i).getChild(0).getChild(0).getText());
                         isAlreadySearchedAccessModifier = true;
-                        break;
                     } catch (IllegalArgumentException e) {
                         // static, abstract, final, strictfp or Annotation
                         if (ctx.getChild(i).getChild(0).getChild(0).getText().equals("abstract")) {
