@@ -7,11 +7,11 @@ import java.util.List;
  * <p> Javaにおけるクラスに関するクラス </p>
  */
 public class Class {
-
     private String name;
     private Class extendsClass;
     private List<MemberVariable> memberVariables;
     private List<MemberFunction> memberFunctions;
+    private boolean isAbstract = false;
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -180,6 +180,15 @@ public class Class {
     }
 
 
+    public void setAbstract(boolean abstractFlag) {
+        isAbstract = abstractFlag;
+    }
+    public boolean isAbstract() {
+        return isAbstract;
+    }
+
+
+
     /**
      * <p> ソースコードの文字列を組立てます </p>
      *
@@ -189,6 +198,8 @@ public class Class {
         StringBuilder sb = new StringBuilder();
         boolean flagProtected =false;
 boolean flagString=false;
+
+
         for(MemberVariable memberVariable : memberVariables){
             if(memberVariable.getFlagString()== true){
                flagString= true;
@@ -198,6 +209,8 @@ if(flagString == true){
             sb.append("#include <string>");
     sb.append(" \n");
         }
+
+
 
         sb.append("class ");
         sb.append(name);
@@ -294,5 +307,25 @@ if(flagString == true){
     @Override
     public String toString() {
         return manufacture();
+    }
+
+    public  String cppFile_toString(){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(" \n");
+        sb.append(" \n");
+        sb.append(" \n");
+
+        for (MemberFunction memberFunction : memberFunctions) {
+            sb.append(" \n");
+            sb.append(name);
+            sb.append("::");
+            sb.append(memberFunction.getName());
+            sb.append("(){");
+            sb.append(" \n");
+            sb.append("}\n");
+        }
+
+        return sb.toString();
     }
 }

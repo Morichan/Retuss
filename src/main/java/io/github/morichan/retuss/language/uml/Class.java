@@ -16,6 +16,7 @@ public class Class {
     private List<Attribute> attributes;
     private List<Attribute> relations;
     private List<Operation> operations;
+
     private List<Boolean> hasAbstractOperations;
 
     /**
@@ -30,6 +31,7 @@ public class Class {
         attributes = new ArrayList<>();
         relations = new ArrayList<>();
         operations = new ArrayList<>();
+
         hasAbstractOperations = new ArrayList<>();
     }
 
@@ -43,6 +45,7 @@ public class Class {
         attributes = new ArrayList<>();
         relations = new ArrayList<>();
         operations = new ArrayList<>();
+
         hasAbstractOperations = new ArrayList<>();
     }
 
@@ -266,7 +269,9 @@ public class Class {
         setOperations(null);
     }
 
+
     public void addWhetherOperationIsAbstract(boolean isAbstract) {
         hasAbstractOperations.add(isAbstract);
     }
+
 }

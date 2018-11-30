@@ -53,6 +53,12 @@ public class CodeController {
     }
 
     public void createCodeTabs(Package classPackage) {
+
+        //ためし
+//        if(umlPackage.getClasses().size() >= 1) {
+//            classPackage.getClasses().get(0).addFlagOperationsImplementation(umlPackage.getClasses().get(0).getFlagOperationsImplementations().get(0));
+//        }
+
         translator.translate(classPackage);
         java = translator.getJava();
         cpp = translator.getCpp();
@@ -106,7 +112,7 @@ public class CodeController {
         codeArea.setOnKeyTyped(event -> convertCodeToUml(Language.Cpp));
 
         if (cppClass != null) codeArea.replaceText(cppClass.toString());
-
+       // if (cppClass != null) codeArea.replaceText(cppClass.cppFile_toString());
 
         if (cppClass == null) return createTab(codeArea, null);
         else return createTab(codeArea, cppClass.getName());
@@ -139,6 +145,9 @@ public class CodeController {
                     java.addClass(javaLanguage.getJava().getClasses().get(0));
                 } else {
                     cppLanguage.parseForClassDiagram(getCode(1, i));
+//                    for (io.github.morichan.retuss.language.cpp.Class cppClass : cppLanguage.getCpp().getClasses()) {                     //複数クラスに対応中、今のところで来ていない
+//                        cpp.addClass(cppClass);
+//                    }
                     cpp.addClass(cppLanguage.getCpp().getClasses().get(0));
                 }
             } catch (NullPointerException e) {
@@ -158,7 +167,7 @@ public class CodeController {
 
         umlPackage = translator.getPackage();
 
-        mainController.writeUmlForCode(umlPackage);
+        mainController.writeUmlForCode(umlPackage);     //ここで受け渡す際に消えている。
     }
 
     private void setCodeTabs(Java java) {

@@ -72,7 +72,7 @@ public class Package {
      */
     public void addClass(Class javaClass) {
         if (javaClass != null) classes.add(javaClass);
-    }
+    }    //ここのjavaClassは、classClassになるきがする。
 
     /**
      * <p> クラスのリストを設定します </p>
