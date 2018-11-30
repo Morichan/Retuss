@@ -70,8 +70,15 @@ public class CppTranslator {
             } catch (IllegalStateException e) {
                 memberFunction.emptyArguments();
             }
+
             cppClass.addMemberFunction(memberFunction);
         }
+//              int i=0;
+//        for(Boolean flagOperationsImplementation : classClass.getFlagOperationsImplementations()){
+//
+//           cppClass.getMemberFunctions().get(i).setFlagImplementation(flagOperationsImplementation.booleanValue());
+//            i++;
+//        }
 
 
 

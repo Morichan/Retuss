@@ -10,7 +10,9 @@ public class MemberFunction {
     private Type type;
     private String name;
     private List<Argument> arguments;
-
+    private boolean isVirtualMemberFunction0= false;
+private String functionbody;
+private boolean flagImplementation;
     /**
      * <p> デフォルトコンストラクタ </p>
      *
@@ -23,6 +25,7 @@ public class MemberFunction {
         type = new Type("void");
         name = "method";
         arguments = new ArrayList<>();
+        functionbody = null;
     }
 
     /**
@@ -36,6 +39,7 @@ public class MemberFunction {
         setType(type);
         setName(name);
         arguments = new ArrayList<>();
+        functionbody = null;
     }
 
     /**
@@ -51,7 +55,25 @@ public class MemberFunction {
         setName(name);
         this.arguments = new ArrayList<>();
         setArguments(new ArrayList<>(Arrays.asList(arguments)));
+        functionbody = null;
     }
+
+    /**
+     * <p> 型とメソッド名と引数とボディを設定するコンストラクタ </p>
+     *
+     * @param type 型 <br> {@link #setType(Type)} を利用します
+     * @param name メソッド名 <br> {@link #setName(String)} を利用します
+     * @param arguments 複数の引数 <br> {@link #setArguments(List)} を利用します
+     */
+    public MemberFunction(Type type, String name,String functionbody, Argument... arguments) {
+        accessSpecifier = AccessSpecifier.Public;
+        setType(type);
+        setName(name);
+        this.arguments = new ArrayList<>();
+        setArguments(new ArrayList<>(Arrays.asList(arguments)));
+        this.functionbody = functionbody;
+    }
+
 
     /**
      * <p> アクセス修飾子を設定します </p>
@@ -171,6 +193,28 @@ public class MemberFunction {
         setArguments(null);
     }
 
+    public void setFunctionbody(String functionbody) {
+        if (functionbody == null) throw new IllegalArgumentException();
+        this.functionbody = functionbody;
+    }
+
+    public String getFunctionbody(){
+       return functionbody;
+    }
+
+    public void setFlagImplementation(boolean flagImplementation){
+        this.flagImplementation=flagImplementation;
+    }
+
+    public  boolean getFlagImplementation(){return flagImplementation;}
+
+    public void setVirtualMemberFunction0(boolean abstractFlag) {
+        isVirtualMemberFunction0 = abstractFlag;
+    }
+    public boolean isAbstract() {
+        return isVirtualMemberFunction0;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -179,6 +223,9 @@ public class MemberFunction {
 //            sb.append(accessSpecifier);
 //            sb.append(" ");
       //  }
+
+        if (isVirtualMemberFunction0) sb.append("virtual ");
+
 
         sb.append(type);
         sb.append(" ");
@@ -193,8 +240,24 @@ public class MemberFunction {
             sb.append(String.join(", ", args));
         }
 
-        sb.append(") {}");
+//        sb.append(") {}");
+        sb.append(") ");
 
+//        if(functionbody ==null) {
+//        sb.append(";");
+//        }else {
+//            sb.append(functionbody);
+//        }
+
+        if(isVirtualMemberFunction0) {
+        sb.append("= 0;");
+        }else {
+            if (flagImplementation == true) {
+                sb.append("{}");
+            } else {
+                sb.append(";");
+            }
+        }
         return sb.toString();
     }
 }
