@@ -63,9 +63,10 @@ private boolean flagImplementation;
      *
      * @param type 型 <br> {@link #setType(Type)} を利用します
      * @param name メソッド名 <br> {@link #setName(String)} を利用します
+     * @param functionbody メンバ関数実装部
      * @param arguments 複数の引数 <br> {@link #setArguments(List)} を利用します
      */
-    public MemberFunction(Type type, String name,String functionbody, Argument... arguments) {
+    public MemberFunction(Type type, String name, String functionbody, Argument... arguments) {
         accessSpecifier = AccessSpecifier.Public;
         setType(type);
         setName(name);

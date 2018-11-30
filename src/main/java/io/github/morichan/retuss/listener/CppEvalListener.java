@@ -15,16 +15,16 @@ public class CppEvalListener extends CPP14BaseListener {
     private Cpp cpp = new Cpp();
     //  private String classname; //
 //    private CPP14Parser.ClassnameContext classnameContext = null;
-  //  private List<CPP14Parser.ClassnameContext> classnames = new ArrayList<>();
+    //  private List<CPP14Parser.ClassnameContext> classnames = new ArrayList<>();
 
     //最初に探索をはじめた時の初期の構文で必要なものを準備
-  //  private MemberVariable memberVariable=new MemberVariable();
-    private AccessSpecifier accessSpecifier=null;
+    //  private MemberVariable memberVariable=new MemberVariable();
+    private AccessSpecifier accessSpecifier = null;
     boolean isAlreadySearchedAccessSpecifier = false;
-    boolean functiondefinitionFlag=false;
-    boolean memberdeclarationFlag=false;
-    boolean classspecifierFlag=false;
-    boolean hasVirtualMemberFunctions0=false;
+    boolean functiondefinitionFlag = false;
+    boolean memberdeclarationFlag = false;
+    boolean classspecifierFlag = false;
+    boolean hasVirtualMemberFunctions0 = false;
 
     @Override
     public void enterTranslationunit(CPP14Parser.TranslationunitContext ctx) {
@@ -34,17 +34,17 @@ public class CppEvalListener extends CPP14BaseListener {
     public void enterTypespecifier(CPP14Parser.TypespecifierContext ctx) {
     }
 
-/*
-*メンバ変数 orメンバ関数の指定子を取得
- */
+    /*
+     *メンバ変数 orメンバ関数の指定子を取得
+     */
 
     @Override
     public void enterMemberspecification(CPP14Parser.MemberspecificationContext ctx) {
-     //   accessSpecifier = null;
+        //   accessSpecifier = null;
 
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (ctx.getChild(i) instanceof CPP14Parser.AccessspecifierContext) {
-                accessSpecifier=accessSpecifier.choose(ctx.getChild(i).getChild(0).getText());
+                accessSpecifier = accessSpecifier.choose(ctx.getChild(i).getChild(0).getText());
             }
         }
 
@@ -55,68 +55,71 @@ public class CppEvalListener extends CPP14BaseListener {
     メンバ変数か関数の判別して、適切な処理へ（";"で宣言するメンバのとき）
      */
 
-           @Override public void enterMemberdeclaration(CPP14Parser.MemberdeclarationContext ctx) {
-            // MemberVariable memberVariable = new MemberVariable();
-            memberdeclarationFlag=true;
-            if((ctx.getChild(0) instanceof CPP14Parser.FunctiondefinitionContext) == false) {        //関数の記述方法の{}の方法をブロック
-                if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() == 1) {     //メンバ変数の時
-                    MemberVariable memberVariable = new MemberVariable();
-                    if (accessSpecifier != null) {
-                        memberVariable.setAccessSpecifier(accessSpecifier);
-                        // accessSpecifier = null;
-                    }
-
-                    for (int i = 0; i < ctx.getChildCount(); i++) {
-                        if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
-                            if(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() > 1){     //stringの分岐に対応。
-                                memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getText()));
-                            }else {
-                                memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
-                            }
-                        }
-                        if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
-                            memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
-                        }
-                    }
-                    cpp.getClasses().get(cpp.getClasses().size() - 1).addMemberVariable(memberVariable);
+    @Override
+    public void enterMemberdeclaration(CPP14Parser.MemberdeclarationContext ctx) {
+        // MemberVariable memberVariable = new MemberVariable();
+        memberdeclarationFlag = true;
+        if (!((ctx.getChild(0) instanceof CPP14Parser.FunctiondefinitionContext))) {        //関数の記述方法の{}の方法をブロック
+            if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() == 1) {     //メンバ変数の時
+                MemberVariable memberVariable = new MemberVariable();
+                if (accessSpecifier != null) {
+                    memberVariable.setAccessSpecifier(accessSpecifier);
+                    // accessSpecifier = null;
                 }
 
-                if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChild(1) instanceof CPP14Parser.ParametersandqualifiersContext) {      //メンバ関数のとき
-                    MemberFunction memberFunction = new MemberFunction();
-                    if (accessSpecifier != null) {
-                        memberFunction.setAccessSpecifier(accessSpecifier);
-                        // accessSpecifier = null;
-                    }
-                    for (int i = 0; i < ctx.getChildCount(); i++) {
-                        if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
-
-                                    if(ctx.getChild(i).getChild(0).getChild(0) instanceof CPP14Parser.FunctionspecifierContext){     //"virtual"分岐
-                                        memberFunction.setType(new Type(ctx.getChild(i).getChild(1).getText()));
-                                    }else {
-                                        memberFunction.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
-                                    }
-                        }
-                        if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
-
-
-                            if(ctx.getChild(i).getChild(0).getChildCount() >= 2 && ctx.getChild(i).getChild(0).getChild(1).getChild(1).getText().equals("0")) {
- memberFunction.setVirtualMemberFunction0(true);
- hasVirtualMemberFunctions0=true;
-                                System.out.println("まじはげ");
-                            }
-
-                            memberFunction.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+                for (int i = 0; i < ctx.getChildCount(); i++) {
+                    if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
+                        if (ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() > 1) {     //stringの分岐に対応。
+                            memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getText()));
+                        } else {
+                            memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
                         }
                     }
-                    cpp.getClasses().get(cpp.getClasses().size() - 1).addMemberFunction(memberFunction);
+                    if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
+                        memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+                    }
                 }
+                cpp.getClasses().get(cpp.getClasses().size() - 1).addMemberVariable(memberVariable);
+            }
 
+            if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChild(1) instanceof CPP14Parser.ParametersandqualifiersContext) {      //メンバ関数のとき
+                MemberFunction memberFunction = new MemberFunction();
+                if (accessSpecifier != null) {
+                    memberFunction.setAccessSpecifier(accessSpecifier);
+                    // accessSpecifier = null;
+                }
+                for (int i = 0; i < ctx.getChildCount(); i++) {
+                    if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
+
+                        if (ctx.getChild(i).getChild(0).getChild(0) instanceof CPP14Parser.FunctionspecifierContext) {     //"virtual"分岐
+                            memberFunction.setType(new Type(ctx.getChild(i).getChild(1).getText()));
+                        } else {
+                            memberFunction.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
+                        }
+                    }
+                    if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
+
+
+                        if (ctx.getChild(i).getChild(0).getChildCount() >= 2 && ctx.getChild(i).getChild(0).getChild(1).getChild(1).getText().equals("0")) {
+                            memberFunction.setVirtualMemberFunction0(true);
+                            hasVirtualMemberFunctions0 = true;
+                            System.out.println("まじはげ");
+                        }
+
+                        memberFunction.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+                    }
+                }
+                cpp.getClasses().get(cpp.getClasses().size() - 1).addMemberFunction(memberFunction);
             }
 
         }
 
+    }
+
     @Override
-    public void exitMemberdeclaration(CPP14Parser.MemberdeclarationContext ctx) { memberdeclarationFlag=false; }
+    public void exitMemberdeclaration(CPP14Parser.MemberdeclarationContext ctx) {
+        memberdeclarationFlag = false;
+    }
 
 
     /*
@@ -125,8 +128,8 @@ public class CppEvalListener extends CPP14BaseListener {
 
     @Override
     public void enterFunctiondefinition(CPP14Parser.FunctiondefinitionContext ctx) {
-      //  functiondefinitionFlag=true;
-        if(classspecifierFlag == true) {
+        //  functiondefinitionFlag=true;
+        if (classspecifierFlag) {
             if (ctx.getChildCount() > 2) {         //コンストラクトと普通のメソッドの区別
                 MemberFunction memberFunction = new MemberFunction();
                 memberFunction.setFlagImplementation(true);
@@ -150,12 +153,12 @@ public class CppEvalListener extends CPP14BaseListener {
         }
     }
 
-   // @Override public void exitFunctiondefinition(CPP14Parser.FunctiondefinitionContext ctx) { functiondefinitionFlag=true; }     //ここfalseじゃね？
+    // @Override public void exitFunctiondefinition(CPP14Parser.FunctiondefinitionContext ctx) { functiondefinitionFlag=true; }     //ここfalseじゃね？
 
     @Override
     public void enterParameterdeclaration(CPP14Parser.ParameterdeclarationContext ctx) {
 //        if (! (ctx.getParent().getParent().getParent().getParent().getParent().getParent().getParent() instanceof CPP14Parser.FunctiondefinitionContext)) return;
-        if (memberdeclarationFlag == true) {
+        if (memberdeclarationFlag) {
             Argument argument = new Argument();
 
             if (ctx.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0) instanceof CPP14Parser.SimpletypespecifierContext) {
@@ -210,12 +213,12 @@ public class CppEvalListener extends CPP14BaseListener {
     public void enterClassspecifier(CPP14Parser.ClassspecifierContext ctx) {
         class_count++;
         Class cppClass = new Class();
-        classspecifierFlag=true;
-        hasVirtualMemberFunctions0=false;
+        classspecifierFlag = true;
+        hasVirtualMemberFunctions0 = false;
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (ctx.getChild(i) instanceof CPP14Parser.ClassheadContext) {
-               if(ctx.getChild(i).getChild(0) instanceof  CPP14Parser.ClasskeyContext){
-                 //   cppClass.setClassType(ctx.getChild(i).getChild(0).getChild(0).getText());
+                if (ctx.getChild(i).getChild(0) instanceof CPP14Parser.ClasskeyContext) {
+                    //   cppClass.setClassType(ctx.getChild(i).getChild(0).getChild(0).getText());
                 }
                 cppClass.setName(ctx.getChild(i).getChild(1).getChild(0).getChild(0).getText());
                 cppClass.setExtendsClass(searchExtendsClass((CPP14Parser.ClassheadContext) ctx.getChild(i)));
@@ -228,29 +231,28 @@ public class CppEvalListener extends CPP14BaseListener {
 
     @Override
     public void exitClassspecifier(CPP14Parser.ClassspecifierContext ctx) {
-    if(hasVirtualMemberFunctions0 ){
-        cpp.getClasses().get(cpp.getClasses().size() - 1).setAbstract(hasVirtualMemberFunctions0);
-    }
+        if (hasVirtualMemberFunctions0) {
+            cpp.getClasses().get(cpp.getClasses().size() - 1).setAbstract(hasVirtualMemberFunctions0);
+        }
 
-        classspecifierFlag=false;
+        classspecifierFlag = false;
     }
 
     /**
      * メソッドの実装を文字列として保持
-     * @param ctx
+     *
+     * @param ctx メソッド実装部のコンテキスト
      */
     @Override
     public void enterFunctionbody(CPP14Parser.FunctionbodyContext ctx) {
-      //  MemberFunction memberFunction = new MemberFunction();
-String functionbody;
-functionbody="defo\n";
-functionbody = ctx.getText();
+        //  MemberFunction memberFunction = new MemberFunction();
+        String functionbody;
+        functionbody = "defo\n";
+        functionbody = ctx.getText();
 
         cpp.getClasses().get(cpp.getClasses().size() - 1).getMemberFunctions()
                 .get(cpp.getClasses().get(cpp.getClasses().size() - 1).getMemberFunctions().size() - 1).setFunctionbody(functionbody);
     }
-
-
 
 
     /**
@@ -266,9 +268,6 @@ functionbody = ctx.getText();
 //        }
 //        cpp.addClass(cppClass);
     }
-
-
-
 
 
     public Cpp getCpp() {
