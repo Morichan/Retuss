@@ -401,7 +401,6 @@ public class MainController {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, classButtonInCD);
         classDiagramDrawer.setNodeText(className);
         classDiagramDrawer.addDrawnNode(buttonsInCD);
-        classDiagramDrawer.allReDrawCanvas();
         convertUmlToCode();
         writeUmlForCode(classDiagramDrawer.extractPackage());
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, normalButtonInCD);
@@ -409,17 +408,11 @@ public class MainController {
 
     private void importCode(Language language, String code) {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, classButtonInCD);
-        Package umlPackage = classDiagramDrawer.extractPackage();
         classDiagramDrawer.setNodeText("ThisIsCurrentClassNameBecauseThisIsRewrittenInstantly");
         classDiagramDrawer.addDrawnNode(buttonsInCD);
-        classDiagramDrawer.allReDrawCanvas();
-        if (language == Language.Java) {
-            umlPackage.addClass(codeController.parseForJava(code).getClasses().get(0));
-        } else { // if (language == Language.Cpp) {
-            umlPackage.addClass(codeController.parseForCpp(code).getClasses().get(0));
-        }
-        convertUmlToCode(umlPackage);
-        writeUmlForCode(umlPackage);
+        codeController.importCode(language, code);
+        convertUmlToCode(codeController.getUmlPackage());
+        writeUmlForCode(codeController.getUmlPackage());
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, normalButtonInCD);
     }
 
