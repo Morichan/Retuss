@@ -17,7 +17,6 @@ public class Class {
     private List<Attribute> attributes;
     private List<Attribute> relations;
     private List<OperationGraphic> operationGraphics;
-    private List<Boolean> hasAbstractOperations;
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -31,7 +30,6 @@ public class Class {
         attributes = new ArrayList<>();
         relations = new ArrayList<>();
         operationGraphics = new ArrayList<>();
-        hasAbstractOperations = new ArrayList<>();
     }
 
     /**
@@ -44,7 +42,6 @@ public class Class {
         attributes = new ArrayList<>();
         relations = new ArrayList<>();
         operationGraphics = new ArrayList<>();
-        hasAbstractOperations = new ArrayList<>();
     }
 
     /**
@@ -204,8 +201,9 @@ public class Class {
     public void addOperation(Operation operation) {
         if (operation == null) return;
 
-        operationGraphics.add(new OperationGraphic(operation));
-        addWhetherOperationIsAbstract(false);
+        OperationGraphic og = new OperationGraphic(operation);
+        og.setAbstract(false);
+        operationGraphics.add(og);
     }
 
     /**
@@ -221,8 +219,9 @@ public class Class {
     public void addOperation(Operation operation, boolean isAbstract) {
         if (operation == null || operation.toString().isEmpty()) return;
 
-        operationGraphics.add(new OperationGraphic(operation));
-        addWhetherOperationIsAbstract(isAbstract);
+        OperationGraphic og = new OperationGraphic(operation);
+        og.setAbstract(isAbstract);
+        operationGraphics.add(og);
     }
 
     /**
@@ -239,7 +238,6 @@ public class Class {
         if (operationGraphics != null) for (Operation operation : operationGraphics) addOperation(operation);
         else {
             this.operationGraphics.clear();
-            this.hasAbstractOperations.clear();
         }
     }
 
@@ -258,10 +256,6 @@ public class Class {
         return operations;
     }
 
-    public List<Boolean> getHasAbstractOperations() {
-        return hasAbstractOperations;
-    }
-
     /**
      * <p> 操作のリストを空にします </p>
      *
@@ -271,9 +265,5 @@ public class Class {
      */
     public void emptyOperation() {
         setOperationGraphics(null);
-    }
-
-    public void addWhetherOperationIsAbstract(boolean isAbstract) {
-        hasAbstractOperations.add(isAbstract);
     }
 }

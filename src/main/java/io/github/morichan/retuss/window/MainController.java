@@ -323,11 +323,10 @@ public class MainController {
 
             for (int j = 0; j < umlPackage.getClasses().get(i).extractOperations().size(); j++) {
                 classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).extractOperations().get(j).toString());
-                if (umlPackage.getClasses().get(i).getHasAbstractOperations().get(j)) {
-                    classDiagramDrawer.changeDrawnNodeText(i, ContentType.Abstraction, j, "abstract");
-                } else {
-                    classDiagramDrawer.changeDrawnNodeText(i, ContentType.Abstraction, j, "not abstract");
-                }
+                String abstractOrNot = umlPackage.getClasses().get(i).getOperationGraphics().get(j).isAbstract()
+                        ? "abstract"
+                        : "not abstract";
+                classDiagramDrawer.changeDrawnNodeText(i, ContentType.Abstraction, j, abstractOrNot);
             }
 
             if (umlPackage.getClasses().get(i).getGeneralizationClass() != null) {
