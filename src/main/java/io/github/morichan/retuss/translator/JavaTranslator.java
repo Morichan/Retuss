@@ -69,6 +69,10 @@ public class JavaTranslator {
         for (OperationGraphic operationGraphic : classClass.getOperationGraphics()) {
             Operation operation = operationGraphic.getOperation();
             Method method = new Method(new Type(operation.getReturnType().toString()), operation.getName().toString());
+            if (operationGraphic.isAbstract()) {
+                method.setAbstract(true);
+                javaClass.setAbstract(true);
+            }
             try {
                 method.setAccessModifier(convert(operation.getVisibility()));
             } catch (IllegalStateException e) {
