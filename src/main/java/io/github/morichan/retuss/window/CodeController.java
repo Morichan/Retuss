@@ -66,6 +66,18 @@ public class CodeController {
         setCodeTabs(cpp);
     }
 
+    public Package parseForJava(String code) {
+        javaLanguage.parseForClassDiagram(code);
+        translator.translate(javaLanguage.getJava());
+        return translator.getPackage();
+    }
+
+    public Package parseForCpp(String code) {
+        cppLanguage.parseForClassDiagram(code);
+        translator.translate(cppLanguage.getCpp());
+        return translator.getPackage();
+    }
+
     private Tab createLanguageTab(Language language) {
 
         TabPane codeTabPane = new TabPane();
