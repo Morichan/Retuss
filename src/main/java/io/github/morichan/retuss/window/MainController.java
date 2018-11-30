@@ -289,9 +289,9 @@ public class MainController {
 
         for (int i = 0; i < umlPackage.getClasses().size(); i++) {
             Map<Integer, Integer> relationIds = new HashMap<>();
-            for (int j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
+            for (int j = 0; j < umlPackage.getClasses().get(i).extractAttributes().size(); j++) {
                 for (int k = 0; k < umlPackage.getClasses().size(); k++) {
-                    if (umlPackage.getClasses().get(k).getName().equals(umlPackage.getClasses().get(i).getAttributes().get(j).getType().getName().getNameText())) {
+                    if (umlPackage.getClasses().get(k).getName().equals(umlPackage.getClasses().get(i).extractAttributes().get(j).getType().getName().getNameText())) {
                         relationIds.put(j, k);
                         break;
                     }
@@ -308,15 +308,15 @@ public class MainController {
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Operation);
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Composition);
 
-            for (int count = 0, j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
+            for (int count = 0, j = 0; j < umlPackage.getClasses().get(i).extractAttributes().size(); j++) {
                 if (relationsIds.get(i).containsKey(count)) {
-                    String content = umlPackage.getClasses().get(i).getAttributes().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).getAttributes().get(j).getName().getNameText();
+                    String content = umlPackage.getClasses().get(i).extractAttributes().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).extractAttributes().get(j).getName().getNameText();
                     classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(relationsIds.get(i).get(count)).getName());
-                    umlPackage.getClasses().get(i).getRelations().add(umlPackage.getClasses().get(i).getAttributes().get(j));
-                    umlPackage.getClasses().get(i).getAttributes().remove(j);
+                    umlPackage.getClasses().get(i).getRelations().add(umlPackage.getClasses().get(i).extractAttributes().get(j));
+                    umlPackage.getClasses().get(i).getAttributeGraphics().remove(j);
                     j--;
                 } else {
-                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Attribute, umlPackage.getClasses().get(i).getAttributes().get(j).toString());
+                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Attribute, umlPackage.getClasses().get(i).extractAttributes().get(j).toString());
                 }
                 count++;
             }

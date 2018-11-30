@@ -253,7 +253,7 @@ class JavaTranslatorTest {
                     protectedOperation.setVisibility(Visibility.Protected);
                     packageOperation.setVisibility(Visibility.Package);
                     privateOperation.setVisibility(Visibility.Private);
-                    classClass.setOperationGraphics(Arrays.asList(publicOperation, protectedOperation, packageOperation, privateOperation));
+                    classClass.setOperations(Arrays.asList(publicOperation, protectedOperation, packageOperation, privateOperation));
                     classPackage.addClass(classClass);
 
                     Java actual = obj.translate(classPackage);

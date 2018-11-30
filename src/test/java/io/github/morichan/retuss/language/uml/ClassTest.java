@@ -98,7 +98,7 @@ class ClassTest {
             @Test
             void 属性が全くない初期値として要素数0のリストを返す() {
 
-                List<Attribute> actual = obj.getAttributes();
+                List<Attribute> actual = obj.extractAttributes();
 
                 assertThat(actual).isEmpty();
             }
@@ -108,7 +108,7 @@ class ClassTest {
                 Attribute expected = new Attribute(new Name("attribute"));
 
                 obj.addAttribute(expected);
-                List<Attribute> actual = obj.getAttributes();
+                List<Attribute> actual = obj.extractAttributes();
 
                 assertThat(actual).containsOnly(expected);
             }
@@ -121,7 +121,7 @@ class ClassTest {
                         new Attribute(new Name("attribute2")));
 
                 obj.setAttributes(expected);
-                List<Attribute> actual = obj.getAttributes();
+                List<Attribute> actual = obj.extractAttributes();
 
                 assertThat(actual).containsSequence(expected);
             }
@@ -130,7 +130,7 @@ class ClassTest {
             void nullを設定すると要素数0のリストを返す() {
                 obj.setAttributes(null);
 
-                List<Attribute> actual = obj.getAttributes();
+                List<Attribute> actual = obj.extractAttributes();
 
                 assertThat(actual).isEmpty();
             }
@@ -139,7 +139,7 @@ class ClassTest {
             void リセットすると要素数0のリストを返す() {
                 obj.emptyAttribute();
 
-                List<Attribute> actual = obj.getAttributes();
+                List<Attribute> actual = obj.extractAttributes();
 
                 assertThat(actual).isEmpty();
             }
@@ -178,7 +178,7 @@ class ClassTest {
                         new Operation(new Name("operation1")),
                         new Operation(new Name("operation2")));
 
-                obj.setOperationGraphics(expected);
+                obj.setOperations(expected);
                 List<Operation> actual = obj.extractOperations();
 
                 assertThat(actual).containsSequence(expected);
@@ -186,7 +186,7 @@ class ClassTest {
 
             @Test
             void nullを設定すると要素数0のリストを返す() {
-                obj.setOperationGraphics(null);
+                obj.setOperations(null);
 
                 List<Operation> actual = obj.extractOperations();
 
@@ -238,7 +238,7 @@ class ClassTest {
             void nullを設定しようとしても反映しない() {
 
                 obj.addAttribute(null);
-                List<Attribute> actual = obj.getAttributes();
+                List<Attribute> actual = obj.extractAttributes();
 
                 assertThat(actual).isEmpty();
             }
@@ -251,7 +251,7 @@ class ClassTest {
                         new Attribute(new Name("attribute2")));
 
                 obj.setAttributes(expected);
-                List<Attribute> actual = obj.getAttributes();
+                List<Attribute> actual = obj.extractAttributes();
                     assertThat(actual).doesNotContainNull();
             }
         }
@@ -280,7 +280,7 @@ class ClassTest {
                         null,
                         new Operation(new Name("operation2")));
 
-                obj.setOperationGraphics(expected);
+                obj.setOperations(expected);
                 List<Operation> actual = obj.extractOperations();
                 assertThat(actual).doesNotContainNull();
             }

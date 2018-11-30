@@ -2,6 +2,7 @@ package io.github.morichan.retuss.language.uml;
 
 import io.github.morichan.fescue.feature.Attribute;
 import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.retuss.window.diagram.AttributeGraphic;
 import io.github.morichan.retuss.window.diagram.OperationGraphic;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class Class {
 
     private String name;
     private Class generalizationClass;
-    private List<Attribute> attributes;
+    private List<AttributeGraphic> attributeGraphics;
     private List<Attribute> relations;
     private List<OperationGraphic> operationGraphics;
 
@@ -27,7 +28,7 @@ public class Class {
      */
     public Class() {
         setName("ClassName");
-        attributes = new ArrayList<>();
+        attributeGraphics = new ArrayList<>();
         relations = new ArrayList<>();
         operationGraphics = new ArrayList<>();
     }
@@ -39,7 +40,7 @@ public class Class {
      */
     public Class(String className) {
         setName(className);
-        attributes = new ArrayList<>();
+        attributeGraphics = new ArrayList<>();
         relations = new ArrayList<>();
         operationGraphics = new ArrayList<>();
     }
@@ -103,7 +104,9 @@ public class Class {
      * @param attribute 属性 <br> {@code null} 無視
      */
     public void addAttribute(Attribute attribute) {
-        if (attribute != null) attributes.add(attribute);
+        if (attribute == null) return;
+
+        attributeGraphics.add(new AttributeGraphic(attribute));
     }
 
     /**
@@ -118,7 +121,9 @@ public class Class {
      */
     public void setAttributes(List<Attribute> attributes) {
         if (attributes != null) for (Attribute attribute : attributes) addAttribute(attribute);
-        else this.attributes.clear();
+        else {
+            this.attributeGraphics.clear();
+        }
     }
 
     /**
@@ -126,8 +131,19 @@ public class Class {
      *
      * @return 属性のリスト <br> 要素数0の可能性あり
      */
-    public List<Attribute> getAttributes() {
+    public List<Attribute> extractAttributes() {
+        List<Attribute> attributes = new ArrayList<>();
+        for (AttributeGraphic attributeGraphic : attributeGraphics) attributes.add(attributeGraphic.getAttribute());
         return attributes;
+    }
+
+    /**
+     * <p> 属性のリストを取得します </p>
+     *
+     * @return 操作のリスト <br> 要素数0の可能性あり
+     */
+    public List<AttributeGraphic> getAttributeGraphics() {
+        return attributeGraphics;
     }
 
     /**
@@ -232,10 +248,10 @@ public class Class {
      * また、 {@code null} を設定しようとした場合はリストを空にします。
      * </p>
      *
-     * @param operationGraphics 操作のリスト
+     * @param operations 操作のリスト
      */
-    public void setOperationGraphics(List<Operation> operationGraphics) {
-        if (operationGraphics != null) for (Operation operation : operationGraphics) addOperation(operation);
+    public void setOperations(List<Operation> operations) {
+        if (operations != null) for (Operation operation : operations) addOperation(operation);
         else {
             this.operationGraphics.clear();
         }
@@ -260,10 +276,10 @@ public class Class {
      * <p> 操作のリストを空にします </p>
      *
      * <p>
-     * {@link #setOperationGraphics(List)} に{@code null} を設定しています。
+     * {@link #setOperations(List)} に{@code null} を設定しています。
      * </p>
      */
     public void emptyOperation() {
-        setOperationGraphics(null);
+        setOperations(null);
     }
 }

@@ -40,7 +40,7 @@ public class CppTranslator {
     private Class createCppClass(io.github.morichan.retuss.language.uml.Class classClass) {
         Class cppClass = new Class(classClass.getName());
 
-        for (Attribute attribute : classClass.getAttributes()) {
+        for (Attribute attribute : classClass.extractAttributes()) {
             MemberVariable memberVariable = new MemberVariable(new Type(attribute.getType().toString()), attribute.getName().toString());
             try {
                 memberVariable.setAccessSpecifier(convert(attribute.getVisibility()));

@@ -40,7 +40,7 @@ public class JavaTranslator {
     private Class createJavaClass(io.github.morichan.retuss.language.uml.Class classClass) {
         Class javaClass = new Class(classClass.getName());
 
-        for (Attribute attribute : classClass.getAttributes()) {
+        for (Attribute attribute : classClass.extractAttributes()) {
             Field field = new Field(new Type(attribute.getType().toString()), attribute.getName().toString());
             try {
                 field.setAccessModifier(convert(attribute.getVisibility()));
