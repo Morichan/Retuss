@@ -312,7 +312,7 @@ public class MainController {
                 if (relationsIds.get(i).containsKey(count)) {
                     String content = umlPackage.getClasses().get(i).extractAttributes().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).extractAttributes().get(j).getName().getNameText();
                     classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(relationsIds.get(i).get(count)).getName());
-                    umlPackage.getClasses().get(i).getRelations().add(umlPackage.getClasses().get(i).extractAttributes().get(j));
+                    umlPackage.getClasses().get(i).addRelation(umlPackage.getClasses().get(i).extractAttributes().get(j));
                     umlPackage.getClasses().get(i).getAttributeGraphics().remove(j);
                     j--;
                 } else {

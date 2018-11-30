@@ -16,7 +16,7 @@ public class Class {
     private String name;
     private Class generalizationClass;
     private List<AttributeGraphic> attributeGraphics;
-    private List<Attribute> relations;
+    private List<AttributeGraphic> relationGraphics;
     private List<OperationGraphic> operationGraphics;
 
     /**
@@ -29,7 +29,7 @@ public class Class {
     public Class() {
         setName("ClassName");
         attributeGraphics = new ArrayList<>();
-        relations = new ArrayList<>();
+        relationGraphics = new ArrayList<>();
         operationGraphics = new ArrayList<>();
     }
 
@@ -41,7 +41,7 @@ public class Class {
     public Class(String className) {
         setName(className);
         attributeGraphics = new ArrayList<>();
-        relations = new ArrayList<>();
+        relationGraphics = new ArrayList<>();
         operationGraphics = new ArrayList<>();
     }
 
@@ -167,7 +167,9 @@ public class Class {
      * @param relation 関係属性 <br> {@code null} 無視
      */
     public void addRelation(Attribute relation) {
-        if (relation != null) relations.add(relation);
+        if (relation == null) return;
+
+        relationGraphics.add(new AttributeGraphic(relation));
     }
 
     /**
@@ -182,7 +184,11 @@ public class Class {
      */
     public void setRelations(List<Attribute> relations) {
         if (relations != null) for (Attribute relation : relations) addRelation(relation);
-        else this.relations.clear();
+        else this.relationGraphics.clear();
+    }
+
+    public List<AttributeGraphic> getRelationGraphics() {
+        return relationGraphics;
     }
 
     /**
@@ -190,7 +196,9 @@ public class Class {
      *
      * @return 関係属性のリスト <br> 要素数0の可能性あり
      */
-    public List<Attribute> getRelations() {
+    public List<Attribute> extractRelations() {
+        List<Attribute> relations = new ArrayList<>();
+        for (AttributeGraphic attributeGraphic : relationGraphics) relations.add(attributeGraphic.getAttribute());
         return relations;
     }
 

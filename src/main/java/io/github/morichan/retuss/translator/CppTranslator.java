@@ -76,7 +76,7 @@ public class CppTranslator {
 
 
         //コンポジションｎ￥の変換
-        for (Attribute relation : classClass.getRelations()) {
+        for (Attribute relation : classClass.extractRelations()) {
             MemberVariable memberVariable = new MemberVariable(new Type(relation.getType().toString()), relation.getName().toString());
             try {
                 memberVariable.setAccessSpecifier(convert(relation.getVisibility()));

@@ -55,7 +55,7 @@ public class JavaTranslator {
             javaClass.addField(field);
         }
 
-        for (Attribute relation : classClass.getRelations()) {
+        for (Attribute relation : classClass.extractRelations()) {
             Field field = new Field(new Type(relation.getType().toString()), relation.getName().toString());
             try {
                 field.setAccessModifier(convert(relation.getVisibility()));

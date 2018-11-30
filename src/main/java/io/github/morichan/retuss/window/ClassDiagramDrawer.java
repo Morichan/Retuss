@@ -196,7 +196,7 @@ public class ClassDiagramDrawer {
                 extendingClass.setGeneralizationClass(extendedClass);
             } else if (relations.getContentType(i) == ContentType.Composition) {
                 for (Class umlClass : umlPackage.getClasses()) {
-                    if (umlClass.getName().equals(nodes.get(relationSourceId).getNodeText()) && (umlClass.getRelations() == null || umlClass.getRelations().size() == 0)) {
+                    if (umlClass.getName().equals(nodes.get(relationSourceId).getNodeText()) && (umlClass.extractRelations() == null || umlClass.extractRelations().size() == 0)) {
                         umlClass.setRelations(((ClassNodeDiagram) nodes.get(relationSourceId)).extractRelations());
                         break;
                     }
