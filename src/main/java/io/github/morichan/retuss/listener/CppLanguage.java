@@ -27,6 +27,7 @@ public class CppLanguage {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         CPP14Parser parser = new CPP14Parser(tokens);
         ParseTree tree = parser.translationunit();
+      //  ParseTree tree = parser.classspecifier();
         ParseTreeWalker walker = new ParseTreeWalker();
         cppEvalListener = new CppEvalListener();
         walker.walk(cppEvalListener, tree);

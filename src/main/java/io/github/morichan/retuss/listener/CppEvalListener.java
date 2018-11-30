@@ -11,6 +11,7 @@ import java.util.List;
 
 
 public class CppEvalListener extends CPP14BaseListener {
+    int class_count;
     private Cpp cpp = new Cpp();
     //  private String classname; //
 //    private CPP14Parser.ClassnameContext classnameContext = null;
@@ -207,6 +208,7 @@ public class CppEvalListener extends CPP14BaseListener {
 
     @Override
     public void enterClassspecifier(CPP14Parser.ClassspecifierContext ctx) {
+        class_count++;
         Class cppClass = new Class();
         classspecifierFlag=true;
         hasVirtualMemberFunctions0=false;

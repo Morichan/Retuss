@@ -145,6 +145,9 @@ public class CodeController {
                     java.addClass(javaLanguage.getJava().getClasses().get(0));
                 } else {
                     cppLanguage.parseForClassDiagram(getCode(1, i));
+//                    for (io.github.morichan.retuss.language.cpp.Class cppClass : cppLanguage.getCpp().getClasses()) {                     //複数クラスに対応中、今のところで来ていない
+//                        cpp.addClass(cppClass);
+//                    }
                     cpp.addClass(cppLanguage.getCpp().getClasses().get(0));
                 }
             } catch (NullPointerException e) {
