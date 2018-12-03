@@ -489,20 +489,51 @@ public class ClassDiagramDrawer {
         }
     }
 
+    /**
+     * <p>
+     * 追加するエッジの初期化を行う。
+     * </p>
+     *
+     * @param type     追加したいエッジとしてRetussWindow上で押しているボタンのタイプ
+     * @param name     追加したいエッジ名 <br> 追加したいエッジによっては空文字では追加しない可能性がある。
+     * @param fromId 追加したい関係元のID
+     * @param toId 追加したい関係先のID
+     */
+    private void createDrawnEdge(ContentType type, String name, int fromId, int toId) {
+        if (type != ContentType.Generalization && name.length() <= 0) return;
+
+        if (type == ContentType.Composition) {
+            relations.createEdgeText(ContentType.Composition, name);
+            relations.setRelationId(ContentType.Composition, relations.getCompositionsCount() - 1, toId);
+            relations.setRelationSourceId(ContentType.Composition, relations.getCompositionsCount() - 1, fromId);
+            relations.setRelationPoint(ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get(toId).getPoint());
+            relations.setRelationSourcePoint(ContentType.Composition, relations.getCompositionsCount() - 1, nodes.get(fromId).getPoint());
+            // コンポジション関係のインスタンスを生成
+            nodes.get(fromId).createNodeText(ContentType.Composition, name + " : " + nodes.get(toId).getNodeText());
+
+        } else if (type == ContentType.Generalization) {
+            relations.createEdgeText(ContentType.Generalization, name);
+            relations.setRelationId(ContentType.Generalization, relations.getCompositionsCount() - 1, toId);
+            relations.setRelationSourceId(ContentType.Generalization, relations.getCompositionsCount() - 1, fromId);
+            relations.setRelationPoint(ContentType.Generalization, relations.getCompositionsCount() - 1, nodes.get(toId).getPoint());
+            relations.setRelationSourcePoint(ContentType.Generalization, relations.getCompositionsCount() - 1, nodes.get(fromId).getPoint());
+            relations.deleteGeneralizationFromSameRelationSourceNode(fromId);
+        }
+    }
+
     public void createDrawnEdge(ContentType type, String contentName, String fromName, String toName) {
-        Point2D from = Point2D.ZERO;
-        Point2D to = Point2D.ZERO;
+        int from = 0;
+        int to = 0;
 
         for (NodeDiagram node : nodes) {
             if (node.getNodeText().equals(fromName)) {
-                from = node.getPoint();
+                from = node.getNodeId();
             } else if (node.getNodeText().equals(toName)) {
-                to = node.getPoint();
+                to = node.getNodeId();
             }
         }
 
-        operationalPoint = from;
-        createDrawnEdge(type, contentName, to.getX(), to.getY());
+        createDrawnEdge(type, contentName, from, to);
     }
 
     /**

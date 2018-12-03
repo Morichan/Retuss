@@ -73,26 +73,26 @@ public class CodeController {
 
     public void importCode(Language language, String code) {
         translator.translate(umlPackage);
-        java = translator.getJava();
-        cpp = translator.getCpp();
 
         if (language == Language.Java) {
+            java = translator.getJava();
             javaLanguage.parseForClassDiagram(code);
             java.addClass(javaLanguage.getJava().getClasses().get(0));
             translator.translate(java);
-            // 他言語を更新
-            cpp = translator.getCpp();
         } else if (language == Language.Cpp) {
+            cpp = translator.getCpp();
             cppLanguage.parseForClassDiagram(code);
             cpp.addClass(cppLanguage.getCpp().getClasses().get(0));
             translator.translate(cpp);
-            // 他言語を更新
-            java = translator.getJava();
         }
-        this.umlPackage = translator.getPackage();
+
+        java = translator.getJava();
+        cpp = translator.getCpp();
 
         setCodeTabs(java);
         setCodeTabs(cpp);
+
+        this.umlPackage = translator.getPackage();
     }
 
     private Tab createLanguageTab(Language language) {

@@ -335,6 +335,11 @@ public class MainController {
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Operation);
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Composition);
 
+            for (int j = 0; j < umlPackage.getClasses().get(i).extractRelations().size(); j++) {
+                String content = umlPackage.getClasses().get(i).extractRelations().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).extractRelations().get(j).getName().getNameText();
+                classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(i).extractRelations().get(j).getType().getName().getNameText());
+            }
+
             for (int count = 0, j = 0; j < umlPackage.getClasses().get(i).extractAttributes().size(); j++) {
                 if (relationsIds.get(i).containsKey(count)) {
                     String content = umlPackage.getClasses().get(i).extractAttributes().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).extractAttributes().get(j).getName().getNameText();
@@ -401,6 +406,7 @@ public class MainController {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, classButtonInCD);
         classDiagramDrawer.setNodeText(className);
         classDiagramDrawer.addDrawnNode(buttonsInCD);
+        classDiagramDrawer.allReDrawCanvas();
         convertUmlToCode();
         writeUmlForCode(classDiagramDrawer.extractPackage());
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, normalButtonInCD);
@@ -410,7 +416,9 @@ public class MainController {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, classButtonInCD);
         classDiagramDrawer.setNodeText("ThisIsCurrentClassNameBecauseThisIsRewrittenInstantly");
         classDiagramDrawer.addDrawnNode(buttonsInCD);
+        classDiagramDrawer.allReDrawCanvas();
         codeController.importCode(language, code);
+        classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getNodes().size() - 1, ContentType.Title, 0, codeController.getUmlPackage().getClasses().get(codeController.getUmlPackage().getClasses().size() - 1).getName());
         convertUmlToCode(codeController.getUmlPackage());
         writeUmlForCode(codeController.getUmlPackage());
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, normalButtonInCD);
