@@ -58,6 +58,9 @@ public class CppTranslator {
         for (OperationGraphic operationGraphic : classClass.getOperationGraphics()) {
             Operation operation = operationGraphic.getOperation();
             MemberFunction memberFunction = new MemberFunction(new Type(operation.getReturnType().toString()), operation.getName().toString());
+            if (operationGraphic.isAbstract()) {
+                memberFunction.setVirtualMemberFunction0(true);
+            }
             try {
                 memberFunction.setAccessSpecifier(convert(operation.getVisibility()));
             } catch (IllegalStateException e) {
