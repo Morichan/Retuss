@@ -76,6 +76,10 @@ public class Value {
         return name;
     }
 
+    public boolean isNewContext() {
+        return isNewContext;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

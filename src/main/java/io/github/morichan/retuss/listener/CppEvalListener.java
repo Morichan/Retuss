@@ -75,7 +75,13 @@ public class CppEvalListener extends CPP14BaseListener {
                             }
                         }
                         if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
-                            memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+                            if (ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(1) instanceof CPP14Parser.PtrdeclaratorContext && ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getText().equals("*")
+                                    && ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChildCount() >= 2) {
+                                memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(1).getText());   //*bのとき,なぜか*いれて成形しなくてもいけるw
+
+                            } else {
+                                memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+                            }
                         }
                     }
                     cpp.getClasses().get(cpp.getClasses().size() - 1).addMemberVariable(memberVariable);

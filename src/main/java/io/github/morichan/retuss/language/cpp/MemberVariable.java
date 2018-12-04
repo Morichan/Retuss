@@ -138,6 +138,9 @@ public class MemberVariable {
             this.value = null;
         } else {
             this.value = new Value(value);
+            if(this.value.isNewContext()){
+             name=   String.format("*%s",name);
+            }
         }
     }
 
@@ -169,7 +172,12 @@ public class MemberVariable {
         sb.append(type);
         sb.append(" ");
 
-        sb.append(name);
+//        if(value.isNewContext()){
+//            sb.append("*");
+//            sb.append(name);
+//        }else {
+            sb.append(name);
+//        }
 
         if (value != null) {
             sb.append(" = ");

@@ -197,6 +197,7 @@ public class Class {
     private String manufacture() {
         StringBuilder sb = new StringBuilder();
         boolean flagProtected =false;
+        boolean flagPackage =false;
 boolean flagString=false;
 
 
@@ -290,6 +291,32 @@ if(flagString == true){
             }
         }
 
+
+//        for (MemberVariable memberVariable : memberVariables) {
+//            if(memberVariable.getAccessSpecifier() == AccessSpecifier.Package) {
+//                if(flagPackage ==false){
+//                    sb.append("public:");
+//                    sb.append("\n");
+//                }
+//                flagPackage=true;
+//                sb.append("    ");
+//                sb.append(memberVariable);
+//                sb.append("\n");
+//            }
+//        }
+//
+//        for (MemberFunction memberFunction : memberFunctions) {
+//            if(memberFunction.getAccessSpecifier() == AccessSpecifier.Package) {
+//                if(flagPackage ==false){
+//                    sb.append("public:");
+//                    sb.append("\n");
+//                }
+//                flagPackage=true;
+//                sb.append("    ");
+//                sb.append(memberFunction);
+//                sb.append("\n");
+//            }
+//        }
 
         if (!memberVariables.isEmpty() && !memberFunctions.isEmpty()) sb.append("\n");
 
