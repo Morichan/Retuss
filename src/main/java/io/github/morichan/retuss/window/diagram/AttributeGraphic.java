@@ -31,6 +31,11 @@ public class AttributeGraphic extends ClassDiagramGraphic {
         isIndicate = true;
     }
 
+    public AttributeGraphic(Attribute attribute) {
+        this.attribute = attribute;
+        isIndicate = true;
+    }
+
     public Attribute getAttribute() {
         return attribute;
     }

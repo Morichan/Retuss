@@ -11,14 +11,12 @@ import io.github.morichan.retuss.language.java.*;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.language.uml.Package;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class UMLTranslatorTest {
 

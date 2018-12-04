@@ -52,18 +52,47 @@ public class CodeController {
         this.mainController = mainController;
     }
 
-    public void createCodeTabs(Package classPackage) {
+    public void createCodeTabs(Package umlPackage) {
 
         //ためし
 //        if(umlPackage.getClasses().size() >= 1) {
 //            classPackage.getClasses().get(0).addFlagOperationsImplementation(umlPackage.getClasses().get(0).getFlagOperationsImplementations().get(0));
 //        }
 
-        translator.translate(classPackage);
+        translator.translate(umlPackage);
         java = translator.getJava();
         cpp = translator.getCpp();
         setCodeTabs(java);
         setCodeTabs(cpp);
+        this.umlPackage = umlPackage;
+    }
+
+    public Package getUmlPackage() {
+        return umlPackage;
+    }
+
+    public void importCode(Language language, String code) {
+        translator.translate(umlPackage);
+
+        if (language == Language.Java) {
+            java = translator.getJava();
+            javaLanguage.parseForClassDiagram(code);
+            java.addClass(javaLanguage.getJava().getClasses().get(0));
+            translator.translate(java);
+        } else if (language == Language.Cpp) {
+            cpp = translator.getCpp();
+            cppLanguage.parseForClassDiagram(code);
+            cpp.addClass(cppLanguage.getCpp().getClasses().get(0));
+            translator.translate(cpp);
+        }
+
+        java = translator.getJava();
+        cpp = translator.getCpp();
+
+        setCodeTabs(java);
+        setCodeTabs(cpp);
+
+        this.umlPackage = translator.getPackage();
     }
 
     private Tab createLanguageTab(Language language) {
@@ -112,7 +141,7 @@ public class CodeController {
         codeArea.setOnKeyTyped(event -> convertCodeToUml(Language.Cpp));
 
         if (cppClass != null) codeArea.replaceText(cppClass.toString());
-       // if (cppClass != null) codeArea.replaceText(cppClass.cppFile_toString());
+        // if (cppClass != null) codeArea.replaceText(cppClass.cppFile_toString());
 
         if (cppClass == null) return createTab(codeArea, null);
         else return createTab(codeArea, cppClass.getName());

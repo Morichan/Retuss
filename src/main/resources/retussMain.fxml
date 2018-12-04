@@ -23,7 +23,12 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Close" />
+                        <Menu mnemonicParsing="false" text="Import File">
+                           <items>
+                              <MenuItem mnemonicParsing="false" onAction="#importJavaFile" text="Java" />
+                              <MenuItem mnemonicParsing="false" onAction="#importCppFile" text="C++" />
+                           </items>
+                        </Menu>
                             </items>
                         </Menu>
                     </menus>

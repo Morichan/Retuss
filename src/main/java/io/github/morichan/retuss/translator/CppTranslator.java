@@ -7,6 +7,7 @@ import io.github.morichan.fescue.feature.visibility.Visibility;
 import io.github.morichan.retuss.language.cpp.*;
 import io.github.morichan.retuss.language.cpp.Class;
 import io.github.morichan.retuss.language.uml.Package;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ public class CppTranslator {
     private Class createCppClass(io.github.morichan.retuss.language.uml.Class classClass) {
         Class cppClass = new Class(classClass.getName());
 
-        for (Attribute attribute : classClass.getAttributes()) {
+        for (Attribute attribute : classClass.extractAttributes()) {
             MemberVariable memberVariable = new MemberVariable(new Type(attribute.getType().toString()), attribute.getName().toString());
             try {
                 memberVariable.setAccessSpecifier(convert(attribute.getVisibility()));
@@ -54,8 +55,12 @@ public class CppTranslator {
             cppClass.addMemberVariable(memberVariable);
         }
 
-        for (Operation operation : classClass.getOperations()) {
+        for (OperationGraphic operationGraphic : classClass.getOperationGraphics()) {
+            Operation operation = operationGraphic.getOperation();
             MemberFunction memberFunction = new MemberFunction(new Type(operation.getReturnType().toString()), operation.getName().toString());
+            if (operationGraphic.isAbstract()) {
+                memberFunction.setVirtualMemberFunction0(true);
+            }
             try {
                 memberFunction.setAccessSpecifier(convert(operation.getVisibility()));
             } catch (IllegalStateException e) {
@@ -81,7 +86,7 @@ public class CppTranslator {
 
 
         //コンポジションｎ￥の変換
-        for (Attribute relation : classClass.getRelations()) {
+        for (Attribute relation : classClass.extractRelations()) {
             MemberVariable memberVariable = new MemberVariable(new Type(relation.getType().toString()), relation.getName().toString());
             try {
                 memberVariable.setAccessSpecifier(convert(relation.getVisibility()));

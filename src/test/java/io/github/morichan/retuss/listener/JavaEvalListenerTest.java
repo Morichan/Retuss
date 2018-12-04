@@ -5,7 +5,6 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import io.github.morichan.retuss.parser.java.JavaLexer;
@@ -37,7 +36,7 @@ class JavaEvalListenerTest {
 
             @BeforeEach
             void setup() throws IOException {
-                String file = dir + "AllInOne7.java";
+                String file = dir + "AllInOne7.txt";
                 lexer = new JavaLexer(CharStreams.fromFileName(file));
                 tokens = new CommonTokenStream(lexer);
                 parser = new JavaParser(tokens);
@@ -61,7 +60,7 @@ class JavaEvalListenerTest {
 
             @BeforeEach
             void setup() throws IOException {
-                String file = dir + "AllInOne8.java";
+                String file = dir + "AllInOne8.txt";
                 lexer = new JavaLexer(CharStreams.fromFileName(file));
                 tokens = new CommonTokenStream(lexer);
                 parser = new JavaParser(tokens);
@@ -90,7 +89,7 @@ class JavaEvalListenerTest {
 
         @BeforeEach
         void setup() throws IOException {
-            String file = dir + "AllInOne7.java";
+            String file = dir + "AllInOne7.txt";
             lexer = new JavaLexer(CharStreams.fromFileName(file));
             tokens = new CommonTokenStream(lexer);
             parser = new JavaParser(tokens);

@@ -1315,8 +1315,6 @@ class MainControllerTest extends ApplicationTest {
         }
     }
 
-    private static int windowStartCount = 0;
-
     @Nested
     class コード入力画面において extends ApplicationTest {
         Stage mainStage;

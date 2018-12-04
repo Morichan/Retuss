@@ -2,6 +2,8 @@ package io.github.morichan.retuss.language.uml;
 
 import io.github.morichan.fescue.feature.Attribute;
 import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.retuss.window.diagram.AttributeGraphic;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +15,9 @@ public class Class {
 
     private String name;
     private Class generalizationClass;
-    private List<Attribute> attributes;
-    private List<Attribute> relations;
-    private List<Operation> operations;
-
-    private List<Boolean> hasAbstractOperations;
+    private List<AttributeGraphic> attributeGraphics;
+    private List<AttributeGraphic> relationGraphics;
+    private List<OperationGraphic> operationGraphics;
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -28,11 +28,9 @@ public class Class {
      */
     public Class() {
         setName("ClassName");
-        attributes = new ArrayList<>();
-        relations = new ArrayList<>();
-        operations = new ArrayList<>();
-
-        hasAbstractOperations = new ArrayList<>();
+        attributeGraphics = new ArrayList<>();
+        relationGraphics = new ArrayList<>();
+        operationGraphics = new ArrayList<>();
     }
 
     /**
@@ -42,11 +40,9 @@ public class Class {
      */
     public Class(String className) {
         setName(className);
-        attributes = new ArrayList<>();
-        relations = new ArrayList<>();
-        operations = new ArrayList<>();
-
-        hasAbstractOperations = new ArrayList<>();
+        attributeGraphics = new ArrayList<>();
+        relationGraphics = new ArrayList<>();
+        operationGraphics = new ArrayList<>();
     }
 
     /**
@@ -108,7 +104,9 @@ public class Class {
      * @param attribute 属性 <br> {@code null} 無視
      */
     public void addAttribute(Attribute attribute) {
-        if (attribute != null) attributes.add(attribute);
+        if (attribute == null) return;
+
+        attributeGraphics.add(new AttributeGraphic(attribute));
     }
 
     /**
@@ -123,7 +121,9 @@ public class Class {
      */
     public void setAttributes(List<Attribute> attributes) {
         if (attributes != null) for (Attribute attribute : attributes) addAttribute(attribute);
-        else this.attributes.clear();
+        else {
+            this.attributeGraphics.clear();
+        }
     }
 
     /**
@@ -131,8 +131,19 @@ public class Class {
      *
      * @return 属性のリスト <br> 要素数0の可能性あり
      */
-    public List<Attribute> getAttributes() {
+    public List<Attribute> extractAttributes() {
+        List<Attribute> attributes = new ArrayList<>();
+        for (AttributeGraphic attributeGraphic : attributeGraphics) attributes.add(attributeGraphic.getAttribute());
         return attributes;
+    }
+
+    /**
+     * <p> 属性のリストを取得します </p>
+     *
+     * @return 操作のリスト <br> 要素数0の可能性あり
+     */
+    public List<AttributeGraphic> getAttributeGraphics() {
+        return attributeGraphics;
     }
 
     /**
@@ -156,7 +167,9 @@ public class Class {
      * @param relation 関係属性 <br> {@code null} 無視
      */
     public void addRelation(Attribute relation) {
-        if (relation != null) relations.add(relation);
+        if (relation == null) return;
+
+        relationGraphics.add(new AttributeGraphic(relation));
     }
 
     /**
@@ -171,7 +184,11 @@ public class Class {
      */
     public void setRelations(List<Attribute> relations) {
         if (relations != null) for (Attribute relation : relations) addRelation(relation);
-        else this.relations.clear();
+        else this.relationGraphics.clear();
+    }
+
+    public List<AttributeGraphic> getRelationGraphics() {
+        return relationGraphics;
     }
 
     /**
@@ -179,7 +196,9 @@ public class Class {
      *
      * @return 関係属性のリスト <br> 要素数0の可能性あり
      */
-    public List<Attribute> getRelations() {
+    public List<Attribute> extractRelations() {
+        List<Attribute> relations = new ArrayList<>();
+        for (AttributeGraphic attributeGraphic : relationGraphics) relations.add(attributeGraphic.getAttribute());
         return relations;
     }
 
@@ -206,8 +225,9 @@ public class Class {
     public void addOperation(Operation operation) {
         if (operation == null) return;
 
-        operations.add(operation);
-        addWhetherOperationIsAbstract(false);
+        OperationGraphic og = new OperationGraphic(operation);
+        og.setAbstract(false);
+        operationGraphics.add(og);
     }
 
     /**
@@ -221,10 +241,11 @@ public class Class {
      * @param isAbstract 操作が抽象操作の場合は真を持つ真偽値
      */
     public void addOperation(Operation operation, boolean isAbstract) {
-        if (operation == null) return;
+        if (operation == null || operation.toString().isEmpty()) return;
 
-        operations.add(operation);
-        addWhetherOperationIsAbstract(isAbstract);
+        OperationGraphic og = new OperationGraphic(operation);
+        og.setAbstract(isAbstract);
+        operationGraphics.add(og);
     }
 
     /**
@@ -240,8 +261,7 @@ public class Class {
     public void setOperations(List<Operation> operations) {
         if (operations != null) for (Operation operation : operations) addOperation(operation);
         else {
-            this.operations.clear();
-            this.hasAbstractOperations.clear();
+            this.operationGraphics.clear();
         }
     }
 
@@ -250,12 +270,14 @@ public class Class {
      *
      * @return 操作のリスト <br> 要素数0の可能性あり
      */
-    public List<Operation> getOperations() {
-        return operations;
+    public List<OperationGraphic> getOperationGraphics() {
+        return operationGraphics;
     }
 
-    public List<Boolean> getHasAbstractOperations() {
-        return hasAbstractOperations;
+    public List<Operation> extractOperations() {
+        List<Operation> operations = new ArrayList<>();
+        for (OperationGraphic operationGraphic : operationGraphics) operations.add(operationGraphic.getOperation());
+        return operations;
     }
 
     /**
@@ -268,10 +290,4 @@ public class Class {
     public void emptyOperation() {
         setOperations(null);
     }
-
-
-    public void addWhetherOperationIsAbstract(boolean isAbstract) {
-        hasAbstractOperations.add(isAbstract);
-    }
-
 }

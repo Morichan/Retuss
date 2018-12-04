@@ -9,6 +9,8 @@ public class OperationGraphic extends ClassDiagramGraphic {
     private OperationSculptor sculptor = new OperationSculptor();
     private Operation operation;
 
+    private boolean isAbstract = false;
+
     public OperationGraphic() {
         sculptor.parse("defaultOperation()");
         operation = sculptor.carve();
@@ -23,8 +25,21 @@ public class OperationGraphic extends ClassDiagramGraphic {
         isIndicate = true;
     }
 
+    public OperationGraphic(Operation operation) {
+        this.operation = operation;
+        isIndicate = true;
+    }
+
     public Operation getOperation() {
         return operation;
+    }
+
+    public void setAbstract(boolean abstractFlag) {
+        isAbstract = abstractFlag;
+    }
+
+    public boolean isAbstract() {
+        return isAbstract;
     }
 
     @Override

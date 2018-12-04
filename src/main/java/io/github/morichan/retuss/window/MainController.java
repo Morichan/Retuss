@@ -1,6 +1,6 @@
 package io.github.morichan.retuss.window;
 
-import io.github.morichan.retuss.language.uml.Class;
+import io.github.morichan.retuss.translator.Language;
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.NodeDiagram;
 import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
@@ -15,8 +15,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -46,7 +50,9 @@ public class MainController {
     private List<Button> buttonsInCD = new ArrayList<>();
 
     private TextInputDialog classNameInputDialog;
+    private File filePath = new File(System.getProperty("user.home")); // 初期ディレクトリをホームにする。
 
+    private Stage mainStage;
     private Stage codeStage;
     private CodeController codeController;
 
@@ -70,6 +76,24 @@ public class MainController {
         gc.getCanvas().setHeight(classDiagramScrollPane.getPrefHeight() - scrollBarBreadth);
         classDiagramDrawer = new ClassDiagramDrawer();
         classDiagramDrawer.setGraphicsContext(gc);
+    }
+
+    @FXML
+    private void importJavaFile() {
+        try {
+            importCode(Language.Java, importFile(Language.Java));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void importCppFile() {
+        try {
+            importCode(Language.Cpp, importFile(Language.Cpp));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -266,8 +290,9 @@ public class MainController {
      */
     public void showCodeStage(MainController mainController, Stage parent, String filePath, String title) {
         try {
+            mainStage = parent;
             codeStage = new Stage();
-            codeStage.initOwner(parent);
+            codeStage.initOwner(mainStage);
             codeStage.setTitle(title);
             FXMLLoader codeLoader = new FXMLLoader(getClass().getResource(filePath));
             codeStage.setScene(new Scene(codeLoader.load()));
@@ -291,9 +316,9 @@ public class MainController {
 
         for (int i = 0; i < umlPackage.getClasses().size(); i++) {
             Map<Integer, Integer> relationIds = new HashMap<>();
-            for (int j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
+            for (int j = 0; j < umlPackage.getClasses().get(i).extractAttributes().size(); j++) {
                 for (int k = 0; k < umlPackage.getClasses().size(); k++) {
-                    if (umlPackage.getClasses().get(k).getName().equals(umlPackage.getClasses().get(i).getAttributes().get(j).getType().getName().getNameText())) {
+                    if (umlPackage.getClasses().get(k).getName().equals(umlPackage.getClasses().get(i).extractAttributes().get(j).getType().getName().getNameText())) {
                         relationIds.put(j, k);
                         break;
                     }
@@ -310,26 +335,30 @@ public class MainController {
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Operation);
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Composition);
 
-            for (int count = 0, j = 0; j < umlPackage.getClasses().get(i).getAttributes().size(); j++) {
+            for (int j = 0; j < umlPackage.getClasses().get(i).extractRelations().size(); j++) {
+                String content = umlPackage.getClasses().get(i).extractRelations().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).extractRelations().get(j).getName().getNameText();
+                classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(i).extractRelations().get(j).getType().getName().getNameText());
+            }
+
+            for (int count = 0, j = 0; j < umlPackage.getClasses().get(i).extractAttributes().size(); j++) {
                 if (relationsIds.get(i).containsKey(count)) {
-                    String content = umlPackage.getClasses().get(i).getAttributes().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).getAttributes().get(j).getName().getNameText();
+                    String content = umlPackage.getClasses().get(i).extractAttributes().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).extractAttributes().get(j).getName().getNameText();
                     classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(relationsIds.get(i).get(count)).getName());
-                    umlPackage.getClasses().get(i).getRelations().add(umlPackage.getClasses().get(i).getAttributes().get(j));
-                    umlPackage.getClasses().get(i).getAttributes().remove(j);
+                    umlPackage.getClasses().get(i).addRelation(umlPackage.getClasses().get(i).extractAttributes().get(j));
+                    umlPackage.getClasses().get(i).getAttributeGraphics().remove(j);
                     j--;
                 } else {
-                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Attribute, umlPackage.getClasses().get(i).getAttributes().get(j).toString());
+                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Attribute, umlPackage.getClasses().get(i).extractAttributes().get(j).toString());
                 }
                 count++;
             }
 
-            for (int j = 0; j < umlPackage.getClasses().get(i).getOperations().size(); j++) {
-                classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).getOperations().get(j).toString());
-                if (umlPackage.getClasses().get(i).getHasAbstractOperations().get(j)) {
-                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Abstraction, "abstract");
-                } else {
-                    classDiagramDrawer.addDrawnNodeText(i, ContentType.Abstraction, "not abstract");
-                }
+            for (int j = 0; j < umlPackage.getClasses().get(i).extractOperations().size(); j++) {
+                classDiagramDrawer.addDrawnNodeText(i, ContentType.Operation, umlPackage.getClasses().get(i).extractOperations().get(j).toString());
+                String abstractOrNot = umlPackage.getClasses().get(i).getOperationGraphics().get(j).isAbstract()
+                        ? "abstract"
+                        : "not abstract";
+                classDiagramDrawer.changeDrawnNodeText(i, ContentType.Abstraction, j, abstractOrNot);
             }
 
             if (umlPackage.getClasses().get(i).getGeneralizationClass() != null) {
@@ -340,6 +369,39 @@ public class MainController {
         classDiagramDrawer.allReDrawCanvas();
     }
 
+    private String importFile(Language language) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+
+        if (language == Language.Java) {
+            fileChooser.setTitle("Javaファイルを選択してください。");
+            // 拡張子フィルタを設定
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Javaファイル", "*.java"));
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("すべてのファイル", "*.*"));
+        } else if (language == Language.Cpp) {
+            fileChooser.setTitle("C++ファイルを選択してください。");
+            // 拡張子フィルタを設定
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("ヘッダファイル", "*.h", "*.hpp"));
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C++ファイル", "*.cpp", "*.cxx"));
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("すべてのファイル", "*.*"));
+        }
+
+        fileChooser.setInitialDirectory(filePath);
+
+        // ファイル選択
+        File file = fileChooser.showOpenDialog(mainStage);
+        if(file == null) throw new IOException();
+
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String str;
+        while((str = br.readLine()) != null) {
+            sb.append(str);
+        }
+        filePath = new File(file.getParent());
+
+        return sb.toString();
+    }
+
     public void createClass(String className) {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, classButtonInCD);
         classDiagramDrawer.setNodeText(className);
@@ -347,6 +409,18 @@ public class MainController {
         classDiagramDrawer.allReDrawCanvas();
         convertUmlToCode();
         writeUmlForCode(classDiagramDrawer.extractPackage());
+        buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, normalButtonInCD);
+    }
+
+    private void importCode(Language language, String code) {
+        buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, classButtonInCD);
+        classDiagramDrawer.setNodeText("ThisIsCurrentClassNameBecauseThisIsRewrittenInstantly");
+        classDiagramDrawer.addDrawnNode(buttonsInCD);
+        classDiagramDrawer.allReDrawCanvas();
+        codeController.importCode(language, code);
+        classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getNodes().size() - 1, ContentType.Title, 0, codeController.getUmlPackage().getClasses().get(codeController.getUmlPackage().getClasses().size() - 1).getName());
+        convertUmlToCode(codeController.getUmlPackage());
+        writeUmlForCode(codeController.getUmlPackage());
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, normalButtonInCD);
     }
 
@@ -394,6 +468,14 @@ public class MainController {
     private void convertUmlToCode() {
         if (codeController == null) return;
         codeController.createCodeTabs(classDiagramDrawer.extractPackage());
+    }
+
+    /**
+     * <p> UMLをコードに変換してコードエリアに反映します </p>
+     */
+    private void convertUmlToCode(Package umlPackage) {
+        if (codeController == null) return;
+        codeController.createCodeTabs(umlPackage);
     }
 
     /**
@@ -457,7 +539,6 @@ public class MainController {
         ((Menu) contextMenu.getItems().get(4)).getItems().get(0).setOnAction(event -> {
             String addOperation = showAddClassOperationInputDialog();
             classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Operation, addOperation);
-            classDiagramDrawer.addDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Abstraction, "not abstract");
             classDiagramDrawer.allReDrawCanvas();
             convertUmlToCode();
         });

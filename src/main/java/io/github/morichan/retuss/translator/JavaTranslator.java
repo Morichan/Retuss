@@ -7,6 +7,7 @@ import io.github.morichan.fescue.feature.visibility.Visibility;
 import io.github.morichan.retuss.language.java.*;
 import io.github.morichan.retuss.language.java.Class;
 import io.github.morichan.retuss.language.uml.Package;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ public class JavaTranslator {
     private Class createJavaClass(io.github.morichan.retuss.language.uml.Class classClass) {
         Class javaClass = new Class(classClass.getName());
 
-        for (Attribute attribute : classClass.getAttributes()) {
+        for (Attribute attribute : classClass.extractAttributes()) {
             Field field = new Field(new Type(attribute.getType().toString()), attribute.getName().toString());
             try {
                 field.setAccessModifier(convert(attribute.getVisibility()));
@@ -54,7 +55,7 @@ public class JavaTranslator {
             javaClass.addField(field);
         }
 
-        for (Attribute relation : classClass.getRelations()) {
+        for (Attribute relation : classClass.extractRelations()) {
             Field field = new Field(new Type(relation.getType().toString()), relation.getName().toString());
             try {
                 field.setAccessModifier(convert(relation.getVisibility()));
@@ -65,8 +66,13 @@ public class JavaTranslator {
             javaClass.addField(field);
         }
 
-        for (Operation operation : classClass.getOperations()) {
+        for (OperationGraphic operationGraphic : classClass.getOperationGraphics()) {
+            Operation operation = operationGraphic.getOperation();
             Method method = new Method(new Type(operation.getReturnType().toString()), operation.getName().toString());
+            if (operationGraphic.isAbstract()) {
+                method.setAbstract(true);
+                javaClass.setAbstract(true);
+            }
             try {
                 method.setAccessModifier(convert(operation.getVisibility()));
             } catch (IllegalStateException e) {

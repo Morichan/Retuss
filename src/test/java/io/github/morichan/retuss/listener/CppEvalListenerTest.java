@@ -83,6 +83,8 @@ class CppEvalListenerTest {
     void メソッドを1つ返す() {
         init("class cppClassXYZ {public: void print() {}};");
         MemberFunction expected = new MemberFunction(new Type("void"), "print");
+        expected.setFlagImplementation(true);
+        expected.setFunctionbody("{}");
 
         MemberFunction actual = obj.getCpp().getClasses().get(0).getMemberFunctions().get(0);
 
@@ -100,6 +102,12 @@ class CppEvalListenerTest {
         expected.get(0).setAccessSpecifier(AccessSpecifier.Public);
         expected.get(1).setAccessSpecifier(AccessSpecifier.Protected);
         expected.get(2).setAccessSpecifier(AccessSpecifier.Private);
+        expected.get(0).setFlagImplementation(true);
+        expected.get(1).setFlagImplementation(true);
+        expected.get(2).setFlagImplementation(true);
+        expected.get(0).setFunctionbody("{}");
+        expected.get(1).setFunctionbody("{}");
+        expected.get(2).setFunctionbody("{}");
      //   expected.get(2).addArgument(new Argument(new Type("int"), "item"));
 
         List<MemberFunction> actual = obj.getCpp().getClasses().get(0).getMemberFunctions();
@@ -122,6 +130,12 @@ class CppEvalListenerTest {
         expected.get(0).setAccessSpecifier(AccessSpecifier.Public);
         expected.get(1).setAccessSpecifier(AccessSpecifier.Protected);
         expected.get(2).setAccessSpecifier(AccessSpecifier.Private);
+        expected.get(0).setFlagImplementation(true);
+        expected.get(1).setFlagImplementation(true);
+        expected.get(2).setFlagImplementation(true);
+        expected.get(0).setFunctionbody("{}");
+        expected.get(1).setFunctionbody("{}");
+        expected.get(2).setFunctionbody("{}");
         expected.get(0).addArgument(new Argument(new Type("double"), "x"));
         expected.get(0).addArgument(new Argument(new Type("double"), "y"));
         expected.get(0).addArgument(new Argument(new Type("double"), "z"));
