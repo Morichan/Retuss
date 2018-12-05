@@ -11,8 +11,8 @@ public class RelationshipAttributeGraphic extends AttributeGraphic {
     public RelationshipAttributeGraphic() {
         super.setText("defaultAttribute");
         visibility = "";
-        type = ContentType.Undefined;
-        isIndicate = true;
+        setType(ContentType.Undefined);
+        setIndication(true);
         relationPoint = new Point2D( 0.0, 0.0 );
         relationSourcePoint = new Point2D( 0.0, 0.0 );
     }
@@ -20,7 +20,8 @@ public class RelationshipAttributeGraphic extends AttributeGraphic {
     public RelationshipAttributeGraphic(String name) {
         if (name.length() == 0) name = "defaultAttribute";
         super.setText(name);
-        isIndicate = true;
+        setType(ContentType.Undefined);
+        setIndication(true);
         relationPoint = new Point2D( 0.0, 0.0 );
         relationSourcePoint = new Point2D( 0.0, 0.0 );
     }

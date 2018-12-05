@@ -24,12 +24,12 @@ abstract public class ClassDiagramGraphic {
     /**
      * データの種類
      */
-    protected ContentType type = ContentType.Undefined;
+    private ContentType type = ContentType.Undefined;
 
     /**
      * データを図中に表示しているか否か
      */
-    protected boolean isIndicate = true;
+    private boolean isIndicate = true;
 
     /**
      * データのテキストを入力する。

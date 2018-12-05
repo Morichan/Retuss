@@ -15,19 +15,21 @@ public class OperationGraphic extends ClassDiagramGraphic {
         sculptor.parse("defaultOperation()");
         operation = sculptor.carve();
         visibility = "";
-        type = ContentType.Undefined;
-        isIndicate = true;
+        setType(ContentType.Undefined);
+        setIndication(true);
     }
 
     public OperationGraphic(String name) {
         sculptor.parse(name);
         operation = sculptor.carve();
-        isIndicate = true;
+        setType(ContentType.Undefined);
+        setIndication(true);
     }
 
     public OperationGraphic(Operation operation) {
         this.operation = operation;
-        isIndicate = true;
+        setType(ContentType.Undefined);
+        setIndication(true);
     }
 
     public Operation getOperation() {
