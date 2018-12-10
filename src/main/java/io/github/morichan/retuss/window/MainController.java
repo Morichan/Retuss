@@ -47,6 +47,9 @@ public class MainController {
     @FXML
     private Canvas classDiagramCanvas;
 
+    @FXML
+    private TabPane tabPaneInSequenceTab;
+
     private List<Button> buttonsInCD = new ArrayList<>();
 
     private TextInputDialog classNameInputDialog;
