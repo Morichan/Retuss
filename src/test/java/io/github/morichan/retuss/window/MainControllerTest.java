@@ -2343,6 +2343,30 @@ class MainControllerTest extends ApplicationTest {
             }
 
             @Test
+            void 汎化関係を記述後に汎化関係を削除すると互いに疎のクラスを3つ記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#generalizationButtonInCD");
+                clickOn(secondClickedClassDiagramCanvas);
+                clickOn(thirdClickedClassDiagramCanvas);
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(betweenSecondAndThirdClickedClassDiagramCanvas);
+                clickOn("汎化の削除");
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
             void クラス名のみのクラス3つの内2つがコンポジット関係のクラス関係を持つクラス記述する() {
                 List<String> expectedList = Arrays.asList(
                         "class Main {\n    private Sub sub = new Sub();\n}\n",
@@ -2358,6 +2382,60 @@ class MainControllerTest extends ApplicationTest {
                 clickOn(secondClickedClassDiagramCanvas);
                 write("- sub");
                 clickOn(okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void コンポジション関係を記述後に名前を変更すると変更後のクラス記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub {\n}\n",
+                        "class Super {\n    protected Sub changedSub = new Sub();\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#compositionButtonInCD");
+                clickOn(thirdClickedClassDiagramCanvas);
+                clickOn(secondClickedClassDiagramCanvas);
+                write("- sub");
+                clickOn(okButtonPoint);
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(betweenSecondAndThirdClickedClassDiagramCanvas);
+                clickOn("- sub の変更");
+                write("# changedSub");
+                clickOn(okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void コンポジション関係を記述後に削除すると互いに疎のクラス記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#compositionButtonInCD");
+                clickOn(firstClickedClassDiagramCanvas);
+                clickOn(thirdClickedClassDiagramCanvas);
+                write("- super");
+                clickOn(okButtonPoint);
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(betweenFirstAndThirdClickedClassDiagramCanvas);
+                clickOn("- super の削除");
 
                 for (int i = 0; i < expectedList.size(); i++) {
                     assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));

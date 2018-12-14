@@ -639,11 +639,13 @@ public class MainController {
             String compositionName = showChangeCompositionNameInputDialog(composition.getText());
             classDiagramDrawer.changeDrawnEdge(mouseX, mouseY, compositionName);
             classDiagramDrawer.allReDrawCanvas();
+            convertUmlToCode();
         });
         // コンポジション関係の削除
         contextMenu.getItems().get(1).setOnAction(event -> {
             classDiagramDrawer.deleteDrawnEdge(mouseX, mouseY);
             classDiagramDrawer.allReDrawCanvas();
+            convertUmlToCode();
         });
 
         return contextMenu;
@@ -654,6 +656,7 @@ public class MainController {
         contextMenu.getItems().get(0).setOnAction(event -> {
             classDiagramDrawer.deleteDrawnEdge(mouseX, mouseY);
             classDiagramDrawer.allReDrawCanvas();
+            convertUmlToCode();
         });
 
         return contextMenu;
