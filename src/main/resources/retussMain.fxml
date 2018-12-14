@@ -48,7 +48,7 @@
                                     <children>
                                         <TabPane layoutX="192.0" layoutY="137.0" prefHeight="933.0" prefWidth="955.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <tabs>
-                                                <Tab text="Class Diargam">
+                                                <Tab fx:id="classDiagramTab" onSelectionChanged="#selectClassDiagramTab" text="Class Diargam">
                                                     <content>
                                                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                                             <children>
@@ -83,7 +83,7 @@
                                                             </children>
                                                         </AnchorPane>
                                                     </content></Tab>
-                                    <Tab text="Sequence Diagram">
+                                    <Tab fx:id="sequenceDiagramTab" onSelectionChanged="#selectSequenceDiagramTab" text="Sequence Diagram">
                                       <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                              <children>
@@ -91,17 +91,17 @@
                                                    <top>
                                                       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                                         <items>
-                                                          <Button mnemonicParsing="false" text="Normal" />
+                                                          <Button fx:id="normalButtonInSD" mnemonicParsing="false" text="Normal" />
                                                         </items>
                                                       </ToolBar>
                                                    </top>
-                                                   <left>
+                                                   <center>
                                                       <AnchorPane prefHeight="839.0" prefWidth="955.0" BorderPane.alignment="CENTER">
                                                          <children>
                                                             <TabPane fx:id="tabPaneInSequenceTab" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                          </children>
                                                       </AnchorPane>
-                                                   </left>
+                                                   </center>
                                                 </BorderPane>
                                              </children>
                                           </AnchorPane>
