@@ -2,6 +2,8 @@ package io.github.morichan.retuss.translator;
 
 import io.github.morichan.fescue.feature.Attribute;
 import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.fescue.feature.multiplicity.Bounder;
+import io.github.morichan.fescue.feature.multiplicity.MultiplicityRange;
 import io.github.morichan.fescue.feature.name.Name;
 import io.github.morichan.fescue.feature.parameter.Parameter;
 import io.github.morichan.fescue.feature.value.DefaultValue;
@@ -102,6 +104,7 @@ class UMLTranslatorTest {
                     Attribute attribute1 = new Attribute(new Name("number"));
                     attribute1.setType(new io.github.morichan.fescue.feature.type.Type("int"));
                     attribute1.setVisibility(Visibility.Private);
+                    attribute1.setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(6))));
                     Attribute attribute2 = new Attribute(new Name("x"));
                     attribute2.setType(new io.github.morichan.fescue.feature.type.Type("double"));
                     attribute2.setVisibility(Visibility.Private);
@@ -116,7 +119,9 @@ class UMLTranslatorTest {
 
                     Java java = new Java();
                     io.github.morichan.retuss.language.java.Class javaClass = new io.github.morichan.retuss.language.java.Class("ClassName");
-                    javaClass.addField(new Field(new Type("int"), "number"));
+                    Field field1 = new Field(new Type("int"), "number");
+                    field1.setArrayLength(new ArrayLength(6));
+                    javaClass.addField(field1);
                     javaClass.addField(new Field(new Type("double"), "x"));
                     Field field = new Field(new Type("float"), "pi");
                     field.setValue("3.1415926535");

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 /**
  * Javaソースコードのパーサを利用したコンテキストの抽出クラス
- *
+ * <p>
  * ANTLRに依存する。
  */
 public class JavaEvalListener extends JavaParserBaseListener {
@@ -108,7 +108,19 @@ public class JavaEvalListener extends JavaParserBaseListener {
             field.setType(new Type(ctx.getChild(0).getChild(0).getText()));
         }
 
-        field.setName(ctx.getChild(1).getChild(0).getChild(0).getText());
+        field.setName(ctx.getChild(1).getChild(0).getChild(0).getChild(0).getText());
+
+        // 既定値での配列宣言文
+        if (ctx.getChild(1).getChild(0).getChildCount() > 1 &&
+                ctx.getChild(1).getChild(0).getChild(2).getChild(0) instanceof JavaParser.ExpressionContext &&
+                ctx.getChild(1).getChild(0).getChild(2).getChild(0).getChildCount() == 2 &&
+                ctx.getChild(1).getChild(0).getChild(2).getChild(0).getChild(1) instanceof JavaParser.CreatorContext &&
+                ctx.getChild(1).getChild(0).getChild(2).getChild(0).getChild(1).getChildCount() == 2 &&
+                ctx.getChild(1).getChild(0).getChild(2).getChild(0).getChild(1).getChild(1) instanceof JavaParser.ArrayCreatorRestContext &&
+                !ctx.getChild(1).getChild(0).getChild(2).getChild(0).getChild(1).getChild(1).getChild(1).getText().equals("]") &&
+                ctx.getChild(1).getChild(0).getChild(2).getChild(0).getChild(1).getChild(1).getChild(1) instanceof JavaParser.ExpressionContext) {
+            field.setArrayLength(new ArrayLength(Integer.parseInt(ctx.getChild(1).getChild(0).getChild(2).getChild(0).getChild(1).getChild(1).getChild(1).getText())));
+        }
 
         java.getClasses().get(java.getClasses().size() - 1).addField(field);
     }
@@ -141,7 +153,7 @@ public class JavaEvalListener extends JavaParserBaseListener {
 
     @Override
     public void enterFormalParameter(JavaParser.FormalParameterContext ctx) {
-        if (! (ctx.getParent().getParent().getParent() instanceof JavaParser.MethodDeclarationContext)) return;
+        if (!(ctx.getParent().getParent().getParent() instanceof JavaParser.MethodDeclarationContext)) return;
 
         Argument argument = new Argument();
 

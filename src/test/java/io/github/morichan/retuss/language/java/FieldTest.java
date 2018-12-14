@@ -133,7 +133,7 @@ class FieldTest {
 
             @Test
             void 設定した型と既定値と名前を返す() {
-                String expected = "private double field = new double[5];";
+                String expected = "private double field[] = new double[5];";
 
                 obj.setType(new Type("double"));
                 obj.setArrayLength(new ArrayLength(5));

@@ -181,6 +181,10 @@ public class Field {
 
         sb.append(name);
 
+        if (arrayLength != null) {
+            sb.append("[]");
+        }
+
         if (value != null) {
             sb.append(" = ");
             sb.append(value);
