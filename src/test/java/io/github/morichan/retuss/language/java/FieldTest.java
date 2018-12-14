@@ -1,5 +1,6 @@
 package io.github.morichan.retuss.language.java;
 
+import io.github.morichan.retuss.parser.java.JavaParser;
 import org.antlr.v4.parse.ANTLRParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -86,6 +87,56 @@ class FieldTest {
                 String expected = "private double field;";
 
                 obj.setType(new Type("double"));
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
+
+        @Nested
+        class 型と配列の要素数を持つ場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new Field();
+            }
+
+            @Test
+            void デフォルトの要素数を返す() {
+
+                ArrayLength actual = obj.getArrayLength();
+
+                assertThat(actual).isNull();
+            }
+
+            @Test
+            void 設定した要素数を返す() {
+                ArrayLength expected = new ArrayLength(2);
+
+                obj.setArrayLength(new ArrayLength(2));
+                ArrayLength actual = obj.getArrayLength();
+
+                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+            }
+
+            @Test
+            void 設定した要素数と型を持つ既定値を返す() {
+                Value expected = new Value("new int[2]");
+
+                obj.setType(new Type("int"));
+                obj.setArrayLength(new ArrayLength(2));
+                Value actual = obj.getValue();
+
+                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                assertThat(actual).hasToString(expected.toString());
+            }
+
+            @Test
+            void 設定した型と既定値と名前を返す() {
+                String expected = "private double field = new double[5];";
+
+                obj.setType(new Type("double"));
+                obj.setArrayLength(new ArrayLength(5));
                 String actual = obj.toString();
 
                 assertThat(actual).isEqualTo(expected);

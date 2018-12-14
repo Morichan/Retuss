@@ -8,6 +8,7 @@ public class Field {
     private AccessModifier accessModifier;
     private Type type;
     private String name;
+    private ArrayLength arrayLength;
     private Value value;
 
     /**
@@ -119,6 +120,17 @@ public class Field {
         return type;
     }
 
+    public void setArrayLength(ArrayLength arrayLength) {
+        this.arrayLength = arrayLength;
+        if (arrayLength == null) return;
+
+        createArrayValue();
+    }
+
+    public ArrayLength getArrayLength() {
+        return arrayLength;
+    }
+
     /**
      * <p> 既定値を設定します </p>
      *
@@ -147,6 +159,12 @@ public class Field {
      */
     public Value getValue() {
         return value;
+    }
+
+    private void createArrayValue() {
+        if (type == null || arrayLength == null || !arrayLength.isEnabled()) return;
+
+        value = new Value("new " + type + arrayLength);
     }
 
     @Override
