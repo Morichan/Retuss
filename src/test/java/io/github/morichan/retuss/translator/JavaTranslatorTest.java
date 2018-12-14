@@ -79,7 +79,9 @@ class JavaTranslatorTest {
                 void クラス名とフィールドを1つ持つJavaコードを返す() {
                     Java expected = new Java();
                     io.github.morichan.retuss.language.java.Class javaClass = new io.github.morichan.retuss.language.java.Class("ClassName");
-                    javaClass.addField(new Field(new Type("int"), "number"));
+                    Field field = new Field(new Type("int"), "number");
+                    //field.
+                    javaClass.addField(field);
                     expected.addClass(javaClass);
 
                     Package classPackage = new Package();
