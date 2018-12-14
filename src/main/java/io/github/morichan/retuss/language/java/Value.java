@@ -9,9 +9,11 @@ import java.util.regex.Pattern;
 public class Value {
 
     private Pattern newString;
+    private Pattern arrayString;
 
     private String name;
     private boolean isNewContext;
+    private ArrayLength arrayLength;
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -22,6 +24,7 @@ public class Value {
      */
     public Value() {
         newString = Pattern.compile("new ([a-zA-Z_][a-zA-Z0-9_]*)");
+        arrayString = Pattern.compile("\\[([0-9]*)]");
         name = "identifier";
         isNewContext = false;
     }
@@ -37,6 +40,7 @@ public class Value {
      */
     public Value(String valueName) {
         newString = Pattern.compile("new ([a-zA-Z_][a-zA-Z0-9_]*)");
+        arrayString = Pattern.compile("\\[([0-9]*)]");
         setName(valueName);
     }
     /**
@@ -52,13 +56,19 @@ public class Value {
     public void setName(String name) {
         if (name == null || name.isEmpty()) throw new IllegalArgumentException();
 
-        Matcher m = newString.matcher(name);
+        Matcher newMatcher = newString.matcher(name);
+        Matcher arrayMatcher = arrayString.matcher(name);
 
-        if (m.find()) {
-            this.name = m.group(1);
+        if (newMatcher.find()) {
+            this.name = newMatcher.group(1);
             isNewContext = true;
         } else {
             this.name = name;
+            isNewContext = false;
+        }
+
+        if (arrayMatcher.find()) {
+            arrayLength = new ArrayLength(Integer.parseInt(arrayMatcher.group(1)));
             isNewContext = false;
         }
     }
@@ -76,11 +86,19 @@ public class Value {
         return name;
     }
 
+    public ArrayLength getArrayLength() {
+        return arrayLength;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        if (isNewContext) {
+        if (arrayLength != null) {
+            sb.append("new ");
+            sb.append(name);
+            sb.append(arrayLength);
+        } else if (isNewContext) {
             sb.append("new ");
             sb.append(name);
             sb.append("()");

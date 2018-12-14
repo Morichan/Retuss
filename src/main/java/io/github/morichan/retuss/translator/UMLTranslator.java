@@ -5,6 +5,8 @@ import io.github.morichan.fescue.feature.multiplicity.MultiplicityRange;
 import io.github.morichan.fescue.feature.multiplicity.Bounder;
 import io.github.morichan.fescue.feature.value.expression.Expression;
 import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.fescue.feature.multiplicity.Bounder;
+import io.github.morichan.fescue.feature.multiplicity.MultiplicityRange;
 import io.github.morichan.fescue.feature.name.Name;
 import io.github.morichan.fescue.feature.parameter.Parameter;
 import io.github.morichan.fescue.feature.type.Type;
@@ -77,7 +79,11 @@ public class UMLTranslator {
             attribute.setType(new Type(field.getType().toString()));
             attribute.setVisibility(convert(field.getAccessModifier()));
             if (field.getValue() != null) {
-                attribute.setDefaultValue(new DefaultValue(new OneIdentifier(field.getValue().toString())));
+                if (field.getArrayLength() != null) {
+                    attribute.setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(field.getArrayLength().getLength()))));
+                } else {
+                    attribute.setDefaultValue(new DefaultValue(new OneIdentifier(field.getValue().toString())));
+                }
             }
             classClass.addAttribute(attribute);
         }

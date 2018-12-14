@@ -102,6 +102,26 @@ class ValueTest {
 
                 assertThat(actual).isEqualTo(expected);
             }
+
+            @Test
+            void 設定した文字列から配列と判定して配列の要素数を返す() {
+                ArrayLength expected = new ArrayLength(3);
+
+                obj.setName("new ClassName[3]");
+                ArrayLength actual = obj.getArrayLength();
+
+                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+            }
+
+            @Test
+            void 設定した文字列から配列と判定して型宣言の文字列を返す() {
+                String expected = "new ClassName[3]";
+
+                obj.setName("new ClassName[3]");
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
         }
     }
 

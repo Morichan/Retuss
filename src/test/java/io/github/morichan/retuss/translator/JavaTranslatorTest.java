@@ -2,6 +2,8 @@ package io.github.morichan.retuss.translator;
 
 import io.github.morichan.fescue.feature.Attribute;
 import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.fescue.feature.multiplicity.Bounder;
+import io.github.morichan.fescue.feature.multiplicity.MultiplicityRange;
 import io.github.morichan.fescue.feature.name.Name;
 import io.github.morichan.fescue.feature.parameter.Parameter;
 import io.github.morichan.fescue.feature.value.DefaultValue;
@@ -79,13 +81,16 @@ class JavaTranslatorTest {
                 void クラス名とフィールドを1つ持つJavaコードを返す() {
                     Java expected = new Java();
                     io.github.morichan.retuss.language.java.Class javaClass = new io.github.morichan.retuss.language.java.Class("ClassName");
-                    javaClass.addField(new Field(new Type("int"), "number"));
+                    Field field = new Field(new Type("int"), "number");
+                    field.setArrayLength(new ArrayLength(3));
+                    javaClass.addField(field);
                     expected.addClass(javaClass);
 
                     Package classPackage = new Package();
                     Class classClass = new Class("ClassName");
                     Attribute attribute = new Attribute(new Name("number"));
                     attribute.setType(new io.github.morichan.fescue.feature.type.Type("int"));
+                    attribute.setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(3))));
                     classClass.addAttribute(attribute);
                     classPackage.addClass(classClass);
 

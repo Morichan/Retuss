@@ -108,7 +108,14 @@ class OSChecker {
         else return "not windows"
     }
 }
-println ">>> This OS that test runs is " + OSChecker.getFamily()
+println ">>> Tests is run in this OS be " + OSChecker.getFamily()
+
+
+
+// GUIテストを行わない設定を追加
+task setWithoutGUITests() {
+    junitPlatform.filters.tags.exclude "GUITests"
+}
 
 // OSがWindowsでない場合はTest実行時にGUITestsタグを付けたテストスイートを実行しない
 if (OSChecker.getFamily() != "windows") {

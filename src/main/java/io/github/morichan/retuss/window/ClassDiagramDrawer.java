@@ -598,7 +598,16 @@ public class ClassDiagramDrawer {
      * @param content キャンバス上の任意のポイントに描画済みのエッジの変更したい内容のテキスト
      */
     public void changeDrawnEdge(double mouseX, double mouseY, String content) {
-        relations.changeCurrentRelation(new Point2D(mouseX, mouseY), content);
+        if (content == null || content.length() == 0) return;
+
+        Point2D relationPoint = new Point2D(mouseX, mouseY);
+        int id = searchRelation(relationPoint);
+        relations.changeCurrentRelation(relationPoint, content);
+        // コンポジション関係のインスタンスを生成
+        int relationIndex = relations.searchCurrentRelationNumber(new Point2D(mouseX, mouseY));
+        int fromId = relations.getRelationSourceId(ContentType.Composition, relationIndex);
+        int toId = relations.getRelationId(ContentType.Composition, relationIndex);
+        nodes.get(fromId).changeNodeText(ContentType.Composition, id, content + " : " + nodes.get(toId).getNodeText());
     }
 
     /**
@@ -612,6 +621,20 @@ public class ClassDiagramDrawer {
      */
     public void deleteDrawnEdge(double mouseX, double mouseY) {
         relations.deleteCurrentRelation(new Point2D(mouseX, mouseY));
+    }
+
+    private int searchRelation(Point2D relationPoint) {
+        int relationIndex = relations.searchCurrentRelationNumber(relationPoint);
+        int fromId = relations.getRelationSourceId(ContentType.Composition, relationIndex);
+        String text = relations.getEdgeContentText(relationIndex) + " : ";
+
+        for (int i = 0; i < nodes.get(fromId).getNodeContents(ContentType.Composition).size(); i++) {
+            if (nodes.get(fromId).getNodeContentText(ContentType.Composition, i).startsWith(text)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     public void clearAllRelations() {

@@ -176,6 +176,20 @@ class MainControllerTest extends ApplicationTest {
                     assertThat(classButton.isDefaultButton()).isTrue();
                     assertThat(noteButton.isDefaultButton()).isFalse();
                 }
+
+                @Test
+                void クラス図タブを選択するとノーマルボタンをオンにして他をオフにする() {
+                    clickOn("#sequenceDiagramTab");
+                    clickOn("#classDiagramTab");
+
+                    Button normalButton = (Button) lookup("#normalButtonInCD").query();
+                    Button classButton = (Button) lookup("#classButtonInCD").query();
+                    Button noteButton = (Button) lookup("#noteButtonInCD").query();
+
+                    assertThat(normalButton.isDefaultButton()).isTrue();
+                    assertThat(classButton.isDefaultButton()).isFalse();
+                    assertThat(noteButton.isDefaultButton()).isFalse();
+                }
             }
 
             @Nested
@@ -1313,6 +1327,189 @@ class MainControllerTest extends ApplicationTest {
                 }
             }
         }
+
+        @Nested
+        class シーケンス図の場合 {
+            Point2D topLeftCorner;
+            Point2D bottomRightCorner;
+            Point2D first;
+            Point2D second;
+            Point2D third;
+            Point2D betweenFirstAndSecond;
+            Point2D betweenFirstAndThird;
+            Point2D betweenSecondAndThird;
+            String changeClassMenu;
+            String deleteClassMenu;
+            String classAttributeMenu;
+            String classOperationMenu;
+            String addMenu;
+            String changeMenu;
+            String deleteMenu;
+            String checkMenu;
+
+            @BeforeEach
+            void setup() {
+                topLeftCorner = new Point2D(650, 163);
+                bottomRightCorner = new Point2D(1583, 984);
+                xButtonOnDialogBox = new Point2D(1050.0, 350.0);
+                okButtonOnDialogBox = "OK";
+                first = new Point2D(900.0, 600.0);
+                second = new Point2D(1050.0, 300.0);
+                third = new Point2D(800.0, 450.0);
+                betweenFirstAndSecond = new Point2D(
+                        first.getX() + (second.getX() - first.getX()) / 2,
+                        first.getY() - (first.getY() - second.getY()) / 2
+                );
+                betweenFirstAndThird = new Point2D(
+                        first.getX() + (third.getX() - first.getX()) / 2,
+                        first.getY() - (first.getY() - third.getY()) / 2
+                );
+                betweenSecondAndThird = new Point2D(
+                        third.getX() + (second.getX() - third.getX()) / 2,
+                        third.getY() - (third.getY() - second.getY()) / 2
+                );
+
+                changeClassMenu = "クラスの名前の変更";
+                deleteClassMenu = "クラスをモデルから削除";
+                classAttributeMenu = "属性";
+                classOperationMenu = "操作";
+                addMenu = "追加";
+                changeMenu = "変更";
+                deleteMenu = "削除";
+                checkMenu = "表示選択";
+            }
+
+            @Nested
+            class ボタンに関して {
+                Button normalButton;
+
+                @BeforeEach
+                void reset() {
+                    ClassNodeDiagram.resetNodeCount();
+                    normalButton = (Button) lookup("#normalButtonInSD").query();
+                }
+
+                @Test
+                void どのボタンもクリックしていない場合はどれも選択していない() {
+
+                    assertThat(normalButton.isDefaultButton()).isFalse();
+                }
+
+                @Test
+                void シーケンス図タブをアクティブにするとノーマルボタンをアクティブにする() {
+
+                    clickOn("#sequenceDiagramTab");
+
+                    assertThat(normalButton.isDefaultButton()).isTrue();
+                }
+            }
+
+            @Nested
+            class 内部タブに関して {
+
+                @BeforeEach
+                void reset() {
+                    ClassNodeDiagram.resetNodeCount();
+                }
+
+                @Nested
+                class ノーマルアイコンを選択している際に {
+
+                    @BeforeEach
+                    void reset() {
+                        ClassNodeDiagram.resetNodeCount();
+                    }
+
+                    @Nested
+                    class クラスを1つ記述した状態で {
+
+                        @BeforeEach
+                        void reset() {
+                            ClassNodeDiagram.resetNodeCount();
+                        }
+
+                        @Test
+                        void クラス名のタブを1つ表示する() {
+                            clickOn("#classButtonInCD");
+                            drawClasses(first, "ClassName");
+                            clickOn("#sequenceDiagramTab");
+
+                            TabPane actual = getClassTabPaneBelowSequenceDiagram(stage);
+
+                            assertThat(actual.getTabs().size()).isEqualTo(1);
+                            assertThat(actual.getTabs().get(0).getText()).isEqualTo("ClassName");
+                        }
+
+                        @Test
+                        void 操作のタブをクラス名のタブ内に1つ表示する() {
+                            clickOn("#classButtonInCD");
+                            drawClasses(first, "ClassName");
+                            clickOn("#normalButtonInCD");
+                            addOperation(first, "+ createPoint3D(x : Integer, y : Integer, z : Integer) : void");
+                            clickOn("#sequenceDiagramTab");
+
+                            TabPane actual = getOperationTabPaneBelowSequenceDiagram(stage, 0);
+
+                            assertThat(actual.getTabs().size()).isEqualTo(1);
+                            assertThat(actual.getTabs().get(0).getText()).isEqualTo("createPoint3D");
+                        }
+
+                        @Test
+                        void 操作のタブをクラス名のタブ内に3つ表示する() {
+                            clickOn("#classButtonInCD");
+                            drawClasses(first, "ClassName");
+                            clickOn("#normalButtonInCD");
+                            addOperation(first, "+ print() : void");
+                            addOperation(first, "+ setText(text : String) : void");
+                            addOperation(first, "+ getText() : String");
+                            clickOn("#sequenceDiagramTab");
+
+                            TabPane actual = getOperationTabPaneBelowSequenceDiagram(stage, 0);
+
+                            assertThat(actual.getTabs().size()).isEqualTo(3);
+                            assertThat(actual.getTabs().get(0).getText()).isEqualTo("print");
+                            assertThat(actual.getTabs().get(1).getText()).isEqualTo("setText");
+                            assertThat(actual.getTabs().get(2).getText()).isEqualTo("getText");
+                        }
+
+                        @Test
+                        void 同じ操作名を持つ操作が2つある場合はそれらのみパラメータを含んだ文字列のタブをクラス名のタブ内に表示する() {
+                            clickOn("#classButtonInCD");
+                            drawClasses(first, "ClassName");
+                            clickOn("#normalButtonInCD");
+                            addOperation(first, "+ print() : void");
+                            addOperation(first, "+ setText(text : String) : void");
+                            addOperation(first, "+ print(text : String) : void");
+                            addOperation(first, "+ getText() : String");
+                            clickOn("#sequenceDiagramTab");
+
+                            TabPane actual = getOperationTabPaneBelowSequenceDiagram(stage, 0);
+
+                            assertThat(actual.getTabs().size()).isEqualTo(4);
+                            assertThat(actual.getTabs().get(0).getText()).isEqualTo("print()");
+                            assertThat(actual.getTabs().get(1).getText()).isEqualTo("setText");
+                            assertThat(actual.getTabs().get(2).getText()).isEqualTo("print(text : String)");
+                            assertThat(actual.getTabs().get(3).getText()).isEqualTo("getText");
+                        }
+
+                        @Disabled("右クリックメニュー表示の機能が必要")
+                        @Test
+                        void 操作がメッセージであるシーケンス図を描画する() {
+                            clickOn("#classButtonInCD");
+                            drawClasses(first, "ClassName");
+                            clickOn("#normalButtonInCD");
+                            addOperation(first, "+ print() : void");
+                            clickOn("#sequenceDiagramTab");
+
+                            TabPane actual = getOperationTabPaneBelowSequenceDiagram(stage, 0);
+
+                            assertThat(actual.getTabs().size()).isEqualTo(1);
+                            assertThat(actual.getTabs().get(0).getText()).isEqualTo("createPoint3D");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Nested
@@ -2146,6 +2343,30 @@ class MainControllerTest extends ApplicationTest {
             }
 
             @Test
+            void 汎化関係を記述後に汎化関係を削除すると互いに疎のクラスを3つ記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#generalizationButtonInCD");
+                clickOn(secondClickedClassDiagramCanvas);
+                clickOn(thirdClickedClassDiagramCanvas);
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(betweenSecondAndThirdClickedClassDiagramCanvas);
+                clickOn("汎化の削除");
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
             void クラス名のみのクラス3つの内2つがコンポジット関係のクラス関係を持つクラス記述する() {
                 List<String> expectedList = Arrays.asList(
                         "class Main {\n    private Sub sub = new Sub();\n}\n",
@@ -2161,6 +2382,60 @@ class MainControllerTest extends ApplicationTest {
                 clickOn(secondClickedClassDiagramCanvas);
                 write("- sub");
                 clickOn(okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void コンポジション関係を記述後に名前を変更すると変更後のクラス記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub {\n}\n",
+                        "class Super {\n    protected Sub changedSub = new Sub();\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#compositionButtonInCD");
+                clickOn(thirdClickedClassDiagramCanvas);
+                clickOn(secondClickedClassDiagramCanvas);
+                write("- sub");
+                clickOn(okButtonPoint);
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(betweenSecondAndThirdClickedClassDiagramCanvas);
+                clickOn("- sub の変更");
+                write("# changedSub");
+                clickOn(okButtonPoint);
+
+                for (int i = 0; i < expectedList.size(); i++) {
+                    assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
+                }
+            }
+
+            @Test
+            void コンポジション関係を記述後に削除すると互いに疎のクラス記述する() {
+                List<String> expectedList = Arrays.asList(
+                        "class Main {\n}\n",
+                        "class Sub {\n}\n",
+                        "class Super {\n}\n");
+
+                clickOn("#classButtonInCD");
+                drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
+                drawClasses(secondClickedClassDiagramCanvas, "Sub", okButtonPoint);
+                drawClasses(thirdClickedClassDiagramCanvas, "Super", okButtonPoint);
+                clickOn("#compositionButtonInCD");
+                clickOn(firstClickedClassDiagramCanvas);
+                clickOn(thirdClickedClassDiagramCanvas);
+                write("- super");
+                clickOn(okButtonPoint);
+
+                clickOn("#normalButtonInCD");
+                rightClickOn(betweenFirstAndThirdClickedClassDiagramCanvas);
+                clickOn("- super の削除");
 
                 for (int i = 0; i < expectedList.size(); i++) {
                     assertThat(getCode(codeStage, i)).isEqualTo(expectedList.get(i));
@@ -2369,7 +2644,7 @@ class MainControllerTest extends ApplicationTest {
      * <p> クラス図キャンバス直下に存在するスクロールパネルを取得する。 </p>
      *
      * <p>
-     * 具体的には、ステージ上のボーダーパネル上のアンカーパネル上のスプリットパネル上の2つ目のアンカーパネル上の
+     * 具体的には、ステージ上のボーダーパネル上のアンカーパネル上のスプリットパネル上の2番目のアンカーパネル上の
      * タブパネル上のアンカーパネル上のボーダーパネル上のセンターのアンカーパネル上のスクロールパネルを取得する。
      * </p>
      *
@@ -2408,6 +2683,55 @@ class MainControllerTest extends ApplicationTest {
         AnchorPane anchorPane = (AnchorPane) scrollPane.getContent();
         Canvas canvas = (Canvas) anchorPane.getChildren().get(0);
         return canvas.getGraphicsContext2D();
+    }
+
+    /**
+     * <p> シーケンス図キャンバスの大枠に存在するクラス名のタブパネルを取得する。 </p>
+     *
+     * <p>
+     * 具体的には、ステージ上のボーダーパネル上のアンカーパネル上のスプリットパネル上の2番目のアンカーパネル上の
+     * タブパネル上のアンカーパネル上のボーダーパネル上のセンターのアンカーパネル上のタブパネルを取得する。
+     * </p>
+     *
+     * <p>
+     * クラス名と一致するタブパネルのため、主にクラス図のクラスとの整合性のテストに利用する。
+     * </p>
+     *
+     * @param stage 大元のステージ <br> 基本的にはretussMain.fxmlのステージ以外を呼び出すことはない
+     * @return シーケンス図キャンバスの大枠に存在するクラス名のタブパネル <br> FXMLファイルを書き換えるか実行中にどこかのパネルを消さない限り{@code null}になる可能性はない
+     */
+    private TabPane getClassTabPaneBelowSequenceDiagram(Stage stage) {
+        BorderPane borderPaneOnStage = (BorderPane) stage.getScene().getRoot().getChildrenUnmodifiable().get(0);
+        AnchorPane anchorPaneOnBorderPane = (AnchorPane) borderPaneOnStage.getCenter();
+        SplitPane splitPaneOnAnchorPaneOnBorderPane = (SplitPane) anchorPaneOnBorderPane.getChildren().get(0);
+        AnchorPane anchorPaneOnSplitPane = (AnchorPane) splitPaneOnAnchorPaneOnBorderPane.getItems().get(1);
+        TabPane tabPaneOnAnchorPaneOnSplitPane = (TabPane) anchorPaneOnSplitPane.getChildren().get(0);
+        AnchorPane anchorPaneOnTabPane = (AnchorPane) tabPaneOnAnchorPaneOnSplitPane.getTabs().get(1).getContent();
+        BorderPane borderPaneOnAnchorPaneOnTabPane = (BorderPane) anchorPaneOnTabPane.getChildren().get(0);
+        AnchorPane anchorPaneOnVBox = (AnchorPane) borderPaneOnAnchorPaneOnTabPane.getCenter();
+        return (TabPane) anchorPaneOnVBox.getChildren().get(0);
+    }
+
+    /**
+     * <p> シーケンス図キャンバス直下に存在する操作名のタブパネルを取得する。 </p>
+     *
+     * <p>
+     * 具体的には、 {@link #getClassTabPaneBelowSequenceDiagram(Stage)} で取得したタブパネル上の
+     * {@code index} 番目のタブ内のアンカーパネル上のタブパネルを取得する。
+     * </p>
+     *
+     * <p>
+     * 操作名と一致するタブパネルのため、主にクラス図のクラス内の操作との整合性のテストに利用する。
+     * </p>
+     *
+     * @param stage 大元のステージ <br> 基本的にはretussMain.fxmlのステージ以外を呼び出すことはない
+     * @param index クラスを選択するタブパネルのタブのインデックス
+     * @return シーケンス図キャンバスの大枠に存在するクラス名のタブパネル <br> FXMLファイルを書き換えるか実行中にどこかのパネルを消さない限り{@code null}になる可能性はない
+     */
+    private TabPane getOperationTabPaneBelowSequenceDiagram(Stage stage, int index) {
+        TabPane tabPane = getClassTabPaneBelowSequenceDiagram(stage);
+        AnchorPane anchorPaneOnTabPane = (AnchorPane) tabPane.getTabs().get(index).getContent();
+        return  (TabPane) anchorPaneOnTabPane.getChildren().get(0);
     }
 
     /**

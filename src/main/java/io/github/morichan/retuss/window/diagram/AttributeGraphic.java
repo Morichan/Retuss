@@ -21,19 +21,21 @@ public class AttributeGraphic extends ClassDiagramGraphic {
         sculptor.parse("defaultAttribute");
         attribute = sculptor.carve();
         visibility = "";
-        type = ContentType.Undefined;
-        isIndicate = true;
+        setType(ContentType.Undefined);
+        setIndication(true);
     }
 
     public AttributeGraphic(String name) {
         sculptor.parse(name);
         attribute = sculptor.carve();
-        isIndicate = true;
+        setType(ContentType.Undefined);
+        setIndication(true);
     }
 
     public AttributeGraphic(Attribute attribute) {
         this.attribute = attribute;
-        isIndicate = true;
+        setType(ContentType.Undefined);
+        setIndication(true);
     }
 
     public Attribute getAttribute() {

@@ -52,6 +52,11 @@ public class JavaTranslator {
             } catch (IllegalStateException e) {
                 field.setValue(null);
             }
+            try {
+                field.setArrayLength(new ArrayLength(Integer.parseInt(attribute.getMultiplicityRange().toString())));
+            } catch (IllegalStateException e) {
+                field.setArrayLength(null);
+            }
             javaClass.addField(field);
         }
 
