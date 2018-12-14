@@ -67,7 +67,12 @@ public class JavaTranslator {
             } catch (IllegalStateException e) {
                 field.setAccessModifier(AccessModifier.Private);
             }
-            field.setValue("new " + relation.getType().toString());
+            try {
+                field.setArrayLength(new ArrayLength(Integer.parseInt(relation.getMultiplicityRange().toString())));
+            } catch (IllegalStateException e) {
+                field.setArrayLength(null);
+                field.setValue("new " + relation.getType().toString());
+            }
             javaClass.addField(field);
         }
 

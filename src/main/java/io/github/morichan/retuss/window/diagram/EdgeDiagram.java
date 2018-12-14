@@ -1,5 +1,8 @@
 package io.github.morichan.retuss.window.diagram;
 
+import io.github.morichan.fescue.feature.multiplicity.Bounder;
+import io.github.morichan.fescue.feature.multiplicity.MultiplicityRange;
+import io.github.morichan.fescue.feature.value.expression.OneIdentifier;
 import io.github.morichan.retuss.window.ClassDiagramDrawer;
 import io.github.morichan.retuss.window.MainController;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
@@ -93,7 +96,7 @@ public class EdgeDiagram {
             return "";
         } else {
             if (relations.size() > 0) {
-                return relations.get(number).getText();
+                return relations.get(number).getAttribute().getVisibility() + " " + relations.get(number).getAttribute().getName();
             } else {
                 return "";
             }
@@ -471,10 +474,22 @@ public class EdgeDiagram {
      * @param number                       描画する関係の番号 ここにおける番号とは、生成した順番を表す。
      */
     private void drawEdgeName(Point2D relationIntersectPoint, Point2D relationSourceIntersectPoint, int number) {
+        if (getContentType(number) == ContentType.Generalization) return;
+
         double angle = calculateDegreeFromStart(relationIntersectPoint, relationSourceIntersectPoint);
         double length = 20.0;
         Point2D fontPoint = calculateUmbrellaPoint(relationIntersectPoint, angle - 20.0, length);
-        Text text = new Text(getEdgeContentText(number));
+        String content;
+        // 関連端名の表示用に整形
+        try {
+            content = relations.get(number).getAttribute().getMultiplicityRange() + "\n" +
+                    relations.get(number).getAttribute().getVisibility() + " " + relations.get(number).getAttribute().getName();
+        } catch (IllegalStateException e) {
+            relations.get(number).getAttribute().setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(1))));
+            content =  "1\n" +
+                    relations.get(number).getAttribute().getVisibility() + " " + relations.get(number).getAttribute().getName();
+        }
+        Text text = new Text(content);
         text.setFont(Font.font("Consolas", FontWeight.LIGHT, 15));
         gc.setFill(Color.BLACK);
         gc.setFont(text.getFont());
