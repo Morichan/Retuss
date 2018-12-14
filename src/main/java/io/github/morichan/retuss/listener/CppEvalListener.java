@@ -60,7 +60,8 @@ public class CppEvalListener extends CPP14BaseListener {
         // MemberVariable memberVariable = new MemberVariable();
         memberdeclarationFlag = true;
         if (!((ctx.getChild(0) instanceof CPP14Parser.FunctiondefinitionContext))) {        //関数の記述方法の{}の方法をブロック
-            if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() == 1) {     //メンバ変数の時
+            if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() == 1 || ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChild(2) instanceof  CPP14Parser.ConstantexpressionContext) {
+            //if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() == 1) {     //メンバ変数の時  バグあり
                 MemberVariable memberVariable = new MemberVariable();
                 if (accessSpecifier != null) {
                     memberVariable.setAccessSpecifier(accessSpecifier);
@@ -79,9 +80,17 @@ public class CppEvalListener extends CPP14BaseListener {
                         if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
                             if (ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(1) instanceof CPP14Parser.PtrdeclaratorContext && ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getText().equals("*")
                                     && ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChildCount() >= 2) {
-                                memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(1).getText());   //*bのとき,なぜか*いれて成形しなくてもいけるw
+                                String state = ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getText();
+                                memberVariable.setName(state + ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(1).getText());
+                              //  memberVariable.setName(String.format("%s%s",state,ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(1).getText()));
+                             //   memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(1).getText());   //*bのとき,なぜか*いれて成形しなくてもいけるw
 
-                            } else {
+                            }
+                            else if(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() >= 4 && ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(2) instanceof  CPP14Parser.ConstantexpressionContext){
+                              memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+                              memberVariable.setConstantExpression(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(2).getText());
+                            }
+                            else {
                                 memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
                             }
                         }

@@ -1,6 +1,9 @@
 package io.github.morichan.retuss.translator;
 
 import io.github.morichan.fescue.feature.Attribute;
+import io.github.morichan.fescue.feature.multiplicity.MultiplicityRange;
+import io.github.morichan.fescue.feature.multiplicity.Bounder;
+import io.github.morichan.fescue.feature.value.expression.Expression;
 import io.github.morichan.fescue.feature.Operation;
 import io.github.morichan.fescue.feature.name.Name;
 import io.github.morichan.fescue.feature.parameter.Parameter;
@@ -132,12 +135,18 @@ public class UMLTranslator {
         }
     }
 
+    //C++の変換
+
     private Class createClass(io.github.morichan.retuss.language.cpp.Class cppClass) {
         Class classClass = new Class(cppClass.getName());
 
         for (MemberVariable memberVariable : cppClass.getMemberVariables()) {
 
             Attribute attribute = new Attribute(new Name(memberVariable.getName()));
+            if(memberVariable.getConstantExpression() != null) {
+                MultiplicityRange multiplicityRange = new MultiplicityRange(new Bounder(memberVariable.getConstantExpression()));
+                attribute.setMultiplicityRange(multiplicityRange);
+            }
             if(memberVariable.getType().toString().equals( "string")) {
                 attribute.setType(new Type("String"));
             }else {
@@ -147,6 +156,7 @@ public class UMLTranslator {
             if (memberVariable.getValue() != null) {
                 attribute.setDefaultValue(new DefaultValue(new OneIdentifier(memberVariable.getValue().toString())));
             }
+
             classClass.addAttribute(attribute);
         }
         for (MemberFunction memberFunction : cppClass.getMemberFunctions()) {

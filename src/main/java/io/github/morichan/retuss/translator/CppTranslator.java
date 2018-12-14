@@ -42,6 +42,15 @@ public class CppTranslator {
 
         for (Attribute attribute : classClass.extractAttributes()) {
             MemberVariable memberVariable = new MemberVariable(new Type(attribute.getType().toString()), attribute.getName().toString());
+
+//            if(attribute.getMultiplicityRange() != null){                                                        //配列（多重度）の格納
+//                memberVariable.setConstantExpression(attribute.getMultiplicityRange().toString());
+//            }
+            try {
+                memberVariable.setConstantExpression(attribute.getMultiplicityRange().toString());
+            } catch (IllegalStateException e) {
+                memberVariable.setConstantExpression(null);
+            }
             try {
                 memberVariable.setAccessSpecifier(convert(attribute.getVisibility()));
             } catch (IllegalStateException e) {
