@@ -10,6 +10,7 @@ public class MemberVariable {
     private String name;
     private Value value;
     private boolean flagString=false;
+    private String constantExpression;
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -138,6 +139,9 @@ public class MemberVariable {
             this.value = null;
         } else {
             this.value = new Value(value);
+//            if(this.value.isNewContext()){
+//             name=   String.format("*%s",name);
+//            }
         }
     }
 
@@ -157,6 +161,12 @@ public class MemberVariable {
 
     public boolean getFlagString(){return  flagString;}
 
+    public void setConstantExpression(String constantExpression) {
+        this.constantExpression = constantExpression;
+    }
+
+    public String getConstantExpression(){return  constantExpression;}
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -169,11 +179,25 @@ public class MemberVariable {
         sb.append(type);
         sb.append(" ");
 
-        sb.append(name);
+//        if(value.isNewContext()){
+//            sb.append("*");
+//            sb.append(name);
+//        }else {
+            sb.append(name);
+//        }
+
+        if(constantExpression != null){
+            sb.append("["+ constantExpression + "]");
+        }
+
 
         if (value != null) {
-            sb.append(" = ");
-            sb.append(value);
+            if(value.isNewContext()){
+
+            }else {
+                sb.append(" = ");
+                sb.append(value);
+            }
         }
 
         sb.append(";");

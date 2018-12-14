@@ -60,25 +60,54 @@ public class CppEvalListener extends CPP14BaseListener {
         // MemberVariable memberVariable = new MemberVariable();
         memberdeclarationFlag = true;
         if (!((ctx.getChild(0) instanceof CPP14Parser.FunctiondefinitionContext))) {        //関数の記述方法の{}の方法をブロック
-            if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() == 1) {     //メンバ変数の時
+            if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() == 1 || ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChild(2) instanceof  CPP14Parser.ConstantexpressionContext) {
+            //if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() == 1) {     //メンバ変数の時  バグあり
                 MemberVariable memberVariable = new MemberVariable();
                 if (accessSpecifier != null) {
                     memberVariable.setAccessSpecifier(accessSpecifier);
                     // accessSpecifier = null;
                 }
 
-                for (int i = 0; i < ctx.getChildCount(); i++) {
-                    if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
-                        if (ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() > 1) {     //stringの分岐に対応。
-                            memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getText()));
-                        } else {
-                            memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
+//<<<<<<< HEAD
+                    for (int i = 0; i < ctx.getChildCount(); i++) {
+                        if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
+                            if(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() > 1){     //stringの分岐に対応。
+                                memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getText()));
+                            }else {
+                                memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
+                            }
+                        }
+                        if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
+                            if (ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(1) instanceof CPP14Parser.PtrdeclaratorContext && ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getText().equals("*")
+                                    && ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChildCount() >= 2) {
+                                String state = ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getText();
+                                memberVariable.setName(state + ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(1).getText());
+                              //  memberVariable.setName(String.format("%s%s",state,ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(1).getText()));
+                             //   memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(1).getText());   //*bのとき,なぜか*いれて成形しなくてもいけるw
+
+                            }
+                            else if(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() >= 4 && ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(2) instanceof  CPP14Parser.ConstantexpressionContext){
+                              memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+                              memberVariable.setConstantExpression(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(2).getText());
+                            }
+                            else {
+                                memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+                            }
                         }
                     }
-                    if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
-                        memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
-                    }
-                }
+//=======
+//                for (int i = 0; i < ctx.getChildCount(); i++) {
+//                    if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
+//                        if (ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() > 1) {     //stringの分岐に対応。
+//                            memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(1).getChild(0).getChild(0).getText()));
+//                        } else {
+//                            memberVariable.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
+//>>>>>>> upstream/dev_kuriharashun
+
+//                    if (ctx.getChild(i) instanceof CPP14Parser.MemberdeclaratorlistContext) {
+//                        memberVariable.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+//                    }
+//                }
                 cpp.getClasses().get(cpp.getClasses().size() - 1).addMemberVariable(memberVariable);
             }
 
