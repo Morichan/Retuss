@@ -290,7 +290,8 @@ public class MainController {
             classDiagramScrollPane.setContextMenu(formatContextMenuInCD(contextMenu, nodeDiagram.getNodeType(), mouseX, mouseY));
         } else if (currentType == ContentType.Composition) {
             RelationshipAttributeGraphic relation = classDiagramDrawer.searchDrawnEdge(mouseX, mouseY);
-            ContextMenu contextMenu = util.createClassContextMenuInCD(relation.getText(), relation.getType());
+            ContextMenu contextMenu = util.createClassContextMenuInCD(
+                    relation.getAttribute().getVisibility() + " " + relation.getAttribute().getName(), relation.getType());
             classDiagramScrollPane.setContextMenu(formatContextMenuInCD(contextMenu, relation.getType(), mouseX, mouseY));
 
         } else if (currentType == ContentType.Generalization) {
@@ -364,13 +365,13 @@ public class MainController {
             classDiagramDrawer.deleteAllDrawnNodeText(i, ContentType.Composition);
 
             for (int j = 0; j < umlPackage.getClasses().get(i).extractRelations().size(); j++) {
-                String content = umlPackage.getClasses().get(i).extractRelations().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).extractRelations().get(j).getName().getNameText();
+                String content = umlPackage.getClasses().get(i).extractRelations().get(j).toString();
                 classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(i).extractRelations().get(j).getType().getName().getNameText());
             }
 
             for (int count = 0, j = 0; j < umlPackage.getClasses().get(i).extractAttributes().size(); j++) {
                 if (relationsIds.get(i).containsKey(count)) {
-                    String content = umlPackage.getClasses().get(i).extractAttributes().get(j).getVisibility() + " " + umlPackage.getClasses().get(i).extractAttributes().get(j).getName().getNameText();
+                    String content = umlPackage.getClasses().get(i).extractAttributes().get(j).toString();
                     classDiagramDrawer.createDrawnEdge(ContentType.Composition, content, umlPackage.getClasses().get(i).getName(), umlPackage.getClasses().get(relationsIds.get(i).get(count)).getName());
                     umlPackage.getClasses().get(i).addRelation(umlPackage.getClasses().get(i).extractAttributes().get(j));
                     umlPackage.getClasses().get(i).getAttributeGraphics().remove(j);

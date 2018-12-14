@@ -626,7 +626,7 @@ public class ClassDiagramDrawer {
     private int searchRelation(Point2D relationPoint) {
         int relationIndex = relations.searchCurrentRelationNumber(relationPoint);
         int fromId = relations.getRelationSourceId(ContentType.Composition, relationIndex);
-        String text = relations.getEdgeContentText(relationIndex) + " : ";
+        String text = "";// relations.getEdgeContentText(relationIndex) + " : ";
 
         for (int i = 0; i < nodes.get(fromId).getNodeContents(ContentType.Composition).size(); i++) {
             if (nodes.get(fromId).getNodeContentText(ContentType.Composition, i).startsWith(text)) {
