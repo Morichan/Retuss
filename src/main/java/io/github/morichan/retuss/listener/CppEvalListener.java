@@ -59,6 +59,8 @@ public class CppEvalListener extends CPP14BaseListener {
     public void enterMemberdeclaration(CPP14Parser.MemberdeclarationContext ctx) {
         // MemberVariable memberVariable = new MemberVariable();
         memberdeclarationFlag = true;
+        boolean isVirtual = false;
+        boolean isEqualZero=false;
         if (!((ctx.getChild(0) instanceof CPP14Parser.FunctiondefinitionContext))) {        //関数の記述方法の{}の方法をブロック
             if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() == 1 || ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChild(2) instanceof  CPP14Parser.ConstantexpressionContext) {
             //if (ctx.getChild(1).getChild(0).getChild(0).getChild(0).getChild(0).getChildCount() == 1) {     //メンバ変数の時  バグあり
@@ -121,6 +123,7 @@ public class CppEvalListener extends CPP14BaseListener {
                     if (ctx.getChild(i) instanceof CPP14Parser.DeclspecifierseqContext) {
 
                         if (ctx.getChild(i).getChild(0).getChild(0) instanceof CPP14Parser.FunctionspecifierContext) {     //"virtual"分岐
+                            isVirtual = true;
                             memberFunction.setType(new Type(ctx.getChild(i).getChild(1).getText()));
                         } else {
                             memberFunction.setType(new Type(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText()));
@@ -130,12 +133,15 @@ public class CppEvalListener extends CPP14BaseListener {
 
 
                         if (ctx.getChild(i).getChild(0).getChildCount() >= 2 && ctx.getChild(i).getChild(0).getChild(1).getChild(1).getText().equals("0")) {
-                            memberFunction.setVirtualMemberFunction0(true);
-                            hasVirtualMemberFunctions0 = true;
-                            System.out.println("まじはげ");
+                            isEqualZero=true;
+                            if(isVirtual) {
+                                memberFunction.setVirtualMemberFunction0(true);
+                                hasVirtualMemberFunctions0 = true;
+                            }
                         }
-
-                        memberFunction.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+if(!(isEqualZero == true && isVirtual == false)) {
+    memberFunction.setName(ctx.getChild(i).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getChild(0).getText());
+}
                     }
                 }
                 cpp.getClasses().get(cpp.getClasses().size() - 1).addMemberFunction(memberFunction);
@@ -278,7 +284,7 @@ public class CppEvalListener extends CPP14BaseListener {
         String functionbody;
         functionbody = "defo\n";
         functionbody = ctx.getText();
-
+        //if(cpp.getClasses().size() <= 0){return;}
         cpp.getClasses().get(cpp.getClasses().size() - 1).getMemberFunctions()
                 .get(cpp.getClasses().get(cpp.getClasses().size() - 1).getMemberFunctions().size() - 1).setFunctionbody(functionbody);
     }
