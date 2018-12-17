@@ -102,6 +102,12 @@ public class CppTranslator {
             } catch (IllegalStateException e) {
                 memberVariable.setAccessSpecifier(AccessSpecifier.Private);
             }
+            try {
+                memberVariable.setConstantExpression(relation.getMultiplicityRange().toString());
+            } catch (IllegalStateException e) {
+                memberVariable.setConstantExpression(null);
+            }
+
             memberVariable.setValue("new " + relation.getType().toString());
             cppClass.addMemberVariable(memberVariable);
         }
