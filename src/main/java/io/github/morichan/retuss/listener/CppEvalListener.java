@@ -137,7 +137,6 @@ public class CppEvalListener extends CPP14BaseListener {
                             if(isVirtual) {
                                 memberFunction.setVirtualMemberFunction0(true);
                                 hasVirtualMemberFunctions0 = true;
-                                System.out.println("まじはげ");
                             }
                         }
 if(!(isEqualZero == true && isVirtual == false)) {
