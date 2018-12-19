@@ -3,6 +3,8 @@ package io.github.morichan.retuss.window;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.language.uml.Package;
 import io.github.morichan.retuss.window.diagram.OperationGraphic;
+import io.github.morichan.retuss.window.diagram.sequence.Interaction;
+import io.github.morichan.retuss.window.diagram.sequence.Lifeline;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -54,7 +56,9 @@ public class SequenceDiagramDrawer {
                     continue;
                 }
 
-                OperationGraphic og = umlPackage.getClasses().get(classIndex).getOperationGraphics().get(operationIndex);
+                Class umlClass = umlPackage.getClasses().get(classIndex);
+                OperationGraphic og = umlClass.getOperationGraphics().get(operationIndex);
+                Interaction interaction = new Interaction();
 
                 Canvas canvas = (Canvas) ((ScrollPane) ((AnchorPane) operationTab.getContent()).getChildren().get(0)).getContent();
                 canvas.setWidth(tabPaneInSequenceTab.getWidth());
@@ -63,6 +67,7 @@ public class SequenceDiagramDrawer {
                 GraphicsContext gc = canvas.getGraphicsContext2D();
                 drawDiagramCanvasEdge(gc);
                 drawSequenceNameArea(gc, og.getOperation().toString());
+                interaction.draw(gc, umlClass, og);
 
                 break;
             }

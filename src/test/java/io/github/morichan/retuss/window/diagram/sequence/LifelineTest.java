@@ -11,7 +11,7 @@ class LifelineTest {
 
     @Test
     void 既定の座標を返す() {
-        Point2D expected = Point2D.ZERO;
+        Point2D expected = new Point2D(0, 7);
 
         Point2D actual = obj.getHeadCenterPoint();
 
@@ -20,7 +20,7 @@ class LifelineTest {
 
     @Test
     void メッセージ発生の座標を設定するとX軸が等しくY軸が固定の座標を返す() {
-        Point2D expected = new Point2D(80, 0);
+        Point2D expected = new Point2D(80, 70);
 
         obj.setOccurrenceSpecificationPoint(new Point2D(80, 50));
         Point2D actual = obj.getHeadCenterPoint();
