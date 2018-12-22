@@ -9,12 +9,17 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MessageOccurrenceSpecification {
 
     private Point2D beginPoint = Point2D.ZERO;
     private Point2D endPoint = Point2D.ZERO;
 
     private OperationGraphic og;
+    private Lifeline lifeline;
+    private List<MessageOccurrenceSpecification> messages = new ArrayList<>();
 
     public Point2D getBeginPoint() {
         return beginPoint;
@@ -36,42 +41,198 @@ public class MessageOccurrenceSpecification {
         this.og = og;
     }
 
-    public void draw(GraphicsContext gc, Lifeline lifeline) {
-        lifeline.setOccurrenceSpecificationPoint(beginPoint);
-        lifeline.draw(gc);
+    public void setLifeline(Lifeline lifeline) {
+        this.lifeline = lifeline;
+    }
 
+    public void addMessage(MessageOccurrenceSpecification message) {
+        messages.add(message);
+    }
+
+    public List<MessageOccurrenceSpecification> getMessages() {
+        return messages;
+    }
+
+    public boolean hasSameLifeline(Lifeline lifeline) {
+        return this.lifeline.getUmlClass().getName().equals(lifeline.getUmlClass().getName());
+    }
+
+    public void calculatePoint() {
+        double height = 40;
+
+        lifeline.calculatePoint();
+        Point2D scheduledLifelineForLastDrawing = lifeline.getBottomRightCorner();
+        beginPoint = new Point2D(lifeline.getHeadCenterPoint().getX(), lifeline.getHeadCenterPoint().getY() + 40);
+        Point2D beforeGoalPoint = new Point2D(beginPoint.getX(), beginPoint.getY());
+
+        for (MessageOccurrenceSpecification message : messages) {
+            scheduledLifelineForLastDrawing =
+                    message.calculatePoint(beforeGoalPoint, lifeline, scheduledLifelineForLastDrawing, 0);
+            height += message.calculateHeight();
+            beforeGoalPoint = new Point2D(message.getEndPoint().getX(), message.getEndPoint().getY());
+        }
+
+        if (messages.size() >= 2) height += (messages.size() - 1) * 20;
+
+        endPoint = new Point2D(lifeline.getHeadCenterPoint().getX(), beginPoint.getY() + height);
+
+        /*if (count == 0) {
+            beginPoint = new Point2D(lifeline.getHeadCenterPoint().getX(), lifeline.getHeadCenterPoint().getY() + 30);
+            endPoint = new Point2D(lifeline.getHeadCenterPoint().getX(), lifeline.getHeadCenterPoint().getY() + 60 + y);
+        }*/
+    }
+
+    private Point2D calculatePoint(Point2D beforeBeginPoint, Lifeline fromLifeline, Point2D lastLifeline, int sameLifelineCount) {
+
+        double height = 40;
+        if (hasSameLifeline(fromLifeline)) {
+            sameLifelineCount++;
+            beginPoint = new Point2D(lifeline.getHeadCenterPoint().getX() + sameLifelineCount * 5, beforeBeginPoint.getY() + 35);
+        } else {
+            sameLifelineCount = 0;
+            if (!lifeline.isCalculated()) {
+                lifeline.setLeftLifelineBottomRightCorner(lastLifeline);
+                lifeline.calculatePoint();
+                lifeline.setCalculated(true);
+            }
+            lastLifeline = lifeline.getBottomRightCorner();
+            beginPoint = new Point2D(lifeline.getHeadCenterPoint().getX(), beforeBeginPoint.getY() + 20);
+        }
+
+        for (MessageOccurrenceSpecification message : messages) {
+            lastLifeline = message.calculatePoint(beginPoint, lifeline, lastLifeline, sameLifelineCount);
+            height += message.calculateHeight();
+        }
+
+        if (sameLifelineCount != 0) {
+            endPoint = new Point2D(lifeline.getHeadCenterPoint().getX() + sameLifelineCount * 5, beginPoint.getY() + height - 10);
+        } else {
+            endPoint = new Point2D(lifeline.getHeadCenterPoint().getX(), beginPoint.getY() + height);
+        }
+
+        return lastLifeline;
+    }
+
+    private double calculateHeight() {
+        double height = 40;
+
+        for (MessageOccurrenceSpecification message : messages) {
+            height += message.calculateHeight();
+        }
+
+        return height;
+    }
+
+    public void draw(GraphicsContext gc) {
+        draw(gc, 5.0, null);
+    }
+
+    private void draw(GraphicsContext gc, double arrowFirstX, Lifeline fromLifeline) {
         double width = 10.0;
         double height = endPoint.getY() - beginPoint.getY();
         String diagramFont = "Consolas";
         double textSize = 12.0;
-        Point2D first = new Point2D(5.0, beginPoint.getY());
-        Point2D last = new Point2D(5.0, endPoint.getY());
 
-        gc.setFill(Color.WHITE);
-        gc.fillRect(beginPoint.getX() - width / 2, beginPoint.getY(), width, height);
+        if (!lifeline.isDrawn()) {
+            lifeline.draw(gc);
+            lifeline.setDrawn(true);
+            fromLifeline = lifeline;
 
-        gc.setStroke(Color.BLACK);
-        gc.strokeRect(beginPoint.getX() - width / 2, beginPoint.getY(), width, height);
+            // updateMessagePoint();
 
-        Text operationText = new Text(og.getOperation().toString());
-        operationText.setFont(Font.font(diagramFont, FontWeight.LIGHT, textSize));
+            Point2D first = new Point2D(arrowFirstX, beginPoint.getY());
+            Point2D last = new Point2D(arrowFirstX, endPoint.getY());
 
-        gc.setFill(Color.BLACK);
-        gc.setTextAlign(TextAlignment.LEFT);
-        gc.setFont(operationText.getFont());
-        gc.fillText(operationText.getText(), first.getX() + 5, first.getY() - 5);
+            gc.setFill(Color.WHITE);
+            gc.fillRect(beginPoint.getX() - width / 2, beginPoint.getY(), width, height);
 
-        gc.strokeLine(first.getX(), first.getY(), beginPoint.getX() - width / 2, beginPoint.getY());
-        double[] arrowTipX = {beginPoint.getX() - width / 2 - 5.0, beginPoint.getX() - width / 2 - 5.0, beginPoint.getX() - width / 2};
-        double[] arrowTipY = {beginPoint.getY() - 3.0, beginPoint.getY() + 3.0, beginPoint.getY()};
-        gc.strokeLine(beginPoint.getX() - width / 2 - 5.0, beginPoint.getY() - 3.0, beginPoint.getX() - width / 2, beginPoint.getY());
-        gc.strokeLine(beginPoint.getX() - width / 2 - 5.0, beginPoint.getY() + 3.0, beginPoint.getX() - width / 2, beginPoint.getY());
-        gc.fillPolygon(arrowTipX, arrowTipY, 3);
+            gc.setStroke(Color.BLACK);
+            gc.strokeRect(beginPoint.getX() - width / 2, beginPoint.getY(), width, height);
 
-        gc.setLineDashes(5.0, 5.0);
-        gc.strokeLine(endPoint.getX() - width / 2, endPoint.getY(), last.getX(), last.getY());
-        gc.setLineDashes(null);
-        gc.strokeLine(last.getX() + 5.0, last.getY() - 3.0, last.getX(), last.getY());
-        gc.strokeLine(last.getX() + 5.0, last.getY() + 3.0, last.getX(), last.getY());
+            Text operationText = new Text(og.getOperation().toString());
+            operationText.setFont(Font.font(diagramFont, FontWeight.LIGHT, textSize));
+
+            gc.setFill(Color.BLACK);
+            gc.setTextAlign(TextAlignment.LEFT);
+            gc.setFont(operationText.getFont());
+            gc.fillText(operationText.getText(), first.getX() + 5, first.getY() - 5);
+
+            gc.strokeLine(first.getX(), first.getY(), beginPoint.getX() - width / 2, beginPoint.getY());
+            double[] arrowTipX = {beginPoint.getX() - width / 2 - 5.0, beginPoint.getX() - width / 2 - 5.0, beginPoint.getX() - width / 2};
+            double[] arrowTipY = {beginPoint.getY() - 3.0, beginPoint.getY() + 3.0, beginPoint.getY()};
+            gc.fillPolygon(arrowTipX, arrowTipY, 3);
+            gc.strokePolygon(arrowTipX, arrowTipY, 3);
+
+            gc.setLineDashes(5.0, 5.0);
+            gc.strokeLine(endPoint.getX() - width / 2, endPoint.getY(), last.getX(), last.getY());
+            gc.setLineDashes(null);
+            gc.strokeLine(last.getX() + 5.0, last.getY() - 3.0, last.getX(), last.getY());
+            gc.strokeLine(last.getX() + 5.0, last.getY() + 3.0, last.getX(), last.getY());
+
+        } else if (!hasSameLifeline(fromLifeline)) {
+            Point2D first = new Point2D(arrowFirstX, beginPoint.getY());
+            Point2D last = new Point2D(arrowFirstX, endPoint.getY());
+
+            gc.setFill(Color.WHITE);
+            gc.fillRect(beginPoint.getX() - width / 2, beginPoint.getY(), width, height);
+
+            gc.setStroke(Color.BLACK);
+            gc.strokeRect(beginPoint.getX() - width / 2, beginPoint.getY(), width, height);
+
+            Text operationText = new Text(og.getOperation().toString());
+            operationText.setFont(Font.font(diagramFont, FontWeight.LIGHT, textSize));
+
+            gc.setFill(Color.BLACK);
+            gc.setTextAlign(TextAlignment.LEFT);
+            gc.setFont(operationText.getFont());
+            gc.fillText(operationText.getText(), first.getX() + 5, first.getY() - 5);
+
+            gc.strokeLine(first.getX(), first.getY(), beginPoint.getX() - width / 2, beginPoint.getY());
+            double[] arrowTipX = {beginPoint.getX() - width / 2 - 5.0, beginPoint.getX() - width / 2 - 5.0, beginPoint.getX() - width / 2};
+            double[] arrowTipY = {beginPoint.getY() - 3.0, beginPoint.getY() + 3.0, beginPoint.getY()};
+            gc.fillPolygon(arrowTipX, arrowTipY, 3);
+            gc.strokePolygon(arrowTipX, arrowTipY, 3);
+
+            gc.setLineDashes(5.0, 5.0);
+            gc.strokeLine(endPoint.getX() - width / 2, endPoint.getY(), last.getX(), last.getY());
+            gc.setLineDashes(null);
+            gc.strokeLine(last.getX() + 5.0, last.getY() - 3.0, last.getX(), last.getY());
+            gc.strokeLine(last.getX() + 5.0, last.getY() + 3.0, last.getX(), last.getY());
+
+        } else {
+
+            // updateMessagePoint();
+
+            Point2D arrowFirst = new Point2D(arrowFirstX, beginPoint.getY() - 10);
+            Point2D arrowLast = new Point2D(beginPoint.getX() + width / 2, arrowFirst.getY() + 10);
+
+            gc.setFill(Color.WHITE);
+            gc.fillRect(beginPoint.getX() - width / 2, beginPoint.getY(), width, height);
+
+            gc.setStroke(Color.BLACK);
+            gc.strokeRect(beginPoint.getX() - width / 2 , beginPoint.getY(), width, height);
+
+            Text operationText = new Text(og.getOperation().toString());
+            operationText.setFont(Font.font(diagramFont, FontWeight.LIGHT, textSize));
+
+            gc.setFill(Color.BLACK);
+            gc.setTextAlign(TextAlignment.LEFT);
+            gc.setFont(operationText.getFont());
+            gc.fillText(operationText.getText(), arrowFirst.getX() + 5, arrowFirst.getY() - 5);
+
+            gc.strokeLine(arrowFirst.getX(), arrowFirst.getY(), arrowFirst.getX() + 20, arrowFirst.getY());
+            gc.strokeLine(arrowFirst.getX() + 20, arrowFirst.getY(), arrowFirst.getX() + 20, arrowLast.getY());
+            gc.strokeLine(arrowFirst.getX() + 20, arrowLast.getY(), arrowLast.getX(), arrowLast.getY());
+
+            double[] arrowTipX = {arrowLast.getX(), arrowLast.getX() + 5.0, arrowLast.getX() + 5.0};
+            double[] arrowTipY = {arrowLast.getY(), arrowLast.getY() - 3.0, arrowLast.getY() + 3.0};
+            gc.fillPolygon(arrowTipX, arrowTipY, 3);
+            gc.strokePolygon(arrowTipX, arrowTipY, 3);
+        }
+
+        arrowFirstX = beginPoint.getX() + width / 2;
+        for (MessageOccurrenceSpecification message : messages) {
+            message.draw(gc, arrowFirstX, fromLifeline);
+        }
     }
 }

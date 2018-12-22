@@ -11,7 +11,7 @@ class LifelineTest {
 
     @Test
     void 既定の座標を返す() {
-        Point2D expected = new Point2D(0, 7);
+        Point2D expected = new Point2D(0, 70);
 
         Point2D actual = obj.getHeadCenterPoint();
 

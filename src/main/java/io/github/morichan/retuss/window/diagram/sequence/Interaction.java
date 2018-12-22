@@ -1,5 +1,7 @@
 package io.github.morichan.retuss.window.diagram.sequence;
 
+import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.fescue.feature.name.Name;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import javafx.geometry.Point2D;
@@ -8,19 +10,57 @@ import javafx.scene.canvas.GraphicsContext;
 public class Interaction {
 
     MessageOccurrenceSpecification message;
+    Class umlClass;
+    OperationGraphic operationGraphic;
+
+    public Interaction(Class umlClass, OperationGraphic og) {
+        setUmlClass(umlClass);
+        setOperationGraphic(og);
+    }
+
+    public void setUmlClass(Class umlClass) {
+        this.umlClass = umlClass;
+    }
+
+    public void setOperationGraphic(OperationGraphic operationGraphic) {
+        this.operationGraphic = operationGraphic;
+    }
 
     public MessageOccurrenceSpecification getMessage() {
         return message;
     }
 
-    public void draw(GraphicsContext gc, Class umlClass, OperationGraphic og) {
+    public void draw(GraphicsContext gc) {
         Lifeline lifeline = new Lifeline();
         lifeline.setUmlClass(umlClass);
 
+        Lifeline another = new Lifeline();
+        another.setUmlClass(new Class("A"));
+        Lifeline another2 = new Lifeline();
+        another2.setUmlClass(new Class("ClassName2"));
+        Lifeline another3 = new Lifeline();
+        another3.setUmlClass(new Class("A"));
+
+        MessageOccurrenceSpecification otherMessage = new MessageOccurrenceSpecification();
+        otherMessage.setOperationGraphic(new OperationGraphic(new Operation(new Name("reprint"))));
+        otherMessage.setLifeline(another);
+
+        MessageOccurrenceSpecification anotherMessage = new MessageOccurrenceSpecification();
+        anotherMessage.setOperationGraphic(new OperationGraphic(new Operation(new Name("reprint2"))));
+        anotherMessage.setLifeline(another2);
+        // otherMessage.addMessage(anotherMessage);
+
+        MessageOccurrenceSpecification another3Message = new MessageOccurrenceSpecification();
+        another3Message.setOperationGraphic(new OperationGraphic(new Operation(new Name("reprint3"))));
+        another3Message.setLifeline(another3);
+
         message = new MessageOccurrenceSpecification();
-        message.setBeginPoint(new Point2D(70.0, 100.0));
-        message.setEndPoint(new Point2D(70.0, 200.0));
-        message.setOperationGraphic(og);
-        message.draw(gc, lifeline);
+        message.setOperationGraphic(operationGraphic);
+        message.setLifeline(lifeline);
+        message.addMessage(otherMessage);
+        message.addMessage(anotherMessage);
+        message.addMessage(another3Message);
+        message.calculatePoint();
+        message.draw(gc);
     }
 }

@@ -25,10 +25,17 @@ import javafx.scene.text.*;
  * </ul>
  */
 public class Lifeline {
+    private double lifelineNameFontSize = 15.0;
+    private String diagramFont = "Consolas";
+    private Text lifelineNameText;
 
-    private Point2D headCenterPoint = new Point2D(0, 70.0);
+    private Point2D headCenterPoint = new Point2D(0, 70);
+    private Point2D topLeftCorner = Point2D.ZERO;
+    private Point2D bottomRightCorner = Point2D.ZERO;
+    private Point2D leftLifelineBottomRightCorner = Point2D.ZERO;
     private Class umlClass;
-    private OperationGraphic op;
+    private boolean isDrawn = false;
+    private boolean isCalculated = false;
 
     /**
      * <p> ライフラインの頭部にあたるIDを記した矩形の中央座標を取得します </p>
@@ -66,24 +73,55 @@ public class Lifeline {
         headCenterPoint = new Point2D(point.getX(), headCenterPoint.getY());
     }
 
+    private void calculateHeadCenterPoint(double headWidth) {
+        headCenterPoint = new Point2D(headWidth / 2 + 10.0 + leftLifelineBottomRightCorner.getX(), headCenterPoint.getY());
+    }
+
     public void setUmlClass(Class umlClass) {
         this.umlClass = umlClass;
     }
 
-    public void setOperationGraphic(OperationGraphic op) {
-        this.op = op;
+    public Class getUmlClass() {
+        return umlClass;
+    }
+
+    public void setDrawn(boolean drawn) {
+        isDrawn = drawn;
+    }
+
+    public boolean isDrawn() {
+        return isDrawn;
+    }
+
+    public void setCalculated(boolean calculated) {
+        isCalculated = calculated;
+    }
+
+    public boolean isCalculated() {
+        return isCalculated;
+    }
+
+    public void setLeftLifelineBottomRightCorner(Point2D leftLifelineBottomRightCorner) {
+        this.leftLifelineBottomRightCorner = leftLifelineBottomRightCorner;
+    }
+
+    public Point2D getBottomRightCorner() {
+        return bottomRightCorner;
+    }
+
+    public void calculatePoint() {
+        lifelineNameText = new Text(": " + umlClass.getName());
+        lifelineNameText.setFont(Font.font(diagramFont, FontWeight.LIGHT, lifelineNameFontSize));
+        double maxWidth = lifelineNameText.getLayoutBounds().getWidth() + 10.0;
+        calculateHeadCenterPoint(maxWidth);
+        calculateTopLeftCorner(maxWidth);
+        calculateBottomRightCorner(maxWidth);
     }
 
     public void draw(GraphicsContext gc) {
-        double lifelineNameFontSize = 15.0;
-        String diagramFont = "Consolas";
 
-        Text lifelineNameText = new Text(": " + umlClass.getName());
-        lifelineNameText.setFont(Font.font(diagramFont, FontWeight.LIGHT, lifelineNameFontSize));
         double maxWidth = lifelineNameText.getLayoutBounds().getWidth() + 10.0;
         double maxHeight = 30.0;
-        Point2D topLeftCorner = calculateTopLeftCorner(maxWidth);
-        Point2D bottomRightCorner = calculateBottomRightCorner(maxWidth);
 
         gc.setFill(Color.BEIGE);
         gc.fillRect(topLeftCorner.getX(), topLeftCorner.getY(), maxWidth, maxHeight);
@@ -102,11 +140,11 @@ public class Lifeline {
         gc.setLineDashes(null);
     }
 
-    private Point2D calculateTopLeftCorner(double maxWidth) {
-        return new Point2D(headCenterPoint.getX() - maxWidth / 2, headCenterPoint.getY() - 20.0);
+    private void calculateTopLeftCorner(double maxWidth) {
+        topLeftCorner = new Point2D(headCenterPoint.getX() - maxWidth / 2, headCenterPoint.getY() - 20.0);
     }
 
-    private Point2D calculateBottomRightCorner(double maxWidth) {
-        return new Point2D(headCenterPoint.getX() + maxWidth / 2, headCenterPoint.getY() + 10.0);
+    private void calculateBottomRightCorner(double maxWidth) {
+        bottomRightCorner = new Point2D(headCenterPoint.getX() + maxWidth / 2, headCenterPoint.getY() + 10.0);
     }
 }

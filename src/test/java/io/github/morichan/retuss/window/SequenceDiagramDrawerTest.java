@@ -36,7 +36,6 @@ class SequenceDiagramDrawerTest {
             umlPackage.addClass(umlClass);
 
             obj.setUmlPackage(umlPackage);
-            obj.createTabs();
             TabPane actual = obj.getTabPaneInSequenceTab();
 
             assertThat(actual.getTabs().size()).isEqualTo(expected);

@@ -1,5 +1,7 @@
 package io.github.morichan.retuss.window.diagram.sequence;
 
+import io.github.morichan.retuss.language.uml.Class;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,7 @@ class InteractionTest {
 
         @BeforeEach
         void setup() {
-            obj = new Interaction();
+            obj = new Interaction(new Class(), new OperationGraphic());
         }
 
         @Test

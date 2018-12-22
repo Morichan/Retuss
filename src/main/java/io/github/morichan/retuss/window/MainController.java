@@ -121,7 +121,11 @@ public class MainController {
     @FXML
     private void selectSequenceDiagramTab() {
         normalButtonInSD.setDefaultButton(true);
-        createSequenceTabContent();
+        tabPaneInSequenceTab.getTabs().clear();
+        sequenceDiagramDrawer.setSequenceDiagramTabPane(tabPaneInSequenceTab);
+        sequenceDiagramDrawer.setUmlPackage(extractClassDiagramDrawerUmlPackage());
+        sequenceDiagramDrawer.createSequenceTabContent(sequenceDiagramTab);
+        sequenceDiagramDrawer.draw();
     }
 
     /**
@@ -693,96 +697,5 @@ public class MainController {
 
     private String showChangeCompositionNameInputDialog(String composition) {
         return showClassDiagramInputDialog("コンポジションの変更", "変更後のコンポジション先の関連端名を入力してください。", composition);
-    }
-
-    private void createSequenceTabContent() {
-        Package umlPackage = extractClassDiagramDrawerUmlPackage();
-
-        for (int i = 0; i < umlPackage.getClasses().size(); i++) {
-            Tab tab = new Tab(umlPackage.getClasses().get(i).getName());
-
-            for (int j = 0; j < umlPackage.getClasses().get(i).getOperationGraphics().size(); j++) {
-                OperationGraphic operationGraphic = umlPackage.getClasses().get(i).getOperationGraphics().get(j);
-                String tabName = createTabName(umlPackage.getClasses().get(i), operationGraphic);
-                Tab operationTab = new Tab(tabName);
-                addOperationTabOnSequenceTab(tab, operationTab);
-            }
-
-            addSequenceTabInSD(tab);
-        }
-
-        sequenceDiagramDrawer.setSequenceDiagramTabPane(tabPaneInSequenceTab);
-        sequenceDiagramDrawer.setUmlPackage(umlPackage);
-        sequenceDiagramDrawer.draw();
-    }
-
-    private String createTabName(Class umlClass, OperationGraphic operationGraphic) {
-        StringBuilder sb = new StringBuilder();
-        int sameOperationNameCount = 0;
-
-        for (int i = 0; i < umlClass.getOperationGraphics().size(); i++) {
-            if (umlClass.getOperationGraphics().get(i).getOperation().getName().getNameText().
-                    equals(operationGraphic.getOperation().getName().getNameText())) {
-                sameOperationNameCount++;
-            }
-        }
-
-        if (sameOperationNameCount <= 1) {
-            return operationGraphic.getOperation().getName().getNameText();
-        }
-
-        try {
-            sb.append(operationGraphic.getOperation().getName().getNameText());
-            sb.append("(");
-            List<String> params = new ArrayList<>();
-            operationGraphic.getOperation().getParameters().forEach(parameter -> {
-                params.add(parameter.toString());
-            });
-            sb.append(String.join(", ", params));
-            sb.append(")");
-
-        } catch (IllegalStateException e) {
-            sb = new StringBuilder();
-            sb.append(operationGraphic.getOperation().getName().getNameText());
-            sb.append("()");
-        }
-
-        return sb.toString();
-    }
-
-    private void addSequenceTabInSD(Tab tab) {
-        AnchorPane anchorPaneOnTabPane = (AnchorPane) sequenceDiagramTab.getContent();
-        BorderPane borderPaneOnAnchorPaneOnTabPane = (BorderPane) anchorPaneOnTabPane.getChildren().get(0);
-        AnchorPane anchorPaneOnVBox = (AnchorPane) borderPaneOnAnchorPaneOnTabPane.getCenter();
-        TabPane tabPane = (TabPane) anchorPaneOnVBox.getChildren().get(0);
-        tabPane.getTabs().add(tab);
-    }
-
-    private void addOperationTabOnSequenceTab(Tab parentTab, Tab childTab) {
-        AnchorPane anchorPaneInChildTab = new AnchorPane();
-        Canvas canvas = new Canvas();
-        ScrollPane scrollPane = new ScrollPane(canvas);
-        AnchorPane.setTopAnchor(scrollPane, 0.0);
-        AnchorPane.setBottomAnchor(scrollPane, 0.0);
-        AnchorPane.setLeftAnchor(scrollPane, 0.0);
-        AnchorPane.setRightAnchor(scrollPane, 0.0);
-
-        anchorPaneInChildTab.getChildren().add(scrollPane);
-        childTab.setContent(anchorPaneInChildTab);
-
-        if (parentTab.getContent() == null) {
-            AnchorPane anchorPane = new AnchorPane();
-            TabPane tabPane = new TabPane(childTab);
-
-            AnchorPane.setTopAnchor(tabPane, 0.0);
-            AnchorPane.setBottomAnchor(tabPane, 0.0);
-            AnchorPane.setLeftAnchor(tabPane, 0.0);
-            AnchorPane.setRightAnchor(tabPane, 0.0);
-            anchorPane.getChildren().add(tabPane);
-
-            parentTab.setContent(anchorPane);
-        } else {
-            ((TabPane) ((AnchorPane) parentTab.getContent()).getChildren().get(0)).getTabs().add(childTab);
-        }
     }
 }
