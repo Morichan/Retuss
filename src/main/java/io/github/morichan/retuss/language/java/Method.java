@@ -11,6 +11,7 @@ public class Method {
     private Type type;
     private String name;
     private List<Argument> arguments;
+    private MethodBody methodBody;
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -170,6 +171,14 @@ public class Method {
      */
     public void emptyArguments() {
         setArguments(null);
+    }
+
+    public void setMethodBody(MethodBody methodBody) {
+        this.methodBody = methodBody;
+    }
+
+    public MethodBody getMethodBody() {
+        return methodBody;
     }
 
     public void setAbstract(boolean abstractFlag) {

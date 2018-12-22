@@ -34,12 +34,25 @@ public class Interaction {
         Lifeline lifeline = new Lifeline();
         lifeline.setUmlClass(umlClass);
 
+        message = new MessageOccurrenceSpecification();
+        message.setOperationGraphic(operationGraphic);
+        message.setLifeline(lifeline);
+        message.calculatePoint();
+        message.draw(gc);
+    }
+
+    @Deprecated
+    private void drawOriginal(GraphicsContext gc) {
+        Lifeline lifeline = new Lifeline();
+        lifeline.setUmlClass(umlClass);
+
+        Class umlClass = new Class("ClassName");
         Lifeline another = new Lifeline();
-        another.setUmlClass(new Class("A"));
+        another.setUmlClass(umlClass);
         Lifeline another2 = new Lifeline();
         another2.setUmlClass(new Class("ClassName2"));
-        Lifeline another3 = new Lifeline();
-        another3.setUmlClass(new Class("A"));
+        // Lifeline another3 = new Lifeline();
+        // another3.setUmlClass(umlClass);
 
         MessageOccurrenceSpecification otherMessage = new MessageOccurrenceSpecification();
         otherMessage.setOperationGraphic(new OperationGraphic(new Operation(new Name("reprint"))));
@@ -52,7 +65,7 @@ public class Interaction {
 
         MessageOccurrenceSpecification another3Message = new MessageOccurrenceSpecification();
         another3Message.setOperationGraphic(new OperationGraphic(new Operation(new Name("reprint3"))));
-        another3Message.setLifeline(another3);
+        another3Message.setLifeline(another);
 
         message = new MessageOccurrenceSpecification();
         message.setOperationGraphic(operationGraphic);

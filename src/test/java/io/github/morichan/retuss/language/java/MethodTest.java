@@ -1,5 +1,6 @@
 package io.github.morichan.retuss.language.java;
 
+import javassist.bytecode.analysis.ControlFlow;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
@@ -255,6 +256,32 @@ class MethodTest {
                 AccessModifier actual = obj.getAccessModifier();
 
                 assertThat(actual).isEqualTo(expected);
+            }
+        }
+
+        @Nested
+        class メソッド本体を持つ場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new Method();
+            }
+
+            @Test
+            void 既定値を返す() {
+
+                MethodBody actual = obj.getMethodBody();
+
+                assertThat(actual).isNull();
+            }
+
+            @Test
+            void nullを設定できる() {
+
+                obj.setMethodBody(null);
+                MethodBody actual = obj.getMethodBody();
+
+                assertThat(actual).isNull();
             }
         }
     }
