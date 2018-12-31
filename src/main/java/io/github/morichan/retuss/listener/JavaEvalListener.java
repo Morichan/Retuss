@@ -7,8 +7,6 @@ import io.github.morichan.retuss.parser.java.JavaParserBaseListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 /**
  * Javaソースコードのパーサを利用したコンテキストの抽出クラス
@@ -21,6 +19,7 @@ public class JavaEvalListener extends JavaParserBaseListener {
     private List<JavaParser.TypeDeclarationContext> typeDeclarations = new ArrayList<>();
     private Java java = new Java();
     private AccessModifier accessModifier = null;
+    private MethodBody methodBody;
     private boolean isAbstractMethod = false;
     private boolean hasAbstractMethods = false;
 
@@ -128,6 +127,7 @@ public class JavaEvalListener extends JavaParserBaseListener {
     @Override
     public void enterMethodDeclaration(JavaParser.MethodDeclarationContext ctx) {
         Method method = new Method();
+        methodBody = new MethodBody();
 
         if (accessModifier != null) {
             method.setAccessModifier(accessModifier);
@@ -152,6 +152,14 @@ public class JavaEvalListener extends JavaParserBaseListener {
     }
 
     @Override
+    public void exitMethodDeclaration(JavaParser.MethodDeclarationContext ctx) {
+        int lastClass = java.getClasses().size() - 1;
+        int lastMethod = java.getClasses().get(lastClass).getMethods().size() - 1;
+
+        java.getClasses().get(lastClass).getMethods().get(lastMethod).setMethodBody(methodBody);
+    }
+
+    @Override
     public void enterFormalParameter(JavaParser.FormalParameterContext ctx) {
         if (!(ctx.getParent().getParent().getParent() instanceof JavaParser.MethodDeclarationContext)) return;
 
@@ -169,8 +177,27 @@ public class JavaEvalListener extends JavaParserBaseListener {
             }
         }
 
-        java.getClasses().get(java.getClasses().size() - 1).getMethods()
-                .get(java.getClasses().get(java.getClasses().size() - 1).getMethods().size() - 1).addArgument(argument);
+        int lastClass = java.getClasses().size() - 1;
+        int lastMethod = java.getClasses().get(lastClass).getMethods().size() - 1;
+
+        java.getClasses().get(lastClass).getMethods().get(lastMethod).addArgument(argument);
+    }
+
+    @Override
+    public void enterBlockStatement(JavaParser.BlockStatementContext ctx) {
+        if (!(ctx.getParent().getParent() instanceof JavaParser.MethodBodyContext)) return;
+
+        if (ctx.getChild(0) instanceof JavaParser.LocalVariableDeclarationContext) {
+            for (int i = 0; i < ctx.getChild(0).getChildCount(); i++) {
+                if (ctx.getChild(0).getChild(i) instanceof JavaParser.VariableModifierContext) continue;
+
+                LocalVariableDeclaration local = new LocalVariableDeclaration(
+                        new Type(ctx.getChild(0).getChild(i).getText()),
+                        ctx.getChild(0).getChild(i + 1).getText());
+                methodBody.addStatement(local);
+                return;
+            }
+        }
     }
 
     private Class searchExtendsClass(JavaParser.ClassDeclarationContext ctx) {

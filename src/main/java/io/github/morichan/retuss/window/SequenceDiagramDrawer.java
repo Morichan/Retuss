@@ -5,6 +5,7 @@ import io.github.morichan.retuss.language.uml.Package;
 import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import io.github.morichan.retuss.window.diagram.sequence.Interaction;
 import io.github.morichan.retuss.window.diagram.sequence.Lifeline;
+import io.github.morichan.retuss.window.diagram.sequence.MessageOccurrenceSpecification;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -42,6 +43,15 @@ public class SequenceDiagramDrawer {
 
     public void setUmlPackage(Package umlPackage) {
         this.umlPackage = umlPackage;
+        resetLifelineFlag();
+    }
+
+    public void resetLifelineFlag() {
+        for (Class umlClass : this.umlPackage.getClasses()) {
+            for (OperationGraphic og : umlClass.getOperationGraphics()) {
+                if (og.getInteraction() != null) og.getInteraction().resetLifelineFlag();
+            }
+        }
     }
 
     public void createSequenceTabContent(Tab sequenceDiagramTab) {
@@ -59,7 +69,7 @@ public class SequenceDiagramDrawer {
                 Tab operationTab = createOperationTab(tabName);
                 operationTab.setId(og.getOperation().toString());
                 addOperationTabOnSequenceTab(classTab, operationTab);
-                interactionSetFromOperation.put(og.getOperation().toString(), new Interaction(umlClass, og));
+                interactionSetFromOperation.put(og.getOperation().toString(), og.getInteraction());
             }
 
             addSequenceTabInSD(sequenceDiagramTab, classTab);
@@ -110,6 +120,8 @@ public class SequenceDiagramDrawer {
 
             break;
         }
+
+        resetLifelineFlag();
     }
 
     private void drawSequenceNameArea(GraphicsContext gc, String text) {

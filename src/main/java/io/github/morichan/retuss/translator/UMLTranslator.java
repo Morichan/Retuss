@@ -21,6 +21,11 @@ import  io.github.morichan.retuss.language.cpp.Cpp;
 import  io.github.morichan.retuss.language.cpp.MemberVariable;
 import  io.github.morichan.retuss.language.cpp.MemberFunction;
 import  io.github.morichan.retuss.language.cpp.AccessSpecifier;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
+import io.github.morichan.retuss.window.diagram.sequence.Interaction;
+import io.github.morichan.retuss.window.diagram.sequence.Lifeline;
+import io.github.morichan.retuss.window.diagram.sequence.MessageOccurrenceSpecification;
+import io.github.morichan.retuss.window.diagram.sequence.MessageType;
 
 
 import java.util.ArrayList;
@@ -44,7 +49,7 @@ public class UMLTranslator {
         classPackage = new Package();
 
         for (io.github.morichan.retuss.language.java.Class javaClass : java.getClasses()) {
-            classPackage.addClass(createClass(javaClass));
+            classPackage.addClass(createUmlClass(javaClass));
         }
 
         searchGeneralizationClass(java.getClasses());
@@ -71,8 +76,8 @@ public class UMLTranslator {
         return classPackage;
     }
 
-    private Class createClass(io.github.morichan.retuss.language.java.Class javaClass) {
-        Class classClass = new Class(javaClass.getName());
+    private Class createUmlClass(io.github.morichan.retuss.language.java.Class javaClass) {
+        Class umlClass = new Class(javaClass.getName());
 
         for (Field field : javaClass.getFields()) {
             Attribute attribute = new Attribute(new Name(field.getName()));
@@ -85,7 +90,7 @@ public class UMLTranslator {
                     attribute.setDefaultValue(new DefaultValue(new OneIdentifier(field.getValue().toString())));
                 }
             }
-            classClass.addAttribute(attribute);
+            umlClass.addAttribute(attribute);
         }
         for (Method method : javaClass.getMethods()) {
             Operation operation = new Operation(new Name(method.getName()));
@@ -96,10 +101,23 @@ public class UMLTranslator {
                 parameter.setType(new Type(argument.getType().toString()));
                 operation.addParameter(parameter);
             }
-            classClass.addOperation(operation, method.isAbstract());
+            OperationGraphic operationGraphic = new OperationGraphic(operation);
+            Lifeline lifeline = new Lifeline(umlClass.getName());
+            MessageOccurrenceSpecification message = new MessageOccurrenceSpecification();
+            message.setLifeline(lifeline);
+            message.setOperationName(operation.toString());
+
+            if (method.getMethodBody() != null) {
+                for (BlockStatement statement : method.getMethodBody().getStatements()) {
+                    message.addMessage(convert(lifeline, statement));
+                }
+            }
+
+            operationGraphic.setInteraction(new Interaction(message));
+            umlClass.addOperation(operationGraphic, method.isAbstract());
         }
 
-        return classClass;
+        return umlClass;
     }
 
     private Visibility convert(AccessModifier accessModifier) {
@@ -174,10 +192,11 @@ public class UMLTranslator {
                 parameter.setType(new Type(argument.getType().toString()));
                 operation.addParameter(parameter);
             }
-           // Boolean flagOperationsImplementation = memberFunction.getFlagImplementation();
-            Boolean flagOperationsImplementation = Boolean.valueOf(memberFunction.getFlagImplementation());
-           // classClass.addFlagOperationsImplementation(flagOperationsImplementation);
-            classClass.addOperation(operation,memberFunction.isAbstract());
+            // Boolean flagOperationsImplementation = memberFunction.getFlagImplementation();
+            // Boolean flagOperationsImplementation = Boolean.valueOf(memberFunction.getFlagImplementation());
+            // classClass.addFlagOperationsImplementation(flagOperationsImplementation);
+            OperationGraphic operationGraphic = new OperationGraphic(operation);
+            classClass.addOperation(operationGraphic, memberFunction.isAbstract());
         }
 
         return classClass;
@@ -196,6 +215,18 @@ public class UMLTranslator {
         else {
             return Visibility.Private;
         }
+    }
+
+    private MessageOccurrenceSpecification convert(Lifeline lifeline, BlockStatement statement) {
+        MessageOccurrenceSpecification message = new MessageOccurrenceSpecification();
+
+        if (statement instanceof LocalVariableDeclaration) {
+            message.setMessageType(MessageType.Declaration);
+            message.setOperationName(statement.toString());
+            message.setLifeline(lifeline);
+        }
+
+        return message;
     }
 
     /**

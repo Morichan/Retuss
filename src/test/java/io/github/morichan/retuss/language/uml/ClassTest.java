@@ -165,7 +165,7 @@ class ClassTest {
             void 操作を1つ返す() {
                 Operation expected = new Operation(new Name("operation"));
 
-                obj.addOperation(expected);
+                obj.addOperation(new OperationGraphic(expected));
                 List<Operation> actual = obj.extractOperations();
 
                 assertThat(actual).containsOnly(expected);

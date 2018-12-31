@@ -58,7 +58,7 @@ public class ClassDiagramDrawer {
      *
      * @return パッケージインスタンス
      */
-    public Package extractPackage() {
+    public Package getPackage() {
         return umlPackage;
     }
 

@@ -9,6 +9,7 @@ import io.github.morichan.fescue.feature.value.expression.OneIdentifier;
 import io.github.morichan.retuss.language.java.*;
 import io.github.morichan.retuss.language.uml.Package;
 import io.github.morichan.retuss.language.uml.Class;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -57,8 +58,8 @@ class TranslatorTest {
             operation2.addParameter(param1);
             operation2.addParameter(param2);
             operation2.addParameter(param3);
-            classClass.addOperation(operation1);
-            classClass.addOperation(operation2);
+            classClass.addOperation(new OperationGraphic(operation1));
+            classClass.addOperation(new OperationGraphic(operation2));
             classPackage.addClass(classClass);
 
             obj.translate(classPackage);

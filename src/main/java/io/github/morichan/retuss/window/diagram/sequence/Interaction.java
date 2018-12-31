@@ -18,6 +18,10 @@ public class Interaction {
         setOperationGraphic(og);
     }
 
+    public Interaction(MessageOccurrenceSpecification message) {
+        this.message = message;
+    }
+
     public void setUmlClass(Class umlClass) {
         this.umlClass = umlClass;
     }
@@ -30,13 +34,25 @@ public class Interaction {
         return message;
     }
 
-    public void draw(GraphicsContext gc) {
-        Lifeline lifeline = new Lifeline();
-        lifeline.setUmlClass(umlClass);
+    public void resetLifelineFlag() {
+        resetLifelineFlag(message);
+    }
 
-        message = new MessageOccurrenceSpecification();
-        message.setOperationGraphic(operationGraphic);
-        message.setLifeline(lifeline);
+    public void resetLifelineFlag(MessageOccurrenceSpecification message) {
+        for (MessageOccurrenceSpecification childMessage : message.getMessages()) {
+            resetLifelineFlag(childMessage);
+        }
+        message.getLifeline().setCalculated(false);
+        message.getLifeline().setDrawn(false);
+    }
+
+    public void draw(GraphicsContext gc) {
+        // Lifeline lifeline = new Lifeline();
+        // lifeline.setClassName(umlClass.getName());
+
+        // message = new MessageOccurrenceSpecification();
+        // message.setOperationName(operationGraphic.getOperation().toString());
+        // message.setLifeline(lifeline);
         message.calculatePoint();
         message.draw(gc);
     }
@@ -44,31 +60,30 @@ public class Interaction {
     @Deprecated
     private void drawOriginal(GraphicsContext gc) {
         Lifeline lifeline = new Lifeline();
-        lifeline.setUmlClass(umlClass);
+        lifeline.setClassName(umlClass.getName());
 
-        Class umlClass = new Class("ClassName");
         Lifeline another = new Lifeline();
-        another.setUmlClass(umlClass);
+        another.setClassName("ClassName");
         Lifeline another2 = new Lifeline();
-        another2.setUmlClass(new Class("ClassName2"));
+        another2.setClassName("ClassName2");
         // Lifeline another3 = new Lifeline();
         // another3.setUmlClass(umlClass);
 
         MessageOccurrenceSpecification otherMessage = new MessageOccurrenceSpecification();
-        otherMessage.setOperationGraphic(new OperationGraphic(new Operation(new Name("reprint"))));
+        otherMessage.setOperationName("reprint");
         otherMessage.setLifeline(another);
 
         MessageOccurrenceSpecification anotherMessage = new MessageOccurrenceSpecification();
-        anotherMessage.setOperationGraphic(new OperationGraphic(new Operation(new Name("reprint2"))));
+        anotherMessage.setOperationName("reprint2");
         anotherMessage.setLifeline(another2);
         // otherMessage.addMessage(anotherMessage);
 
         MessageOccurrenceSpecification another3Message = new MessageOccurrenceSpecification();
-        another3Message.setOperationGraphic(new OperationGraphic(new Operation(new Name("reprint3"))));
+        another3Message.setOperationName("reprint3");
         another3Message.setLifeline(another);
 
         message = new MessageOccurrenceSpecification();
-        message.setOperationGraphic(operationGraphic);
+        message.setOperationName(operationGraphic.getOperation().toString());
         message.setLifeline(lifeline);
         message.addMessage(otherMessage);
         message.addMessage(anotherMessage);

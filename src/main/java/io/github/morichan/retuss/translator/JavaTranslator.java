@@ -2,12 +2,14 @@ package io.github.morichan.retuss.translator;
 
 import io.github.morichan.fescue.feature.Attribute;
 import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.fescue.feature.direction.In;
 import io.github.morichan.fescue.feature.parameter.Parameter;
 import io.github.morichan.fescue.feature.visibility.Visibility;
 import io.github.morichan.retuss.language.java.*;
 import io.github.morichan.retuss.language.java.Class;
 import io.github.morichan.retuss.language.uml.Package;
 import io.github.morichan.retuss.window.diagram.OperationGraphic;
+import io.github.morichan.retuss.window.diagram.sequence.Interaction;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,6 +97,7 @@ public class JavaTranslator {
             } catch (IllegalStateException e) {
                 method.emptyArguments();
             }
+
             javaClass.addMethod(method);
         }
 

@@ -109,7 +109,7 @@ public class CodeController {
 
         languageTab.setOnSelectionChanged(event -> {
             try {
-                createCodeTabs(mainController.extractClassDiagramDrawerUmlPackage());
+                createCodeTabs(mainController.getClassDiagramDrawerUmlPackage());
             } catch (NullPointerException e) {
                 System.out.println("This is null problem because ClassDiagramDrawer's umlPackage is null, so event was not set.");
             }
@@ -163,7 +163,7 @@ public class CodeController {
         return codeTab;
     }
 
-    private void convertCodeToUml(Language language) {
+    public void convertCodeToUml(Language language) {
         java = new Java();
         cpp = new Cpp();
 

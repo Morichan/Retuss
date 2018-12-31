@@ -7,10 +7,7 @@ import io.github.morichan.fescue.feature.type.Type;
 import io.github.morichan.fescue.feature.visibility.Visibility;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.language.uml.Package;
-import io.github.morichan.retuss.window.diagram.ClassNodeDiagram;
-import io.github.morichan.retuss.window.diagram.ContentType;
-import io.github.morichan.retuss.window.diagram.NoteNodeDiagram;
-import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
+import io.github.morichan.retuss.window.diagram.*;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -1169,7 +1166,7 @@ class ClassDiagramDrawerTest {
                 Class expected = new Class("FirstClassName");
 
                 cdd.allReDrawCanvas();
-                Package actual = cdd.extractPackage();
+                Package actual = cdd.getPackage();
 
                 assertThat(actual.getClasses().get(0)).isEqualToComparingFieldByFieldRecursively(expected);
             }
@@ -1181,7 +1178,7 @@ class ClassDiagramDrawerTest {
 
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Attribute, "attributeFromFirst");
                 cdd.allReDrawCanvas();
-                Package actual = cdd.extractPackage();
+                Package actual = cdd.getPackage();
 
                 assertThat(actual.getClasses().get(0)).isEqualToComparingFieldByFieldRecursively(expected);
             }
@@ -1192,13 +1189,14 @@ class ClassDiagramDrawerTest {
                 Operation operation = new Operation(new Name("operationFromFirst"));
                 operation.setVisibility(Visibility.Public);
                 operation.setReturnType(new Type("float"));
-                expected.addOperation(operation);
+                expected.addOperation(new OperationGraphic(operation));
 
                 cdd.addDrawnNodeText(cdd.getCurrentNodeNumber(), ContentType.Operation, "+ operationFromFirst() : float");
                 cdd.allReDrawCanvas();
-                Package actual = cdd.extractPackage();
+                Package actual = cdd.getPackage();
 
-                assertThat(actual.getClasses().get(0)).isEqualToComparingFieldByFieldRecursively(expected);
+                assertThat(actual.getClasses().get(0).getOperationGraphics().get(0).getOperation())
+                        .isEqualToComparingFieldByFieldRecursively(expected.getOperationGraphics().get(0).getOperation());
             }
         }
 
@@ -1246,7 +1244,7 @@ class ClassDiagramDrawerTest {
                 expected.addClass(new Class("ThirdClassName"));
 
                 cdd.allReDrawCanvas();
-                Package actual = cdd.extractPackage();
+                Package actual = cdd.getPackage();
 
                 assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
             }
@@ -1268,7 +1266,7 @@ class ClassDiagramDrawerTest {
                 cdd.addDrawnEdge(buttons, "", secondClass.getX(), secondClass.getY());
 
                 cdd.allReDrawCanvas();
-                Package actual = cdd.extractPackage();
+                Package actual = cdd.getPackage();
 
                 assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
             }

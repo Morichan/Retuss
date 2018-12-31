@@ -1,15 +1,11 @@
 package io.github.morichan.retuss.window;
 
-import io.github.morichan.fescue.feature.parameter.Parameter;
 import io.github.morichan.retuss.translator.Language;
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.NodeDiagram;
-import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import io.github.morichan.retuss.window.diagram.RelationshipAttributeGraphic;
-import io.github.morichan.retuss.window.diagram.sequence.Lifeline;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
 import io.github.morichan.retuss.language.uml.Package;
-import io.github.morichan.retuss.language.uml.Class;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
@@ -19,8 +15,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -123,9 +117,20 @@ public class MainController {
         normalButtonInSD.setDefaultButton(true);
         tabPaneInSequenceTab.getTabs().clear();
         sequenceDiagramDrawer.setSequenceDiagramTabPane(tabPaneInSequenceTab);
-        sequenceDiagramDrawer.setUmlPackage(extractClassDiagramDrawerUmlPackage());
+        sequenceDiagramDrawer.setUmlPackage(codeController.getUmlPackage());
         sequenceDiagramDrawer.createSequenceTabContent(sequenceDiagramTab);
-        sequenceDiagramDrawer.draw();
+
+        try {
+            sequenceDiagramDrawer.draw();
+        } catch (NullPointerException e) {
+            // This is reason for codeController.getUmlPackage() is equal to one phase before now umlPackage
+            tabPaneInSequenceTab.getTabs().clear();
+            sequenceDiagramDrawer.setSequenceDiagramTabPane(tabPaneInSequenceTab);
+            codeController.convertCodeToUml(Language.Java);
+            sequenceDiagramDrawer.setUmlPackage(codeController.getUmlPackage());
+            sequenceDiagramDrawer.createSequenceTabContent(sequenceDiagramTab);
+            sequenceDiagramDrawer.draw();
+        }
     }
 
     /**
@@ -156,7 +161,6 @@ public class MainController {
     @FXML
     private void selectNoteInCD() {
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, noteButtonInCD);
-        System.out.println("Note 押されたで！");
     }
 
     /**
@@ -253,7 +257,7 @@ public class MainController {
                 classDiagramDrawer.addDrawnNode(buttonsInCD);
                 classDiagramDrawer.allReDrawCanvas();
                 convertUmlToCode();
-                writeUmlForCode(classDiagramDrawer.extractPackage());
+                writeUmlForCode(classDiagramDrawer.getPackage());
             } else if (util.searchSelectedButtonIn(buttonsInCD) == compositionButtonInCD) {
                 classDiagramDrawer.resetNodeChosen(classDiagramDrawer.getCurrentNodeNumber());
                 classDiagramDrawer.allReDrawCanvas();
@@ -337,11 +341,19 @@ public class MainController {
         }
     }
 
-    public Package extractClassDiagramDrawerUmlPackage() {
-        return classDiagramDrawer.extractPackage();
+    public Package getClassDiagramDrawerUmlPackage() {
+        return classDiagramDrawer.getPackage();
     }
 
     public void writeUmlForCode(Package umlPackage) {
+        if (classDiagramTab.isSelected()) {
+            writeClassDiagramForCode(umlPackage);
+        } else { // if (sequenceDiagramTab.isSelected()) {
+            writeSequenceDiagramForCode(umlPackage);
+        }
+    }
+
+    private void writeClassDiagramForCode(Package umlPackage) {
         if (umlPackage.getClasses().size() <= 0) return;
 
         // i番目のクラスが持つj番目の属性はk番目のクラスとコンポジション関係を持つ
@@ -402,6 +414,14 @@ public class MainController {
         classDiagramDrawer.allReDrawCanvas();
     }
 
+    private void writeSequenceDiagramForCode(Package umlPackage) {
+        tabPaneInSequenceTab.getTabs().clear();
+        sequenceDiagramDrawer.setSequenceDiagramTabPane(tabPaneInSequenceTab);
+        sequenceDiagramDrawer.setUmlPackage(umlPackage);
+        sequenceDiagramDrawer.createSequenceTabContent(sequenceDiagramTab);
+        sequenceDiagramDrawer.draw();
+    }
+
     private String importFile(Language language) throws IOException {
         FileChooser fileChooser = new FileChooser();
 
@@ -441,7 +461,7 @@ public class MainController {
         classDiagramDrawer.addDrawnNode(buttonsInCD);
         classDiagramDrawer.allReDrawCanvas();
         convertUmlToCode();
-        writeUmlForCode(classDiagramDrawer.extractPackage());
+        writeUmlForCode(classDiagramDrawer.getPackage());
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, normalButtonInCD);
     }
 
@@ -500,7 +520,7 @@ public class MainController {
      */
     private void convertUmlToCode() {
         if (codeController == null) return;
-        codeController.createCodeTabs(classDiagramDrawer.extractPackage());
+        codeController.createCodeTabs(classDiagramDrawer.getPackage());
     }
 
     /**
@@ -552,14 +572,14 @@ public class MainController {
             classDiagramDrawer.changeDrawnNodeText(classDiagramDrawer.getCurrentNodeNumber(), ContentType.Title, 0, className);
             classDiagramDrawer.allReDrawCanvas();
             convertUmlToCode();
-            writeUmlForCode(classDiagramDrawer.extractPackage());
+            writeUmlForCode(classDiagramDrawer.getPackage());
         });
         // クラスの削除
         contextMenu.getItems().get(1).setOnAction(event -> {
             classDiagramDrawer.deleteDrawnNode(classDiagramDrawer.getCurrentNodeNumber());
             classDiagramDrawer.allReDrawCanvas();
             convertUmlToCode();
-            writeUmlForCode(classDiagramDrawer.extractPackage());
+            writeUmlForCode(classDiagramDrawer.getPackage());
         });
         // クラスの属性の追加
         ((Menu) contextMenu.getItems().get(3)).getItems().get(0).setOnAction(event -> {

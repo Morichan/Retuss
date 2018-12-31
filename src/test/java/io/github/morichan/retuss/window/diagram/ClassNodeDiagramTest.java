@@ -679,14 +679,15 @@ class ClassNodeDiagramTest {
     @Test
     void 操作を1つ持つクラスを返す() {
         Class expected = new Class("ClassName");
-        expected.addOperation(new Operation(new Name("operation")));
+        expected.addOperation(new OperationGraphic(new Operation(new Name("operation"))));
 
         obj.createNodeText(ContentType.Title, "ClassName");
         obj.createNodeText(ContentType.Operation, "operation()");
         obj.draw();
         Class actual = obj.extractClass();
 
-        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+        assertThat(actual.getOperationGraphics().get(0).getOperation())
+                .isEqualToComparingFieldByFieldRecursively(expected.getOperationGraphics().get(0).getOperation());
     }
 
     @Test

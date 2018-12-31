@@ -12,6 +12,7 @@ import io.github.morichan.fescue.feature.visibility.Visibility;
 import io.github.morichan.retuss.language.java.*;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.language.uml.Package;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -186,7 +187,7 @@ class JavaTranslatorTest {
                     Class classClass = new Class("ClassName");
                     Operation operation = new Operation(new Name("print"));
                     operation.setReturnType(new io.github.morichan.fescue.feature.type.Type("void"));
-                    classClass.addOperation(operation);
+                    classClass.addOperation(new OperationGraphic(operation));
                     classPackage.addClass(classClass);
 
                     Java actual = obj.translate(classPackage);
@@ -219,9 +220,9 @@ class JavaTranslatorTest {
                     param2.setType(new io.github.morichan.fescue.feature.type.Type("double"));
                     operation3.addParameter(param1);
                     operation3.addParameter(param2);
-                    classClass.addOperation(operation1);
-                    classClass.addOperation(operation2);
-                    classClass.addOperation(operation3);
+                    classClass.addOperation(new OperationGraphic(operation1));
+                    classClass.addOperation(new OperationGraphic(operation2));
+                    classClass.addOperation(new OperationGraphic(operation3));
                     classPackage.addClass(classClass);
 
                     Java actual = obj.translate(classPackage);
@@ -306,8 +307,8 @@ class JavaTranslatorTest {
                 operation2.addParameter(param1);
                 operation2.addParameter(param2);
                 operation2.addParameter(param3);
-                classClass.addOperation(operation1);
-                classClass.addOperation(operation2);
+                classClass.addOperation(new OperationGraphic(operation1));
+                classClass.addOperation(new OperationGraphic(operation2));
                 classPackage.addClass(classClass);
 
                 Java actual = obj.translate(classPackage);

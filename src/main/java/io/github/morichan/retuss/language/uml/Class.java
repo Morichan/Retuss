@@ -222,7 +222,23 @@ public class Class {
      *
      * @param operation 操作 <br> {@code null} 無視
      */
-    public void addOperation(Operation operation) {
+    public void addOperation(OperationGraphic operation) {
+        if (operation == null) return;
+
+        operation.setAbstract(false);
+        operationGraphics.add(operation);
+    }
+
+    /**
+     * <p> 操作のリストに属性を追加します </p>
+     *
+     * <p>
+     * {@code null} を追加しようとしても反映しません。
+     * </p>
+     *
+     * @param operation 操作 <br> {@code null} 無視
+     */
+    private void addOperation(Operation operation) {
         if (operation == null) return;
 
         OperationGraphic og = new OperationGraphic(operation);
@@ -240,12 +256,11 @@ public class Class {
      * @param operation 操作 <br> {@code null} 無視
      * @param isAbstract 操作が抽象操作の場合は真を持つ真偽値
      */
-    public void addOperation(Operation operation, boolean isAbstract) {
-        if (operation == null || operation.toString().isEmpty()) return;
+    public void addOperation(OperationGraphic operation, boolean isAbstract) {
+        if (operation == null) return;
 
-        OperationGraphic og = new OperationGraphic(operation);
-        og.setAbstract(isAbstract);
-        operationGraphics.add(og);
+        operation.setAbstract(isAbstract);
+        operationGraphics.add(operation);
     }
 
     /**

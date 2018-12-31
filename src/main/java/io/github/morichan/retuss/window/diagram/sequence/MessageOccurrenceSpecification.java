@@ -17,7 +17,8 @@ public class MessageOccurrenceSpecification {
     private Point2D beginPoint = Point2D.ZERO;
     private Point2D endPoint = Point2D.ZERO;
 
-    private OperationGraphic og;
+    private MessageType type = MessageType.Undefined;
+    private String operationName;
     private Lifeline lifeline;
     private List<MessageOccurrenceSpecification> messages = new ArrayList<>();
 
@@ -37,12 +38,24 @@ public class MessageOccurrenceSpecification {
         this.endPoint = endPoint;
     }
 
-    public void setOperationGraphic(OperationGraphic og) {
-        this.og = og;
+    public void setMessageType(MessageType type) {
+        this.type = type;
+    }
+
+    public MessageType getMessageType() {
+        return type;
+    }
+
+    public void setOperationName(String operationName) {
+        this.operationName = operationName;
     }
 
     public void setLifeline(Lifeline lifeline) {
         this.lifeline = lifeline;
+    }
+
+    public Lifeline getLifeline() {
+        return lifeline;
     }
 
     public void addMessage(MessageOccurrenceSpecification message) {
@@ -54,7 +67,7 @@ public class MessageOccurrenceSpecification {
     }
 
     public boolean hasSameLifeline(Lifeline lifeline) {
-        return this.lifeline.getUmlClass().getName().equals(lifeline.getUmlClass().getName());
+        return this.lifeline.getClassName().equals(lifeline.getClassName());
     }
 
     public void calculatePoint() {
@@ -149,7 +162,7 @@ public class MessageOccurrenceSpecification {
             gc.setStroke(Color.BLACK);
             gc.strokeRect(beginPoint.getX() - width / 2, beginPoint.getY(), width, height);
 
-            Text operationText = new Text(og.getOperation().toString());
+            Text operationText = new Text(operationName);
             operationText.setFont(Font.font(diagramFont, FontWeight.LIGHT, textSize));
 
             gc.setFill(Color.BLACK);
@@ -179,7 +192,7 @@ public class MessageOccurrenceSpecification {
             gc.setStroke(Color.BLACK);
             gc.strokeRect(beginPoint.getX() - width / 2, beginPoint.getY(), width, height);
 
-            Text operationText = new Text(og.getOperation().toString());
+            Text operationText = new Text(operationName);
             operationText.setFont(Font.font(diagramFont, FontWeight.LIGHT, textSize));
 
             gc.setFill(Color.BLACK);
@@ -212,7 +225,7 @@ public class MessageOccurrenceSpecification {
             gc.setStroke(Color.BLACK);
             gc.strokeRect(beginPoint.getX() - width / 2 , beginPoint.getY(), width, height);
 
-            Text operationText = new Text(og.getOperation().toString());
+            Text operationText = new Text(operationName);
             operationText.setFont(Font.font(diagramFont, FontWeight.LIGHT, textSize));
 
             gc.setFill(Color.BLACK);

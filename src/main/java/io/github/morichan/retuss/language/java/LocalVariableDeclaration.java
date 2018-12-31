@@ -1,6 +1,6 @@
 package io.github.morichan.retuss.language.java;
 
-public class LocalValiableDeclaration implements BlockStatement {
+public class LocalVariableDeclaration implements BlockStatement {
 
     private Type type;
     private String name;
@@ -14,7 +14,7 @@ public class LocalValiableDeclaration implements BlockStatement {
      *     型は {@code int} 、ローカル変数名は {@code field} として設定します。
      * </p>
      */
-    public LocalValiableDeclaration() {
+    public LocalVariableDeclaration() {
         type = new Type("int");
         name = "localValue";
     }
@@ -25,7 +25,7 @@ public class LocalValiableDeclaration implements BlockStatement {
      * @param type 型 <br> {@link #setType(Type)} を利用
      * @param name ローカル変数名 <br> {@link #setName(String)} を利用
      */
-    public LocalValiableDeclaration(Type type, String name) {
+    public LocalVariableDeclaration(Type type, String name) {
         setType(type);
         setName(name);
     }
@@ -37,7 +37,7 @@ public class LocalValiableDeclaration implements BlockStatement {
      * @param name ローカル変数名 <br> {@link #setName(String)} を利用
      * @param defaultValue 既定値 <br> {@link #setValue(String)} を利用
      */
-    public LocalValiableDeclaration(Type type, String name, String defaultValue) {
+    public LocalVariableDeclaration(Type type, String name, String defaultValue) {
         setType(type);
         setName(name);
         setValue(defaultValue);

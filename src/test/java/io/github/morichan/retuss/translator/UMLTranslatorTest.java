@@ -12,6 +12,10 @@ import io.github.morichan.fescue.feature.visibility.Visibility;
 import io.github.morichan.retuss.language.java.*;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.language.uml.Package;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
+import io.github.morichan.retuss.window.diagram.sequence.Interaction;
+import io.github.morichan.retuss.window.diagram.sequence.Lifeline;
+import io.github.morichan.retuss.window.diagram.sequence.MessageOccurrenceSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.setMaxElementsForPrinting;
 
 class UMLTranslatorTest {
 
@@ -186,7 +191,7 @@ class UMLTranslatorTest {
                     Operation operation = new Operation(new Name("print"));
                     operation.setReturnType(new io.github.morichan.fescue.feature.type.Type("void"));
                     operation.setVisibility(Visibility.Public);
-                    classClass.addOperation(operation);
+                    classClass.addOperation(new OperationGraphic(operation));
                     expected.addClass(classClass);
 
                     Java java = new Java();
@@ -196,7 +201,11 @@ class UMLTranslatorTest {
 
                     Package actual = obj.translate(java);
 
-                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                    for (int i = 0; i < actual.getClasses().size(); i++) {
+                        for (int j = 0; j < actual.getClasses().get(i).extractOperations().size(); j++) {
+                            assertThat(actual.getClasses().get(i).extractOperations().get(j)).isEqualToComparingFieldByFieldRecursively(expected.getClasses().get(i).extractOperations().get(j));
+                        }
+                    }
                 }
 
                 @Test
@@ -218,9 +227,9 @@ class UMLTranslatorTest {
                     param2.setType(new io.github.morichan.fescue.feature.type.Type("double"));
                     operation3.addParameter(param1);
                     operation3.addParameter(param2);
-                    classClass.addOperation(operation1);
-                    classClass.addOperation(operation2);
-                    classClass.addOperation(operation3);
+                    classClass.addOperation(new OperationGraphic(operation1));
+                    classClass.addOperation(new OperationGraphic(operation2));
+                    classClass.addOperation(new OperationGraphic(operation3));
                     expected.addClass(classClass);
 
                     Java java = new Java();
@@ -234,7 +243,11 @@ class UMLTranslatorTest {
 
                     Package actual = obj.translate(java);
 
-                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                    for (int i = 0; i < actual.getClasses().size(); i++) {
+                        for (int j = 0; j < actual.getClasses().get(i).extractOperations().size(); j++) {
+                            assertThat(actual.getClasses().get(i).extractOperations().get(j)).isEqualToComparingFieldByFieldRecursively(expected.getClasses().get(i).extractOperations().get(j));
+                        }
+                    }
                 }
 
                 @Test
@@ -271,7 +284,11 @@ class UMLTranslatorTest {
 
                     Package actual = obj.translate(java);
 
-                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                    for (int i = 0; i < actual.getClasses().size(); i++) {
+                        for (int j = 0; j < actual.getClasses().get(i).extractOperations().size(); j++) {
+                            assertThat(actual.getClasses().get(i).extractOperations().get(j)).isEqualToComparingFieldByFieldRecursively(expected.getClasses().get(i).extractOperations().get(j));
+                        }
+                    }
                 }
             }
 
@@ -303,8 +320,18 @@ class UMLTranslatorTest {
                 operation2.addParameter(param1);
                 operation2.addParameter(param2);
                 operation2.addParameter(param3);
-                classClass.addOperation(operation1);
-                classClass.addOperation(operation2);
+                OperationGraphic og1 = new OperationGraphic(operation1);
+                MessageOccurrenceSpecification mos1 = new MessageOccurrenceSpecification();
+                mos1.setLifeline(new Lifeline("ClassName"));
+                mos1.setOperationName("+ isTrue() : boolean");
+                og1.setInteraction(new Interaction(mos1));
+                OperationGraphic og2 = new OperationGraphic(operation2);
+                MessageOccurrenceSpecification mos2 = new MessageOccurrenceSpecification();
+                mos2.setLifeline(new Lifeline("ClassName"));
+                mos2.setOperationName("+ calculate(x : double, y : double, z : double) : double");
+                og2.setInteraction(new Interaction(mos2));
+                classClass.addOperation(og1);
+                classClass.addOperation(og2);
                 expected.addClass(classClass);
 
                 Java java = new Java();

@@ -44,14 +44,22 @@ class MainControllerTest extends ApplicationTest {
     @Nested
     class メイン画面において extends ApplicationTest {
         Stage stage;
+        Stage codeStage;
 
         @Start
         public void start(Stage stage) throws IOException {
-            String fxmlFileName = "/retussMain.fxml";
-            Scene scene = new Scene(FXMLLoader.load(getClass().getResource(fxmlFileName)));
-            stage.setScene(scene);
-            stage.show();
             this.stage = stage;
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/retussMain.fxml"));
+            Parent root = loader.load();
+            this.stage.setScene(new Scene(root));
+
+            MainController mainController = loader.getController();
+            mainController.showCodeStage(mainController, this.stage, "/retussCode.fxml", "");
+
+            this.stage.show();
+            codeStage = mainController.getCodeStage();
+            codeStage.close();
         }
 
         @Nested

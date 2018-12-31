@@ -33,9 +33,17 @@ public class Lifeline {
     private Point2D topLeftCorner = Point2D.ZERO;
     private Point2D bottomRightCorner = Point2D.ZERO;
     private Point2D leftLifelineBottomRightCorner = Point2D.ZERO;
-    private Class umlClass;
+    private String className;
     private boolean isDrawn = false;
     private boolean isCalculated = false;
+
+    public Lifeline() {
+        className = "DefaultClassName";
+    }
+
+    public Lifeline(String className) {
+        this.className = className;
+    }
 
     /**
      * <p> ライフラインの頭部にあたるIDを記した矩形の中央座標を取得します </p>
@@ -77,12 +85,12 @@ public class Lifeline {
         headCenterPoint = new Point2D(headWidth / 2 + 10.0 + leftLifelineBottomRightCorner.getX(), headCenterPoint.getY());
     }
 
-    public void setUmlClass(Class umlClass) {
-        this.umlClass = umlClass;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
-    public Class getUmlClass() {
-        return umlClass;
+    public String getClassName() {
+        return className;
     }
 
     public void setDrawn(boolean drawn) {
@@ -110,7 +118,7 @@ public class Lifeline {
     }
 
     public void calculatePoint() {
-        lifelineNameText = new Text(": " + umlClass.getName());
+        lifelineNameText = new Text(": " + className);
         lifelineNameText.setFont(Font.font(diagramFont, FontWeight.LIGHT, lifelineNameFontSize));
         double maxWidth = lifelineNameText.getLayoutBounds().getWidth() + 10.0;
         calculateHeadCenterPoint(maxWidth);

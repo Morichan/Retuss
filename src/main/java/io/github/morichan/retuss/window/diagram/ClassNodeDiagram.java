@@ -359,7 +359,7 @@ public class ClassNodeDiagram extends NodeDiagram {
                 text.setFont(Font.font(diagramFont, FontWeight.LIGHT, classOperationFontSize));
             }
             operationsText.add(text);
-            umlClass.addOperation(((OperationGraphic) operation).getOperation(), ((OperationGraphic) operation).isAbstract());
+            umlClass.addOperation((OperationGraphic) operation, ((OperationGraphic) operation).isAbstract());
         }
 
         double maxWidth = calculateMaxWidth(classNameText, attributesText, operationsText);

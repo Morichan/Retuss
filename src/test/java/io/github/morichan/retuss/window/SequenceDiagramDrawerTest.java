@@ -4,6 +4,7 @@ import io.github.morichan.fescue.feature.Operation;
 import io.github.morichan.fescue.feature.name.Name;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.language.uml.Package;
+import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import javafx.scene.control.TabPane;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -32,7 +33,7 @@ class SequenceDiagramDrawerTest {
         void シーケンス図タブを追加する() {
             int expected = 1;
             Class umlClass = new Class("Class");
-            umlClass.addOperation(new Operation(new Name("print")));
+            umlClass.addOperation(new OperationGraphic(new Operation(new Name("print"))));
             umlPackage.addClass(umlClass);
 
             obj.setUmlPackage(umlPackage);
