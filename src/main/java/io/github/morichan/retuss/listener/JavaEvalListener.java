@@ -191,11 +191,22 @@ public class JavaEvalListener extends JavaParserBaseListener {
             for (int i = 0; i < ctx.getChild(0).getChildCount(); i++) {
                 if (ctx.getChild(0).getChild(i) instanceof JavaParser.VariableModifierContext) continue;
 
-                LocalVariableDeclaration local = new LocalVariableDeclaration(
-                        new Type(ctx.getChild(0).getChild(i).getText()),
-                        ctx.getChild(0).getChild(i + 1).getText());
-                methodBody.addStatement(local);
+                addStatement(new Type(ctx.getChild(0).getChild(i).getText()),
+                        (JavaParser.VariableDeclaratorsContext) ctx.getChild(0).getChild(i + 1));
                 return;
+            }
+        }
+    }
+
+    private void addStatement(Type type, JavaParser.VariableDeclaratorsContext ctx) {
+
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            if (ctx.getChild(i).getChildCount() == 1) {
+                LocalVariableDeclaration local = new LocalVariableDeclaration(type, ctx.getChild(i).getText());
+                methodBody.addStatement(local);
+            } else {
+                LocalVariableDeclaration local = new LocalVariableDeclaration(type, ctx.getChild(i).getChild(0).getText(), ctx.getChild(i).getChild(2).getText());
+                methodBody.addStatement(local);
             }
         }
     }
