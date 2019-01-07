@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.setMaxElementsForPrinting;
 
 class UMLTranslatorTest {
 
@@ -323,12 +322,12 @@ class UMLTranslatorTest {
                 OperationGraphic og1 = new OperationGraphic(operation1);
                 MessageOccurrenceSpecification mos1 = new MessageOccurrenceSpecification();
                 mos1.setLifeline(new Lifeline("ClassName"));
-                mos1.setOperationName("+ isTrue() : boolean");
+                mos1.setName("+ isTrue() : boolean");
                 og1.setInteraction(new Interaction(mos1));
                 OperationGraphic og2 = new OperationGraphic(operation2);
                 MessageOccurrenceSpecification mos2 = new MessageOccurrenceSpecification();
                 mos2.setLifeline(new Lifeline("ClassName"));
-                mos2.setOperationName("+ calculate(x : double, y : double, z : double) : double");
+                mos2.setName("+ calculate(x : double, y : double, z : double) : double");
                 og2.setInteraction(new Interaction(mos2));
                 classClass.addOperation(og1);
                 classClass.addOperation(og2);

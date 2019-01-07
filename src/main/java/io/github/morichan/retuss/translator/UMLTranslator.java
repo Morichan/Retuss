@@ -3,10 +3,7 @@ package io.github.morichan.retuss.translator;
 import io.github.morichan.fescue.feature.Attribute;
 import io.github.morichan.fescue.feature.multiplicity.MultiplicityRange;
 import io.github.morichan.fescue.feature.multiplicity.Bounder;
-import io.github.morichan.fescue.feature.value.expression.Expression;
 import io.github.morichan.fescue.feature.Operation;
-import io.github.morichan.fescue.feature.multiplicity.Bounder;
-import io.github.morichan.fescue.feature.multiplicity.MultiplicityRange;
 import io.github.morichan.fescue.feature.name.Name;
 import io.github.morichan.fescue.feature.parameter.Parameter;
 import io.github.morichan.fescue.feature.type.Type;
@@ -28,7 +25,6 @@ import io.github.morichan.retuss.window.diagram.sequence.MessageOccurrenceSpecif
 import io.github.morichan.retuss.window.diagram.sequence.MessageType;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,14 +98,15 @@ public class UMLTranslator {
                 operation.addParameter(parameter);
             }
             OperationGraphic operationGraphic = new OperationGraphic(operation);
-            Lifeline lifeline = new Lifeline(umlClass.getName());
+            Lifeline lifeline = new Lifeline(umlClass);
             MessageOccurrenceSpecification message = new MessageOccurrenceSpecification();
             message.setLifeline(lifeline);
-            message.setOperationName(operation.toString());
+            message.setType(umlClass);
+            message.setName(operation.toString());
 
             if (method.getMethodBody() != null) {
                 for (BlockStatement statement : method.getMethodBody().getStatements()) {
-                    message.addMessage(convert(lifeline, statement));
+                    message.addMessage(convert(message, lifeline, statement));
                 }
             }
 
@@ -217,21 +214,36 @@ public class UMLTranslator {
         }
     }
 
-    private MessageOccurrenceSpecification convert(Lifeline lifeline, BlockStatement statement) {
+    private MessageOccurrenceSpecification convert(MessageOccurrenceSpecification owner, Lifeline lifeline, BlockStatement statement) {
         MessageOccurrenceSpecification message = new MessageOccurrenceSpecification();
 
         if (statement instanceof LocalVariableDeclaration) {
             message.setMessageType(MessageType.Declaration);
-            message.setOperationName(statement.toString());
+            message.setType(new Class(((LocalVariableDeclaration) statement).getType().toString()));
+            message.setName(((LocalVariableDeclaration) statement).getName());
+            if (((LocalVariableDeclaration) statement).getValue() != null)
+                message.setValue(((LocalVariableDeclaration) statement).getValue().toString());
             message.setLifeline(lifeline);
 
         } else if (statement instanceof Assignment) {
             message.setMessageType(MessageType.Assignment);
-            message.setOperationName(statement.toString());
+            message.setType(searchPreviousDeclaredFieldType((Assignment) statement, owner));
+            message.setName(((Assignment) statement).getName());
+            message.setValue(((Assignment) statement).getValue().toString());
             message.setLifeline(lifeline);
         }
 
         return message;
+    }
+
+    private Class searchPreviousDeclaredFieldType(Assignment assignment, MessageOccurrenceSpecification owner) {
+        for (MessageOccurrenceSpecification message : owner.getMessages()) {
+            if (message.getName().equals(assignment.getName())) {
+                return message.getType();
+            }
+        }
+
+        return new Class("NotKnownType");
     }
 
     /**

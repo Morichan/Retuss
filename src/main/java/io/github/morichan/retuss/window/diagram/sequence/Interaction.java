@@ -1,10 +1,7 @@
 package io.github.morichan.retuss.window.diagram.sequence;
 
-import io.github.morichan.fescue.feature.Operation;
-import io.github.morichan.fescue.feature.name.Name;
 import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.window.diagram.OperationGraphic;
-import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 
 public class Interaction {
@@ -51,7 +48,7 @@ public class Interaction {
         // lifeline.setClassName(umlClass.getName());
 
         // message = new MessageOccurrenceSpecification();
-        // message.setOperationName(operationGraphic.getOperation().toString());
+        // message.setName(operationGraphic.getOperation().toString());
         // message.setLifeline(lifeline);
         message.calculatePoint();
         message.draw(gc);
@@ -67,23 +64,23 @@ public class Interaction {
         Lifeline another2 = new Lifeline();
         another2.setClassName("ClassName2");
         // Lifeline another3 = new Lifeline();
-        // another3.setUmlClass(umlClass);
+        // another3.setType(umlClass);
 
         MessageOccurrenceSpecification otherMessage = new MessageOccurrenceSpecification();
-        otherMessage.setOperationName("reprint");
+        otherMessage.setName("reprint");
         otherMessage.setLifeline(another);
 
         MessageOccurrenceSpecification anotherMessage = new MessageOccurrenceSpecification();
-        anotherMessage.setOperationName("reprint2");
+        anotherMessage.setName("reprint2");
         anotherMessage.setLifeline(another2);
         // otherMessage.addMessage(anotherMessage);
 
         MessageOccurrenceSpecification another3Message = new MessageOccurrenceSpecification();
-        another3Message.setOperationName("reprint3");
+        another3Message.setName("reprint3");
         another3Message.setLifeline(another);
 
         message = new MessageOccurrenceSpecification();
-        message.setOperationName(operationGraphic.getOperation().toString());
+        message.setName(operationGraphic.getOperation().toString());
         message.setLifeline(lifeline);
         message.addMessage(otherMessage);
         message.addMessage(anotherMessage);

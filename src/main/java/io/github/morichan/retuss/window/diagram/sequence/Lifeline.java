@@ -33,16 +33,16 @@ public class Lifeline {
     private Point2D topLeftCorner = Point2D.ZERO;
     private Point2D bottomRightCorner = Point2D.ZERO;
     private Point2D leftLifelineBottomRightCorner = Point2D.ZERO;
-    private String className;
+    private Class umlClass;
     private boolean isDrawn = false;
     private boolean isCalculated = false;
 
     public Lifeline() {
-        className = "DefaultClassName";
+        umlClass = new Class("Lifeline");
     }
 
-    public Lifeline(String className) {
-        this.className = className;
+    public Lifeline(Class umlClass) {
+        this.umlClass = umlClass;
     }
 
     /**
@@ -86,11 +86,15 @@ public class Lifeline {
     }
 
     public void setClassName(String className) {
-        this.className = className;
+        umlClass.setName(className);
     }
 
     public String getClassName() {
-        return className;
+        return umlClass.getName();
+    }
+
+    public Class getUmlClass() {
+        return umlClass;
     }
 
     public void setDrawn(boolean drawn) {
@@ -118,7 +122,7 @@ public class Lifeline {
     }
 
     public void calculatePoint() {
-        lifelineNameText = new Text(": " + className);
+        lifelineNameText = new Text(": " + umlClass.getName());
         lifelineNameText.setFont(Font.font(diagramFont, FontWeight.LIGHT, lifelineNameFontSize));
         double maxWidth = lifelineNameText.getLayoutBounds().getWidth() + 10.0;
         calculateHeadCenterPoint(maxWidth);

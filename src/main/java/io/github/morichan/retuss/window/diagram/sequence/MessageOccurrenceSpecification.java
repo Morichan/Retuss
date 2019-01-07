@@ -1,5 +1,6 @@
 package io.github.morichan.retuss.window.diagram.sequence;
 
+import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -18,7 +19,9 @@ public class MessageOccurrenceSpecification {
     private Point2D endPoint = Point2D.ZERO;
 
     private MessageType type = MessageType.Undefined;
-    private String operationName;
+    private Class umlClass;
+    private String name;
+    private String value;
     private Lifeline lifeline;
     private List<MessageOccurrenceSpecification> messages = new ArrayList<>();
 
@@ -46,8 +49,28 @@ public class MessageOccurrenceSpecification {
         return type;
     }
 
-    public void setOperationName(String operationName) {
-        this.operationName = operationName;
+    public void setType(Class umlClass) {
+        this.umlClass = umlClass;
+    }
+
+    public Class getType() {
+        return umlClass;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     public void setLifeline(Lifeline lifeline) {
@@ -136,6 +159,20 @@ public class MessageOccurrenceSpecification {
         return height;
     }
 
+    private String formExpression() {
+        if (type == MessageType.Declaration) {
+            if (value == null) {
+                return name + " : " + umlClass.getName();
+            } else {
+                return name + " : " + umlClass.getName() + " = " + value;
+            }
+        } else if (type == MessageType.Assignment) {
+            return name + " : " + umlClass.getName() + " = " + value;
+        }
+
+        return name;
+    }
+
     public void draw(GraphicsContext gc) {
         draw(gc, 5.0, null);
     }
@@ -145,6 +182,7 @@ public class MessageOccurrenceSpecification {
         double height = endPoint.getY() - beginPoint.getY();
         String diagramFont = "Consolas";
         double textSize = 12.0;
+        String operationName = formExpression();
 
         if (!lifeline.isDrawn()) {
             lifeline.draw(gc);
