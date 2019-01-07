@@ -224,6 +224,11 @@ public class UMLTranslator {
             message.setMessageType(MessageType.Declaration);
             message.setOperationName(statement.toString());
             message.setLifeline(lifeline);
+
+        } else if (statement instanceof Assignment) {
+            message.setMessageType(MessageType.Assignment);
+            message.setOperationName(statement.toString());
+            message.setLifeline(lifeline);
         }
 
         return message;

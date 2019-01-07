@@ -191,14 +191,25 @@ public class JavaEvalListener extends JavaParserBaseListener {
             for (int i = 0; i < ctx.getChild(0).getChildCount(); i++) {
                 if (ctx.getChild(0).getChild(i) instanceof JavaParser.VariableModifierContext) continue;
 
-                addStatement(new Type(ctx.getChild(0).getChild(i).getText()),
+                addLocalVariableDeclaration(new Type(ctx.getChild(0).getChild(i).getText()),
                         (JavaParser.VariableDeclaratorsContext) ctx.getChild(0).getChild(i + 1));
                 return;
+            }
+
+        } else if (ctx.getChild(0) instanceof JavaParser.StatementContext) {
+            if (ctx.getChild(0).getChild(0) instanceof JavaParser.ExpressionContext) {
+                if (ctx.getChild(0).getChild(0).getChildCount() == 3) {
+                    if (ctx.getChild(0).getChild(0).getChild(0) instanceof JavaParser.ExpressionContext &&
+                            ctx.getChild(0).getChild(0).getChild(2) instanceof JavaParser.ExpressionContext &&
+                            ctx.getChild(0).getChild(0).getChild(1).getText().equals("=")) {
+                        addAssignment(ctx.getChild(0).getChild(0).getChild(0).getText(), ctx.getChild(0).getChild(0).getChild(2).getText());
+                    }
+                }
             }
         }
     }
 
-    private void addStatement(Type type, JavaParser.VariableDeclaratorsContext ctx) {
+    private void addLocalVariableDeclaration(Type type, JavaParser.VariableDeclaratorsContext ctx) {
 
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (ctx.getChild(i).getChildCount() == 1) {
@@ -209,6 +220,11 @@ public class JavaEvalListener extends JavaParserBaseListener {
                 methodBody.addStatement(local);
             }
         }
+    }
+
+    private void addAssignment(String name, String value) {
+        Assignment assignment = new Assignment(name, value);
+        methodBody.addStatement(assignment);
     }
 
     private Class searchExtendsClass(JavaParser.ClassDeclarationContext ctx) {
