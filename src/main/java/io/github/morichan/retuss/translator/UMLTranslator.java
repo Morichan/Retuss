@@ -18,6 +18,7 @@ import  io.github.morichan.retuss.language.cpp.Cpp;
 import  io.github.morichan.retuss.language.cpp.MemberVariable;
 import  io.github.morichan.retuss.language.cpp.MemberFunction;
 import  io.github.morichan.retuss.language.cpp.AccessSpecifier;
+import io.github.morichan.retuss.window.diagram.AttributeGraphic;
 import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import io.github.morichan.retuss.window.diagram.sequence.Interaction;
 import io.github.morichan.retuss.window.diagram.sequence.Lifeline;
@@ -49,6 +50,7 @@ public class UMLTranslator {
         }
 
         searchGeneralizationClass(java.getClasses());
+        searchMethod(classPackage, java);
 
         return classPackage;
     }
@@ -115,6 +117,26 @@ public class UMLTranslator {
         }
 
         return umlClass;
+    }
+
+    private void searchMethod(Package umlPackage, Java java) {
+        for (Class umlClass : umlPackage.getClasses()) {
+            for (OperationGraphic og : umlClass.getOperationGraphics()) {
+                for (MessageOccurrenceSpecification message : og.getInteraction().getMessage().getMessages()) {
+                    if (message.getMessageType() != MessageType.Method) continue;
+
+                    for (Class sourceUmlClass : umlPackage.getClasses()) {
+                        for (OperationGraphic sourceOg : sourceUmlClass.getOperationGraphics()) {
+                            MessageOccurrenceSpecification sourceMessage = sourceOg.getInteraction().getMessage();
+
+                            if (sourceMessage.getName().contains(message.getName())) {
+                                og.setInteraction(sourceOg.getInteraction());
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private Visibility convert(AccessModifier accessModifier) {
@@ -227,21 +249,27 @@ public class UMLTranslator {
 
         } else if (statement instanceof Assignment) {
             message.setMessageType(MessageType.Assignment);
-            message.setType(searchPreviousDeclaredFieldType((Assignment) statement, owner));
+            message.setType(searchPreviousDeclaredFieldType((Assignment) statement, owner, lifeline));
             message.setName(((Assignment) statement).getName());
             message.setValue(((Assignment) statement).getValue().toString());
             message.setLifeline(lifeline);
+
+        } else if (statement instanceof Method) {
+            message.setMessageType(MessageType.Method);
+            message.setName(((Method) statement).getName());
         }
 
         return message;
     }
 
-    private Class searchPreviousDeclaredFieldType(Assignment assignment, MessageOccurrenceSpecification owner) {
-        for (MessageOccurrenceSpecification message : owner.getMessages()) {
-            if (message.getName().equals(assignment.getName())) {
+    private Class searchPreviousDeclaredFieldType(Assignment assignment, MessageOccurrenceSpecification owner, Lifeline lifeline) {
+        for (MessageOccurrenceSpecification message : owner.getMessages())
+            if (message.getName().equals(assignment.getName()))
                 return message.getType();
-            }
-        }
+
+        for (AttributeGraphic ag : lifeline.getUmlClass().getAttributeGraphics())
+            if (ag.getAttribute().getName().getNameText().equals(assignment.getName()))
+                return new Class(ag.getAttribute().getType().getName().getNameText());
 
         return new Class("NotKnownType");
     }

@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Method {
+public class Method implements BlockStatement {
 
     private AccessModifier accessModifier;
     private boolean isAbstract = false;
+    private boolean isOwned = false;
     private Type type;
     private String name;
     private List<Argument> arguments;
@@ -187,6 +188,14 @@ public class Method {
 
     public boolean isAbstract() {
         return isAbstract;
+    }
+
+    public void setOwned(boolean owned) {
+        isOwned = owned;
+    }
+
+    public boolean isOwned() {
+        return isOwned;
     }
 
     @Override

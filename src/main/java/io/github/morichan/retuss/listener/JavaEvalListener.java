@@ -203,6 +203,10 @@ public class JavaEvalListener extends JavaParserBaseListener {
                             ctx.getChild(0).getChild(0).getChild(2) instanceof JavaParser.ExpressionContext &&
                             ctx.getChild(0).getChild(0).getChild(1).getText().equals("=")) {
                         addAssignment(ctx.getChild(0).getChild(0).getChild(0).getText(), ctx.getChild(0).getChild(0).getChild(2).getText());
+                    } else if (ctx.getChild(0).getChild(0).getChild(1).getText().equals("(") &&
+                            ctx.getChild(0).getChild(0).getChild(2).getText().equals(")")) {
+                        Method method = new Method(new Type("TmpType"), ctx.getChild(0).getChild(0).getChild(0).getText());
+                        methodBody.addStatement(method);
                     }
                 }
             }
