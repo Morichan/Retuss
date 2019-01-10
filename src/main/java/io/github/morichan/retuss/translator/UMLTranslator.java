@@ -50,7 +50,7 @@ public class UMLTranslator {
         }
 
         searchGeneralizationClass(java.getClasses());
-        searchMethod(classPackage, java);
+        searchMethod(classPackage);
 
         return classPackage;
     }
@@ -119,18 +119,45 @@ public class UMLTranslator {
         return umlClass;
     }
 
-    private void searchMethod(Package umlPackage, Java java) {
+    private void searchMethod(Package umlPackage) {
         for (Class umlClass : umlPackage.getClasses()) {
             for (OperationGraphic og : umlClass.getOperationGraphics()) {
-                for (MessageOccurrenceSpecification message : og.getInteraction().getMessage().getMessages()) {
+                toSearchNextMessage: for (int i = 0; i < og.getInteraction().getMessage().getMessages().size(); i++) {
+                    MessageOccurrenceSpecification message = og.getInteraction().getMessage().getMessages().get(i);
                     if (message.getMessageType() != MessageType.Method) continue;
 
+                    // 自クラス内のメソッド
                     for (Class sourceUmlClass : umlPackage.getClasses()) {
+                        if (!umlClass.getName().equals(sourceUmlClass.getName())) continue;
                         for (OperationGraphic sourceOg : sourceUmlClass.getOperationGraphics()) {
                             MessageOccurrenceSpecification sourceMessage = sourceOg.getInteraction().getMessage();
 
-                            if (sourceMessage.getName().contains(message.getName())) {
-                                og.setInteraction(sourceOg.getInteraction());
+                            if (sourceMessage.getName().contains(" " + message.getName() + "(")) {
+                                og.getInteraction().getMessage().getMessages().set(i, sourceMessage);
+                                continue toSearchNextMessage;
+                            }
+                        }
+                    }
+
+                    // 他クラス内のメソッド
+                    for (Class sourceUmlClass : umlPackage.getClasses()) {
+                        if (umlClass.getName().equals(sourceUmlClass.getName())) continue;
+                        for (OperationGraphic sourceOg : sourceUmlClass.getOperationGraphics()) {
+                            MessageOccurrenceSpecification sourceMessage = sourceOg.getInteraction().getMessage();
+
+                            if (sourceMessage.getName().contains(" " + message.getName() + "(")) {
+                                String instance = "";
+
+                                for (AttributeGraphic ag : umlClass.getAttributeGraphics()) {
+                                    if (sourceUmlClass.getName().equals(ag.getAttribute().getType().getName().getNameText())) {
+                                        instance = ag.getAttribute().getName().getNameText();
+                                        break;
+                                    }
+                                }
+
+                                og.getInteraction().getMessage().putInstance(i, instance);
+                                og.getInteraction().getMessage().getMessages().set(i, sourceMessage);
+                                continue toSearchNextMessage;
                             }
                         }
                     }
@@ -256,7 +283,9 @@ public class UMLTranslator {
 
         } else if (statement instanceof Method) {
             message.setMessageType(MessageType.Method);
+            message.setType(new Class("UndefinedMessage"));
             message.setName(((Method) statement).getName());
+            message.setLifeline(lifeline);
         }
 
         return message;

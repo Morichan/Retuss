@@ -11,7 +11,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MessageOccurrenceSpecification {
 
@@ -21,6 +23,7 @@ public class MessageOccurrenceSpecification {
     private MessageType type = MessageType.Undefined;
     private Class umlClass;
     private String name;
+    private Map<Integer, String> instanceMap = new HashMap<>();
     private String value;
     private Lifeline lifeline;
     private List<MessageOccurrenceSpecification> messages = new ArrayList<>();
@@ -65,6 +68,14 @@ public class MessageOccurrenceSpecification {
         return name;
     }
 
+    public void putInstance(int key, String instance) {
+        instanceMap.put(key, instance);
+    }
+
+    public String getInstance(int key) {
+        return instanceMap.get(key);
+    }
+
     public void setValue(String value) {
         this.value = value;
     }
@@ -101,11 +112,13 @@ public class MessageOccurrenceSpecification {
         beginPoint = new Point2D(lifeline.getHeadCenterPoint().getX(), lifeline.getHeadCenterPoint().getY() + 40);
         Point2D beforeGoalPoint = new Point2D(beginPoint.getX(), beginPoint.getY());
 
+        int count = 0;
         for (MessageOccurrenceSpecification message : messages) {
             scheduledLifelineForLastDrawing =
-                    message.calculatePoint(beforeGoalPoint, lifeline, scheduledLifelineForLastDrawing, 0);
+                    message.calculatePoint(beforeGoalPoint, lifeline, scheduledLifelineForLastDrawing, 0, instanceMap.get(count));
             height += message.calculateHeight();
             beforeGoalPoint = new Point2D(message.getEndPoint().getX(), message.getEndPoint().getY());
+            count++;
         }
 
         if (messages.size() >= 2) height += (messages.size() - 1) * 20;
@@ -118,15 +131,17 @@ public class MessageOccurrenceSpecification {
         }*/
     }
 
-    private Point2D calculatePoint(Point2D beforeBeginPoint, Lifeline fromLifeline, Point2D lastLifeline, int sameLifelineCount) {
+    private Point2D calculatePoint(Point2D beforeBeginPoint, Lifeline fromLifeline, Point2D lastLifeline, int sameLifelineCount, String instanceName) {
 
         double height = 40;
         if (hasSameLifeline(fromLifeline)) {
             sameLifelineCount++;
+            lifeline = fromLifeline;
             beginPoint = new Point2D(lifeline.getHeadCenterPoint().getX() + sameLifelineCount * 5, beforeBeginPoint.getY() + 35);
         } else {
             sameLifelineCount = 0;
             if (!lifeline.isCalculated()) {
+                lifeline.setInstance(instanceName);
                 lifeline.setLeftLifelineBottomRightCorner(lastLifeline);
                 lifeline.calculatePoint();
                 lifeline.setCalculated(true);
@@ -135,10 +150,16 @@ public class MessageOccurrenceSpecification {
             beginPoint = new Point2D(lifeline.getHeadCenterPoint().getX(), beforeBeginPoint.getY() + 20);
         }
 
+        int count = 0;
+        Point2D beforeGoalPoint = new Point2D(beginPoint.getX(), beginPoint.getY());
         for (MessageOccurrenceSpecification message : messages) {
-            lastLifeline = message.calculatePoint(beginPoint, lifeline, lastLifeline, sameLifelineCount);
+            lastLifeline = message.calculatePoint(beforeGoalPoint, lifeline, lastLifeline, sameLifelineCount, instanceMap.get(count));
             height += message.calculateHeight();
+            beforeGoalPoint = new Point2D(message.getEndPoint().getX(), message.getEndPoint().getY());
+            count++;
         }
+
+        if (messages.size() >= 2) height += (messages.size() - 1) * 20;
 
         if (sameLifelineCount != 0) {
             endPoint = new Point2D(lifeline.getHeadCenterPoint().getX() + sameLifelineCount * 5, beginPoint.getY() + height - 10);

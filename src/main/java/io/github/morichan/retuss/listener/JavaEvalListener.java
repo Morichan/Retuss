@@ -205,8 +205,7 @@ public class JavaEvalListener extends JavaParserBaseListener {
                         addAssignment(ctx.getChild(0).getChild(0).getChild(0).getText(), ctx.getChild(0).getChild(0).getChild(2).getText());
                     } else if (ctx.getChild(0).getChild(0).getChild(1).getText().equals("(") &&
                             ctx.getChild(0).getChild(0).getChild(2).getText().equals(")")) {
-                        Method method = new Method(new Type("TmpType"), ctx.getChild(0).getChild(0).getChild(0).getText());
-                        methodBody.addStatement(method);
+                        addMethod((JavaParser.ExpressionContext) ctx.getChild(0).getChild(0).getChild(0));
                     }
                 }
             }
@@ -229,6 +228,16 @@ public class JavaEvalListener extends JavaParserBaseListener {
     private void addAssignment(String name, String value) {
         Assignment assignment = new Assignment(name, value);
         methodBody.addStatement(assignment);
+    }
+
+    private void addMethod(JavaParser.ExpressionContext ctx) {
+        if (ctx.getChildCount() == 1) {
+            Method method = new Method(new Type("TmpType"), ctx.getText());
+            methodBody.addStatement(method);
+        } else if (ctx.getChildCount() == 3 && ctx.getChild(1).getText().equals(".")) {
+            Method method = new Method(new Type(ctx.getChild(0).getText()), ctx.getChild(2).getText());
+            methodBody.addStatement(method);
+        }
     }
 
     private Class searchExtendsClass(JavaParser.ClassDeclarationContext ctx) {

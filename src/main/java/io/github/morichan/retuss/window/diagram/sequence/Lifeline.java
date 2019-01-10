@@ -34,6 +34,7 @@ public class Lifeline {
     private Point2D bottomRightCorner = Point2D.ZERO;
     private Point2D leftLifelineBottomRightCorner = Point2D.ZERO;
     private Class umlClass;
+    private String instance;
     private boolean isDrawn = false;
     private boolean isCalculated = false;
 
@@ -121,8 +122,14 @@ public class Lifeline {
         return bottomRightCorner;
     }
 
+    public void setInstance(String instance) {
+        this.instance = instance;
+    }
+
     public void calculatePoint() {
-        lifelineNameText = new Text(": " + umlClass.getName());
+        lifelineNameText = instance == null
+                ? new Text(": " + umlClass.getName())
+                : new Text(instance + " : " + umlClass.getName());
         lifelineNameText.setFont(Font.font(diagramFont, FontWeight.LIGHT, lifelineNameFontSize));
         double maxWidth = lifelineNameText.getLayoutBounds().getWidth() + 10.0;
         calculateHeadCenterPoint(maxWidth);

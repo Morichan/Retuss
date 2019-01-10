@@ -321,12 +321,12 @@ class UMLTranslatorTest {
                 operation2.addParameter(param3);
                 OperationGraphic og1 = new OperationGraphic(operation1);
                 MessageOccurrenceSpecification mos1 = new MessageOccurrenceSpecification();
-                mos1.setLifeline(new Lifeline("ClassName"));
+                mos1.setLifeline(new Lifeline(new Class("ClassName")));
                 mos1.setName("+ isTrue() : boolean");
                 og1.setInteraction(new Interaction(mos1));
                 OperationGraphic og2 = new OperationGraphic(operation2);
                 MessageOccurrenceSpecification mos2 = new MessageOccurrenceSpecification();
-                mos2.setLifeline(new Lifeline("ClassName"));
+                mos2.setLifeline(new Lifeline(new Class("ClassName")));
                 mos2.setName("+ calculate(x : double, y : double, z : double) : double");
                 og2.setInteraction(new Interaction(mos2));
                 classClass.addOperation(og1);
@@ -346,11 +346,20 @@ class UMLTranslatorTest {
                         new Argument(new Type("double"), "y"),
                         new Argument(new Type("double"), "z")));
                 javaClass.addMethod(method);
+                javaClass.getMethods().get(0).setMethodBody(new MethodBody());
+                javaClass.getMethods().get(1).setMethodBody(new MethodBody());
                 java.addClass(javaClass);
 
                 Package actual = obj.translate(java);
 
-                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                for (int i = 0; i < actual.getClasses().get(0).getAttributeGraphics().size(); i++) {
+                    assertThat(actual.getClasses().get(0).getAttributeGraphics().get(i).getAttribute())
+                            .isEqualToComparingFieldByFieldRecursively(expected.getClasses().get(0).getAttributeGraphics().get(i).getAttribute());
+                }
+                for (int i = 0; i < actual.getClasses().get(0).getOperationGraphics().size(); i++) {
+                    assertThat(actual.getClasses().get(0).getOperationGraphics().get(i).getOperation())
+                            .isEqualToComparingFieldByFieldRecursively(expected.getClasses().get(0).getOperationGraphics().get(i).getOperation());
+                }
             }
         }
 
