@@ -3,6 +3,7 @@ package io.github.morichan.retuss.window.diagram;
 import io.github.morichan.fescue.feature.multiplicity.Bounder;
 import io.github.morichan.fescue.feature.multiplicity.MultiplicityRange;
 import io.github.morichan.fescue.feature.value.expression.OneIdentifier;
+import io.github.morichan.fescue.feature.visibility.Visibility;
 import io.github.morichan.retuss.window.ClassDiagramDrawer;
 import io.github.morichan.retuss.window.MainController;
 import io.github.morichan.retuss.window.utility.UtilityJavaFXComponent;
@@ -485,9 +486,18 @@ public class EdgeDiagram {
             content = relations.get(number).getAttribute().getMultiplicityRange() + "\n" +
                     relations.get(number).getAttribute().getVisibility() + " " + relations.get(number).getAttribute().getName();
         } catch (IllegalStateException e) {
-            relations.get(number).getAttribute().setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(1))));
-            content =  "1\n" +
-                    relations.get(number).getAttribute().getVisibility() + " " + relations.get(number).getAttribute().getName();
+            // 多重度が存在しない場合
+            try {
+                relations.get(number).getAttribute().setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(1))));
+                content = "1\n" +
+                        relations.get(number).getAttribute().getVisibility() + " " + relations.get(number).getAttribute().getName();
+            } catch (IllegalStateException e2) {
+                // 可視性が無い場合
+                relations.get(number).getAttribute().setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(1))));
+                relations.get(number).getAttribute().setVisibility(Visibility.Private);
+                content = "1\n" +
+                        "- " + relations.get(number).getAttribute().getName();
+            }
         }
         Text text = new Text(content);
         text.setFont(Font.font("Consolas", FontWeight.LIGHT, 15));
