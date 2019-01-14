@@ -41,7 +41,7 @@
                             <items>
                                 <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                     <children>
-                                        <TreeView layoutX="40.0" layoutY="178.0" prefHeight="933.0" prefWidth="317.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                        <TreeView fx:id="classTree" layoutX="40.0" layoutY="178.0" prefHeight="933.0" prefWidth="317.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane prefHeight="200.0" prefWidth="200.0">

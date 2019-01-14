@@ -1,5 +1,6 @@
 package io.github.morichan.retuss.window;
 
+import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.translator.Language;
 import io.github.morichan.retuss.window.diagram.ContentType;
 import io.github.morichan.retuss.window.diagram.NodeDiagram;
@@ -32,6 +33,9 @@ import java.util.*;
  * </p>
  */
 public class MainController {
+    @FXML
+    private TreeView<String> classTree;
+
     @FXML
     private Tab classDiagramTab;
     @FXML
@@ -87,6 +91,7 @@ public class MainController {
         gc.getCanvas().setHeight(classDiagramScrollPane.getPrefHeight() - scrollBarBreadth);
         classDiagramDrawer = new ClassDiagramDrawer();
         classDiagramDrawer.setGraphicsContext(gc);
+        classTree.setRoot(new TreeItem<>("Class"));
     }
 
     @FXML
@@ -195,6 +200,8 @@ public class MainController {
         } else if (event.getButton() == MouseButton.SECONDARY) {
             clickedCanvasBySecondaryButtonInCD(event.getX(), event.getY());
         }
+
+        createClassTreeViewContents();
     }
 
     /**
@@ -412,6 +419,7 @@ public class MainController {
         }
 
         classDiagramDrawer.allReDrawCanvas();
+        createClassTreeViewContents();
     }
 
     private void writeSequenceDiagramForCode(Package umlPackage) {
@@ -717,5 +725,19 @@ public class MainController {
 
     private String showChangeCompositionNameInputDialog(String composition) {
         return showClassDiagramInputDialog("コンポジションの変更", "変更後のコンポジション先の関連端名を入力してください。", composition);
+    }
+
+    private void createClassTreeViewContents() {
+        classTree.refresh();
+
+        TreeItem<String> classTreeItem = new TreeItem<>("Class");
+        classTreeItem.setExpanded(true);
+        for (Class umlClass : codeController.getUmlPackage().getClasses()) {
+            TreeItem<String> className = new TreeItem<>(umlClass.getName());
+            className.setExpanded(true);
+            classTreeItem.getChildren().add(className);
+        }
+
+        classTree.setRoot(classTreeItem);
     }
 }
