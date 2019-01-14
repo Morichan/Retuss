@@ -733,7 +733,8 @@ public class MainController {
         TreeItem<String> classTreeItem = new TreeItem<>("Class");
         classTreeItem.setExpanded(true);
         for (Class umlClass : codeController.getUmlPackage().getClasses()) {
-            TreeItem<String> className = new TreeItem<>(umlClass.getName());
+            // TestにおけるTab選択時の誤動作防止
+            TreeItem<String> className = new TreeItem<>(" " + umlClass.getName());
             className.setExpanded(true);
             classTreeItem.getChildren().add(className);
         }

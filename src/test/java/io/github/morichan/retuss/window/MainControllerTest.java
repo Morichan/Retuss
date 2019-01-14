@@ -158,6 +158,7 @@ class MainControllerTest extends ApplicationTest {
                     assertThat(noteButton.isDefaultButton()).isFalse();
                 }
 
+                @Disabled("ノートボタンを非表示にした")
                 @Test
                 void ノートボタンをクリックするとノートボタンをオンにして他をオフにする() {
                     clickOn("#noteButtonInCD");
