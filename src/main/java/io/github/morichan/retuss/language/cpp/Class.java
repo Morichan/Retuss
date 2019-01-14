@@ -196,20 +196,23 @@ public class Class {
      */
     private String manufacture() {
         StringBuilder sb = new StringBuilder();
+
+        boolean flagPublic =false;
+        boolean flagPrivate =false;
         boolean flagProtected =false;
         boolean flagPackage =false;
-boolean flagString=false;
+// boolean flagString=false;
 
 
-        for(MemberVariable memberVariable : memberVariables){
-            if(memberVariable.getFlagString()== true){
-               flagString= true;
-            }
-        }
-if(flagString == true){
-            sb.append("#include <string>");
-    sb.append(" \n");
-        }
+//        for(MemberVariable memberVariable : memberVariables){
+//            if(memberVariable.getFlagString()== true){
+//               flagString= true;
+//            }
+//        }
+//if(flagString == true){
+//            sb.append("#include <string>");
+//    sb.append(" \n");
+//        }
 
 
 
@@ -222,12 +225,57 @@ if(flagString == true){
         }
 
         sb.append(" {\n");
-        if (memberVariables.size() != 0  || memberFunctions.size() != 0) {
-            sb.append("private:");
-            sb.append("\n");
-        }
+
+
+//        if (memberVariables.size() != 0  || memberFunctions.size() != 0) {
+//            sb.append("private:");
+//            sb.append("\n");
+//        }
+//        for (MemberVariable memberVariable : memberVariables) {
+//            if(memberVariable.getAccessSpecifier() == AccessSpecifier.Private) {
+//                sb.append("    ");
+//                sb.append(memberVariable);
+//                sb.append("\n");
+//            }
+//        }
+//
+//        for (MemberFunction memberFunction : memberFunctions) {
+//            if (memberFunction.getAccessSpecifier() == AccessSpecifier.Private) {
+//                sb.append("    ");
+//                sb.append(memberFunction);
+//                sb.append("\n");
+//            }
+//        }
+//
+//        if (memberVariables.size() != 0 ||  memberFunctions.size() != 0) {
+//            sb.append("public:");
+//            sb.append("\n");
+//        }
+//        for (MemberVariable memberVariable : memberVariables) {
+//            if(memberVariable.getAccessSpecifier() == AccessSpecifier.Public) {
+//                sb.append("    ");
+//                sb.append(memberVariable);
+//                sb.append("\n");
+//            }
+//        }
+//
+//        for (MemberFunction memberFunction : memberFunctions) {
+//            if (memberFunction.getAccessSpecifier() == AccessSpecifier.Public) {
+//                sb.append("    ");
+//                sb.append(memberFunction);
+//                sb.append("\n");
+//            }
+//        }
+
+//   PRIVATEの表示
         for (MemberVariable memberVariable : memberVariables) {
+//            boolean flag =false;
             if(memberVariable.getAccessSpecifier() == AccessSpecifier.Private) {
+                if(flagPrivate ==false){
+                    sb.append("private:");
+                    sb.append("\n");
+                }
+                flagPrivate=true;
                 sb.append("    ");
                 sb.append(memberVariable);
                 sb.append("\n");
@@ -235,19 +283,28 @@ if(flagString == true){
         }
 
         for (MemberFunction memberFunction : memberFunctions) {
-            if (memberFunction.getAccessSpecifier() == AccessSpecifier.Private) {
+//            boolean flag =false;
+            if(memberFunction.getAccessSpecifier() == AccessSpecifier.Private) {
+                if(flagPrivate ==false){
+                    sb.append("private:");
+                    sb.append("\n");
+                }
+                flagPrivate=true;
                 sb.append("    ");
                 sb.append(memberFunction);
                 sb.append("\n");
             }
         }
 
-        if (memberVariables.size() != 0 ||  memberFunctions.size() != 0) {
-            sb.append("public:");
-            sb.append("\n");
-        }
+        //   PUBLICの表示
         for (MemberVariable memberVariable : memberVariables) {
+//            boolean flag =false;
             if(memberVariable.getAccessSpecifier() == AccessSpecifier.Public) {
+                if(flagPublic ==false){
+                    sb.append("public:");
+                    sb.append("\n");
+                }
+                flagPublic=true;
                 sb.append("    ");
                 sb.append(memberVariable);
                 sb.append("\n");
@@ -255,13 +312,18 @@ if(flagString == true){
         }
 
         for (MemberFunction memberFunction : memberFunctions) {
-            if (memberFunction.getAccessSpecifier() == AccessSpecifier.Public) {
+//            boolean flag =false;
+            if(memberFunction.getAccessSpecifier() == AccessSpecifier.Public) {
+                if(flagPublic ==false){
+                    sb.append("public:");
+                    sb.append("\n");
+                }
+                flagPublic=true;
                 sb.append("    ");
                 sb.append(memberFunction);
                 sb.append("\n");
             }
         }
-
 
         for (MemberVariable memberVariable : memberVariables) {
 //            boolean flag =false;
