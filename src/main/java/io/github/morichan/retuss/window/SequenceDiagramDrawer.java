@@ -4,14 +4,12 @@ import io.github.morichan.retuss.language.uml.Class;
 import io.github.morichan.retuss.language.uml.Package;
 import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import io.github.morichan.retuss.window.diagram.sequence.Interaction;
-import io.github.morichan.retuss.window.diagram.sequence.Lifeline;
-import io.github.morichan.retuss.window.diagram.sequence.MessageOccurrenceSpecification;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
@@ -101,9 +99,11 @@ public class SequenceDiagramDrawer {
                 Class umlClass = umlPackage.getClasses().get(classIndex);
                 OperationGraphic og = umlClass.getOperationGraphics().get(operationIndex);
 
-                Canvas canvas = (Canvas) ((ScrollPane) ((AnchorPane) operationTab.getContent()).getChildren().get(0)).getContent();
+                ScrollPane paneUnderCanvas = (ScrollPane) ((AnchorPane) operationTab.getContent()).getChildren().get(0);
+                Canvas canvas = (Canvas) paneUnderCanvas.getContent();
                 canvas.setWidth(tabPaneInSequenceTab.getWidth());
                 canvas.setHeight(tabPaneInSequenceTab.getHeight());
+                canvas.setOnMouseClicked(e -> createEvent(e, paneUnderCanvas, classTab.getId(), operationTab.getId()));
 
                 GraphicsContext gc = canvas.getGraphicsContext2D();
                 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -235,5 +235,20 @@ public class SequenceDiagramDrawer {
         AnchorPane anchorPaneOnVBox = (AnchorPane) borderPaneOnAnchorPaneOnTabPane.getCenter();
         TabPane tabPane = (TabPane) anchorPaneOnVBox.getChildren().get(0);
         tabPane.getTabs().add(childTab);
+    }
+
+    private void createEvent(MouseEvent e, ScrollPane pane, String classId, String operationId) {
+        Interaction interaction = interactionSetFromClassNameAndOperation.get(classId).get(operationId);
+
+        if (e.getButton() == MouseButton.PRIMARY) {
+
+        } else if (e.getButton() == MouseButton.SECONDARY) {
+            ContextMenu popup = new ContextMenu();
+
+            popup.getItems().add(new MenuItem(interaction.getMessage().getName() + "メッセージの変更"));
+            popup.getItems().add(new MenuItem(interaction.getMessage().getName() + "メッセージをモデルから削除"));
+
+            pane.setContextMenu(popup);
+        }
     }
 }
