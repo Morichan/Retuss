@@ -99,6 +99,7 @@ public class Method implements BlockStatement {
      *
      * @return メソッド名 <br> {@code null} および空文字の可能性なし
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -122,6 +123,7 @@ public class Method implements BlockStatement {
      *
      * @return 型 <br> {@code null} の可能性なし
      */
+    @Override
     public Type getType() {
         return type;
     }

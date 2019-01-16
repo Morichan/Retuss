@@ -6,6 +6,7 @@ import io.github.morichan.fescue.feature.multiplicity.Bounder;
 import io.github.morichan.fescue.feature.Operation;
 import io.github.morichan.fescue.feature.name.Name;
 import io.github.morichan.fescue.feature.parameter.Parameter;
+import io.github.morichan.fescue.feature.property.Property;
 import io.github.morichan.fescue.feature.type.Type;
 import io.github.morichan.fescue.feature.value.DefaultValue;
 import io.github.morichan.fescue.feature.value.expression.OneIdentifier;
@@ -27,6 +28,7 @@ import io.github.morichan.retuss.window.diagram.sequence.MessageType;
 
 
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 /**
@@ -104,7 +106,7 @@ public class UMLTranslator {
             MessageOccurrenceSpecification message = new MessageOccurrenceSpecification();
             message.setLifeline(lifeline);
             message.setType(umlClass);
-            message.setName(operation.toString());
+            message.setName(createMessageText(operation));
 
             if (method.getMethodBody() != null) {
                 for (BlockStatement statement : method.getMethodBody().getStatements()) {
@@ -119,6 +121,32 @@ public class UMLTranslator {
         return umlClass;
     }
 
+    private String createMessageText(Operation operation) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(operation.getName());
+
+        try {
+            if (operation.getParameters().size() > 0) {
+                StringJoiner sj = new StringJoiner(", ");
+                for (Parameter param : operation.getParameters()) sj.add(param.toString());
+
+                sb.append("(");
+                sb.append(sj);
+                sb.append(")");
+            } else {
+                sb.append("()");
+            }
+        } catch (IllegalStateException e) {
+            sb.append("()");
+        }
+
+        sb.append(" : ");
+        sb.append(operation.getReturnType());
+
+        return sb.toString();
+    }
+
     private void searchMethod(Package umlPackage) {
         for (Class umlClass : umlPackage.getClasses()) {
             for (OperationGraphic og : umlClass.getOperationGraphics()) {
@@ -126,38 +154,41 @@ public class UMLTranslator {
                     MessageOccurrenceSpecification message = og.getInteraction().getMessage().getMessages().get(i);
                     if (message.getMessageType() != MessageType.Method) continue;
 
-                    // 自クラス内のメソッド
-                    for (Class sourceUmlClass : umlPackage.getClasses()) {
-                        if (!umlClass.getName().equals(sourceUmlClass.getName())) continue;
-                        for (OperationGraphic sourceOg : sourceUmlClass.getOperationGraphics()) {
-                            MessageOccurrenceSpecification sourceMessage = sourceOg.getInteraction().getMessage();
+                    if (umlClass.getName().equals(searchClass(message.getType().getName(), message, message.getLifeline()).getName())) {
+                        // 自クラス内のメソッド
+                        for (Class sourceUmlClass : umlPackage.getClasses()) {
+                            if (!umlClass.getName().equals(sourceUmlClass.getName())) continue;
+                            for (OperationGraphic sourceOg : sourceUmlClass.getOperationGraphics()) {
+                                MessageOccurrenceSpecification sourceMessage = sourceOg.getInteraction().getMessage();
 
-                            if (sourceMessage.getName().contains(" " + message.getName() + "(")) {
-                                og.getInteraction().getMessage().getMessages().set(i, sourceMessage);
-                                continue toSearchNextMessage;
+                                if (sourceMessage.getName().contains(message.getName() + "(")) {
+                                    og.getInteraction().getMessage().getMessages().set(i, sourceMessage);
+                                    continue toSearchNextMessage;
+                                }
                             }
                         }
-                    }
 
-                    // 他クラス内のメソッド
-                    for (Class sourceUmlClass : umlPackage.getClasses()) {
-                        if (umlClass.getName().equals(sourceUmlClass.getName())) continue;
-                        for (OperationGraphic sourceOg : sourceUmlClass.getOperationGraphics()) {
-                            MessageOccurrenceSpecification sourceMessage = sourceOg.getInteraction().getMessage();
+                    } else {
+                        // 他クラス内のメソッド
+                        for (Class sourceUmlClass : umlPackage.getClasses()) {
+                            if (umlClass.getName().equals(sourceUmlClass.getName())) continue;
+                            for (OperationGraphic sourceOg : sourceUmlClass.getOperationGraphics()) {
+                                MessageOccurrenceSpecification sourceMessage = sourceOg.getInteraction().getMessage();
 
-                            if (sourceMessage.getName().contains(" " + message.getName() + "(")) {
-                                String instance = "";
+                                if (sourceMessage.getName().contains(message.getName() + "(")) {
+                                    String instance = "";
 
-                                for (AttributeGraphic ag : umlClass.getAttributeGraphics()) {
-                                    if (sourceUmlClass.getName().equals(ag.getAttribute().getType().getName().getNameText())) {
-                                        instance = ag.getAttribute().getName().getNameText();
-                                        break;
+                                    for (AttributeGraphic ag : umlClass.getAttributeGraphics()) {
+                                        if (sourceUmlClass.getName().equals(ag.getAttribute().getType().getName().getNameText())) {
+                                            instance = ag.getAttribute().getName().getNameText();
+                                            break;
+                                        }
                                     }
-                                }
 
-                                og.getInteraction().getMessage().putInstance(i, instance);
-                                og.getInteraction().getMessage().getMessages().set(i, sourceMessage);
-                                continue toSearchNextMessage;
+                                    og.getInteraction().getMessage().putInstance(i, instance);
+                                    og.getInteraction().getMessage().getMessages().set(i, sourceMessage);
+                                    continue toSearchNextMessage;
+                                }
                             }
                         }
                     }
@@ -268,36 +299,60 @@ public class UMLTranslator {
 
         if (statement instanceof LocalVariableDeclaration) {
             message.setMessageType(MessageType.Declaration);
-            message.setType(new Class(((LocalVariableDeclaration) statement).getType().toString()));
-            message.setName(((LocalVariableDeclaration) statement).getName());
+            message.setType(new Class(statement.getType().toString()));
+            message.setName(statement.getName());
             if (((LocalVariableDeclaration) statement).getValue() != null)
                 message.setValue(((LocalVariableDeclaration) statement).getValue().toString());
             message.setLifeline(lifeline);
 
         } else if (statement instanceof Assignment) {
             message.setMessageType(MessageType.Assignment);
-            message.setType(searchPreviousDeclaredFieldType((Assignment) statement, owner, lifeline));
-            message.setName(((Assignment) statement).getName());
+            message.setType(searchPreviousDeclaredFieldType(statement, owner, lifeline));
+            message.setName(statement.getName());
             message.setValue(((Assignment) statement).getValue().toString());
             message.setLifeline(lifeline);
 
         } else if (statement instanceof Method) {
             message.setMessageType(MessageType.Method);
-            message.setType(new Class("UndefinedMessage"));
-            message.setName(((Method) statement).getName());
+            message.setType(new Class(statement.getType().toString()));
+            message.setName(statement.getName());
             message.setLifeline(lifeline);
         }
 
         return message;
     }
 
-    private Class searchPreviousDeclaredFieldType(Assignment assignment, MessageOccurrenceSpecification owner, Lifeline lifeline) {
+    private Class searchClass(String instance, MessageOccurrenceSpecification owner, Lifeline lifeline) {
+        Class sourceClass = searchPreviousDeclaredFieldType(instance, owner, lifeline);
+
+        for (Class umlClass : classPackage.getClasses()) {
+            if (umlClass.getName().equals(sourceClass.getName())) {
+                return umlClass;
+            }
+        }
+
+        return lifeline.getUmlClass();
+    }
+
+    private Class searchPreviousDeclaredFieldType(BlockStatement statement, MessageOccurrenceSpecification owner, Lifeline lifeline) {
         for (MessageOccurrenceSpecification message : owner.getMessages())
-            if (message.getName().equals(assignment.getName()))
+            if (message.getName().equals(statement.getName()))
                 return message.getType();
 
         for (AttributeGraphic ag : lifeline.getUmlClass().getAttributeGraphics())
-            if (ag.getAttribute().getName().getNameText().equals(assignment.getName()))
+            if (ag.getAttribute().getName().getNameText().equals(statement.getName()))
+                return new Class(ag.getAttribute().getType().getName().getNameText());
+
+        return new Class("NotKnownType");
+    }
+
+    private Class searchPreviousDeclaredFieldType(String instance, MessageOccurrenceSpecification owner, Lifeline lifeline) {
+        for (MessageOccurrenceSpecification message : owner.getMessages())
+            if (message.getName().equals(instance))
+                return message.getType();
+
+        for (AttributeGraphic ag : lifeline.getUmlClass().getAttributeGraphics())
+            if (ag.getAttribute().getName().getNameText().equals(instance))
                 return new Class(ag.getAttribute().getType().getName().getNameText());
 
         return new Class("NotKnownType");

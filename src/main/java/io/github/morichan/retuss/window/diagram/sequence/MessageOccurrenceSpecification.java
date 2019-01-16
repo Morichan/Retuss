@@ -177,6 +177,8 @@ public class MessageOccurrenceSpecification {
             height += message.calculateHeight();
         }
 
+        if (messages.size() >= 2) height += (messages.size() - 1) * 20;
+
         return height;
     }
 
@@ -185,10 +187,12 @@ public class MessageOccurrenceSpecification {
             if (value == null) {
                 return name + " : " + umlClass.getName();
             } else {
-                return name + " : " + umlClass.getName() + " = " + value;
+                return name + " = " + value + " : " + umlClass.getName();
             }
         } else if (type == MessageType.Assignment) {
-            return name + " : " + umlClass.getName() + " = " + value;
+            return name + " = " + value + " : " + umlClass.getName();
+        } else if (type == MessageType.Method) {
+            return "";
         }
 
         return name;
