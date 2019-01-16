@@ -162,7 +162,7 @@ public class MessageOccurrenceSpecification {
         if (messages.size() >= 2) height += (messages.size() - 1) * 20;
 
         if (sameLifelineCount != 0) {
-            endPoint = new Point2D(lifeline.getHeadCenterPoint().getX() + sameLifelineCount * 5, beginPoint.getY() + height - 10);
+            endPoint = new Point2D(lifeline.getHeadCenterPoint().getX() + sameLifelineCount * 5, beginPoint.getY() + height - 15);
         } else {
             endPoint = new Point2D(lifeline.getHeadCenterPoint().getX(), beginPoint.getY() + height);
         }
