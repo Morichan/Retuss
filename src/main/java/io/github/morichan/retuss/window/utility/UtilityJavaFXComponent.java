@@ -3,16 +3,12 @@ package io.github.morichan.retuss.window.utility;
 import io.github.morichan.retuss.window.ClassDiagramDrawer;
 import io.github.morichan.retuss.window.diagram.ContentType;
 import javafx.geometry.Point2D;
-import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.*;
 
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p> JavaFXコンポーネントのユーティリティクラス </p>
@@ -58,6 +54,31 @@ public class UtilityJavaFXComponent {
             }
         }
         return buttons.get(count);
+    }
+
+    /**
+     * <p> テキスト入力ダイアログを表示します </p>
+     *
+     * <p>
+     * 入力ダイアログ表示中は、ダイアログ以外の本機能における他ウィンドウは入力を受付ません。
+     * テキスト入力ダイアログを消去または入力を受付た場合は、他ウィンドウの入力受付を再開します。
+     * </p>
+     *
+     * @param title      テキスト入力ダイアログのタイトル
+     * @param headerText テキスト入力ダイアログのヘッダーテキスト
+     * @return 入力された文字列 入力せずにOKボタンを押した場合やxボタンを押した場合は空文字を返します。
+     */
+    public String showClassDiagramInputDialog(String title, String headerText, String contentText) {
+        TextInputDialog inputDialog = new TextInputDialog(contentText);
+        inputDialog.setTitle(title);
+        inputDialog.setHeaderText(headerText);
+        Optional<String> result = inputDialog.showAndWait();
+
+        if (result.isPresent()) {
+            return inputDialog.getEditor().getText();
+        } else {
+            return "";
+        }
     }
 
     /**

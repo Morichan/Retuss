@@ -62,7 +62,7 @@ public class MainController {
 
     private List<Button> buttonsInCD = new ArrayList<>();
 
-    private TextInputDialog classNameInputDialog;
+    private TextInputDialog mainWindowInputDialog;
     private File filePath = new File(System.getProperty("user.home")); // 初期ディレクトリをホームにする。
 
     private Stage mainStage;
@@ -467,6 +467,12 @@ public class MainController {
     }
 
     public void createClass(String className) {
+        if (!classDiagramTab.isSelected()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "クラス図記述タブを表示中に押してください", ButtonType.YES);
+            alert.showAndWait();
+            return;
+        }
+
         buttonsInCD = util.bindAllButtonsFalseWithout(buttonsInCD, classButtonInCD);
         classDiagramDrawer.setNodeText(className);
         classDiagramDrawer.addDrawnNode(buttonsInCD);
@@ -499,31 +505,6 @@ public class MainController {
      */
     Stage getCodeStage() {
         return codeStage;
-    }
-
-    /**
-     * <p> クラス図のテキスト入力ダイアログを表示します </p>
-     *
-     * <p>
-     * 入力ダイアログ表示中は、ダイアログ以外の本機能における他ウィンドウは入力を受付ません。
-     * テキスト入力ダイアログを消去または入力を受付た場合は、他ウィンドウの入力受付を再開します。
-     * </p>
-     *
-     * @param title      テキスト入力ダイアログのタイトル
-     * @param headerText テキスト入力ダイアログのヘッダーテキスト
-     * @return 入力された文字列 入力せずにOKボタンを押した場合やxボタンを押した場合は空文字を返します。
-     */
-    private String showClassDiagramInputDialog(String title, String headerText, String contentText) {
-        classNameInputDialog = new TextInputDialog(contentText);
-        classNameInputDialog.setTitle(title);
-        classNameInputDialog.setHeaderText(headerText);
-        Optional<String> result = classNameInputDialog.showAndWait();
-
-        if (result.isPresent()) {
-            return classNameInputDialog.getEditor().getText();
-        } else {
-            return "";
-        }
     }
 
     /**
@@ -699,35 +680,35 @@ public class MainController {
     }
 
     private String showCreateClassNameInputDialog() {
-        return showClassDiagramInputDialog("クラスの追加", "追加するクラスのクラス名を入力してください。", "");
+        return util.showClassDiagramInputDialog("クラスの追加", "追加するクラスのクラス名を入力してください。", "");
     }
 
     private String showChangeClassNameInputDialog(String className) {
-        return showClassDiagramInputDialog("クラス名の変更", "変更後のクラス名を入力してください。", className);
+        return util.showClassDiagramInputDialog("クラス名の変更", "変更後のクラス名を入力してください。", className);
     }
 
     private String showAddClassAttributeInputDialog() {
-        return showClassDiagramInputDialog("属性の追加", "追加する属性を入力してください。", "");
+        return util.showClassDiagramInputDialog("属性の追加", "追加する属性を入力してください。", "");
     }
 
     private String showChangeClassAttributeInputDialog(String attribute) {
-        return showClassDiagramInputDialog("属性の変更", "変更後の属性を入力してください。", attribute);
+        return util.showClassDiagramInputDialog("属性の変更", "変更後の属性を入力してください。", attribute);
     }
 
     private String showAddClassOperationInputDialog() {
-        return showClassDiagramInputDialog("操作の追加", "追加する操作を入力してください。", "");
+        return util.showClassDiagramInputDialog("操作の追加", "追加する操作を入力してください。", "");
     }
 
     private String showChangeClassOperationInputDialog(String operation) {
-        return showClassDiagramInputDialog("操作の変更", "変更後の操作を入力してください。", operation);
+        return util.showClassDiagramInputDialog("操作の変更", "変更後の操作を入力してください。", operation);
     }
 
     private String showCreateCompositionNameInputDialog() {
-        return showClassDiagramInputDialog("コンポジションの追加", "コンポジション先の関連端名を入力してください。", "");
+        return util.showClassDiagramInputDialog("コンポジションの追加", "コンポジション先の関連端名を入力してください。", "");
     }
 
     private String showChangeCompositionNameInputDialog(String composition) {
-        return showClassDiagramInputDialog("コンポジションの変更", "変更後のコンポジション先の関連端名を入力してください。", composition);
+        return util.showClassDiagramInputDialog("コンポジションの変更", "変更後のコンポジション先の関連端名を入力してください。", composition);
     }
 
     private void createClassTreeViewContents() {

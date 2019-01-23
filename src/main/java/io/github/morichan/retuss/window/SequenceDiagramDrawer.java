@@ -241,18 +241,47 @@ public class SequenceDiagramDrawer {
         tabPane.getTabs().add(childTab);
     }
 
-    private void createEvent(MouseEvent e, ScrollPane pane, String classId, String operationId) {
+    private void createEvent(MouseEvent mouse, ScrollPane pane, String classId, String operationId) {
         Interaction interaction = interactionSetFromClassNameAndOperation.get(classId).get(operationId);
 
-        if (e.getButton() == MouseButton.PRIMARY) {
-
-        } else if (e.getButton() == MouseButton.SECONDARY) {
+        if (mouse.getButton() == MouseButton.PRIMARY) {
+            // メッセージの追加
+        } else if (mouse.getButton() == MouseButton.SECONDARY) {
             ContextMenu popup = new ContextMenu();
 
-            popup.getItems().add(new MenuItem(interaction.getMessage().getName() + "メッセージの変更"));
-            popup.getItems().add(new MenuItem(interaction.getMessage().getName() + "メッセージをモデルから削除"));
+            // MenuItem changeMenu = new MenuItem(interaction.getMessage().getName() + "メッセージの変更");
+            // changeMenu.setOnAction(e -> changeSequence(classId, operationId));
+            MenuItem deleteMenu = new MenuItem(interaction.getMessage().getName() + "メッセージをモデルから削除");
+            deleteMenu.setOnAction(e -> deleteSequence(classId, operationId));
+            // popup.getItems().add(changeMenu);
+            popup.getItems().add(deleteMenu);
 
             pane.setContextMenu(popup);
         }
+    }
+
+    private void deleteSequence(String classId, String operationId) {
+
+        int classIndex = -1;
+        int operationIndex = -1;
+
+        becauseOperationIsSpecify: for (int i = 0; i < umlPackage.getClasses().size(); i++) {
+            if (!umlPackage.getClasses().get(i).getName().equals(classId)) continue;
+
+            for (int j = 0; j < umlPackage.getClasses().get(i).getOperationGraphics().size(); j++) {
+                if (!umlPackage.getClasses().get(i).getOperationGraphics().get(j).getOperation().toString().equals(operationId)) continue;
+                classIndex = i;
+                operationIndex = j;
+                break becauseOperationIsSpecify;
+            }
+        }
+
+        if (operationIndex == -1) return;
+
+        interactionSetFromClassNameAndOperation.get(classId).remove(operationId);
+        umlPackage.getClasses().get(classIndex).getOperationGraphics().remove(operationIndex);
+
+        ((TabPane) ((AnchorPane) tabPaneInSequenceTab.getTabs().get(classIndex).getContent()).getChildren().get(0)).getTabs().remove(operationIndex);
+        draw();
     }
 }
