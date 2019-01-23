@@ -202,7 +202,7 @@ public class Method implements BlockStatement {
 
     @Override
     public String getStatement() {
-        return "";
+        return name + "();";
     }
 
     @Override
