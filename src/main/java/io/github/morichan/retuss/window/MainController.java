@@ -127,6 +127,7 @@ public class MainController {
 
         try {
             sequenceDiagramDrawer.draw();
+            codeController.createCodeTabs(sequenceDiagramDrawer.getUmlPackage());
         } catch (NullPointerException e) {
             // This is reason for codeController.getUmlPackage() is equal to one phase before now umlPackage
             tabPaneInSequenceTab.getTabs().clear();
@@ -136,6 +137,8 @@ public class MainController {
             sequenceDiagramDrawer.createSequenceTabContent(sequenceDiagramTab);
             sequenceDiagramDrawer.draw();
         }
+
+        classDiagramDrawer.setUmlPackage(sequenceDiagramDrawer.getUmlPackage());
     }
 
     /**

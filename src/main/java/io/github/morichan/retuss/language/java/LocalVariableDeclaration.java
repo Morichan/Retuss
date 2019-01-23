@@ -140,6 +140,11 @@ public class LocalVariableDeclaration implements BlockStatement {
     }
 
     @Override
+    public String getStatement() {
+        return toString();
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 

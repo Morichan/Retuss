@@ -62,6 +62,10 @@ public class ClassDiagramDrawer {
         return umlPackage;
     }
 
+    public void setUmlPackage(Package umlPackage) {
+        this.umlPackage = umlPackage;
+    }
+
     /**
      * 操作中のノード番号を返す。
      *

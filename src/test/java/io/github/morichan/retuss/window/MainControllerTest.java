@@ -2160,7 +2160,7 @@ class MainControllerTest extends ApplicationTest {
 
             @Test
             void クラス名と操作を3つ持つクラスを記述する() {
-                String expected = "class Main {\n    public int getNumber() {}\n    void setNumber(int num) {}\n    protected void print() {}\n}\n";
+                String expected = "class Main {\n    public int getNumber() {}\n\n    void setNumber(int num) {}\n\n    protected void print() {}\n}\n";
 
                 clickOn("#classButtonInCD");
                 drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
@@ -2175,7 +2175,7 @@ class MainControllerTest extends ApplicationTest {
 
             @Test
             void クラス名と操作を3つ持つクラスの2番目の操作を変更する() {
-                String expected = "class Main {\n    public int getNumber() {}\n    void changeNumber(int num, int param) {}\n    protected void print() {}\n}\n";
+                String expected = "class Main {\n    public int getNumber() {}\n\n    void changeNumber(int num, int param) {}\n\n    protected void print() {}\n}\n";
 
                 clickOn("#classButtonInCD");
                 drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
@@ -2191,7 +2191,7 @@ class MainControllerTest extends ApplicationTest {
 
             @Test
             void クラス名と操作を3つ持つクラスの2番目の操作を除去する() {
-                String expected = "class Main {\n    public int getNumber() {}\n    protected void print() {}\n}\n";
+                String expected = "class Main {\n    public int getNumber() {}\n\n    protected void print() {}\n}\n";
 
                 clickOn("#classButtonInCD");
                 drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
@@ -2237,7 +2237,7 @@ class MainControllerTest extends ApplicationTest {
 
             @Test
             void クラス名と操作を3つ持つクラスの2番目の操作を非表示化する() {
-                String expected = "class Main {\n    public int getNumber() {}\n    void setNumber(int num) {}\n    protected void print() {}\n}\n";
+                String expected = "class Main {\n    public int getNumber() {}\n\n    void setNumber(int num) {}\n\n    protected void print() {}\n}\n";
 
                 clickOn("#classButtonInCD");
                 drawClasses(firstClickedClassDiagramCanvas, "Main", okButtonPoint);
@@ -2272,7 +2272,7 @@ class MainControllerTest extends ApplicationTest {
             void クラスを3つ記述して2番目のクラスに属性と操作を2つずつ追加する() {
                 List<String> expectedList = Arrays.asList(
                         "class Main {\n}\n",
-                        "class Sub {\n    private int number;\n    private char text;\n\n    public void setNumber(int number) {}\n    public int getNumber() {}\n}\n",
+                        "class Sub {\n    private int number;\n    private char text;\n\n    public void setNumber(int number) {}\n\n    public int getNumber() {}\n}\n",
                         "class Super {\n}\n");
 
                 clickOn("#classButtonInCD");

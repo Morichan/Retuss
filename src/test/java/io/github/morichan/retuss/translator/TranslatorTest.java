@@ -34,7 +34,7 @@ class TranslatorTest {
 
         @Test
         void クラス名とフィールド2つメソッド2つ持つJavaコードを返す() {
-            String expected = "class ClassName {\n    private int number;\n    private float pi = 3.1415926535;\n\n    public boolean isTrue() {}\n    public double calculate(double x, double y, double z) {}\n}\n";
+            String expected = "class ClassName {\n    private int number;\n    private float pi = 3.1415926535;\n\n    public boolean isTrue() {}\n\n    public double calculate(double x, double y, double z) {}\n}\n";
 
             Package classPackage = new Package();
             Class classClass = new Class("ClassName");

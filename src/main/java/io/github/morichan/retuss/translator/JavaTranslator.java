@@ -10,6 +10,8 @@ import io.github.morichan.retuss.language.java.Class;
 import io.github.morichan.retuss.language.uml.Package;
 import io.github.morichan.retuss.window.diagram.OperationGraphic;
 import io.github.morichan.retuss.window.diagram.sequence.Interaction;
+import io.github.morichan.retuss.window.diagram.sequence.MessageOccurrenceSpecification;
+import io.github.morichan.retuss.window.diagram.sequence.MessageType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,6 +98,20 @@ public class JavaTranslator {
                 }
             } catch (IllegalStateException e) {
                 method.emptyArguments();
+            }
+
+            if (operationGraphic.getInteraction() != null) {
+                MethodBody body = new MethodBody();
+
+                for (MessageOccurrenceSpecification message : operationGraphic.getInteraction().getMessage().getMessages()) {
+                    if (message.getMessageType() == MessageType.Declaration) {
+                        LocalVariableDeclaration local = new LocalVariableDeclaration(new Type(message.getType().getName()), message.getName());
+                        if (message.getValue() != null) local.setValue(message.getValue());
+                        body.addStatement(local);
+                    }
+                }
+
+                method.setMethodBody(body);
             }
 
             javaClass.addMethod(method);

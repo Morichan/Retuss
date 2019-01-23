@@ -216,11 +216,11 @@ public class Class {
 
         if (!fields.isEmpty() && !methods.isEmpty()) sb.append("\n");
 
-        for (Method method : methods) {
-            sb.append("    ");
-            sb.append(method);
-            sb.append("\n");
-        }
+        if(!methods.isEmpty()) sb.append("    ");
+        List<String> methodsString = new ArrayList<>();
+        for (Method method : methods) methodsString.add(method.toString());
+        sb.append(String.join("\n\n    ", methodsString));
+        if(!methods.isEmpty()) sb.append("\n");
 
         sb.append("}\n");
 

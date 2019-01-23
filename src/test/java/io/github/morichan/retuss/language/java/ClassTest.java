@@ -130,7 +130,7 @@ class ClassTest {
 
             @Test
             void フィールドが3つのコードを返す() {
-                String expected = "class ClassName {\n    public double calculate(double x, double y) {}\n    public void print() {}\n    public String toString() {}\n}\n";
+                String expected = "class ClassName {\n    public double calculate(double x, double y) {}\n\n    public void print() {}\n\n    public String toString() {}\n}\n";
 
                 obj.setName("ClassName");
                 obj.setMethod(Arrays.asList(
@@ -155,7 +155,7 @@ class ClassTest {
 
             @Test
             void フィールドとメソッドの間に空行を含むコードを返す() {
-                String expected = "class ClassName {\n    private int x;\n    private int y;\n\n    public void method() {}\n    public void print() {}\n}\n";
+                String expected = "class ClassName {\n    private int x;\n    private int y;\n\n    public void method() {}\n\n    public void print() {}\n}\n";
 
                 obj.setFields(Arrays.asList(new Field(new Type("int"), "x"), new Field(new Type("int"), "y")));
                 obj.setMethod(Arrays.asList(new Method(new Type("void"), "method"), new Method(new Type("void"), "print")));

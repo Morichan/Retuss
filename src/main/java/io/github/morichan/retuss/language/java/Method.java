@@ -201,6 +201,11 @@ public class Method implements BlockStatement {
     }
 
     @Override
+    public String getStatement() {
+        return "";
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
@@ -226,8 +231,25 @@ public class Method implements BlockStatement {
 
         sb.append(")");
 
-        if (isAbstract) sb.append(";");
-        else sb.append(" {}");
+        if (isAbstract) {
+            sb.append(";");
+            return sb.toString();
+        }
+
+        if (methodBody == null) {
+            sb.append(" {}");
+            return sb.toString();
+        }
+
+        sb.append(" {\n");
+
+        for (BlockStatement statement : methodBody.getStatements()) {
+            sb.append("        ");
+            sb.append(statement.getStatement());
+            sb.append("\n");
+        }
+
+        sb.append("    }");
 
         return sb.toString();
     }

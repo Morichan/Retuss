@@ -44,6 +44,10 @@ public class SequenceDiagramDrawer {
         resetLifelineFlag();
     }
 
+    public Package getUmlPackage() {
+        return umlPackage;
+    }
+
     public void resetLifelineFlag() {
         for (Class umlClass : this.umlPackage.getClasses()) {
             for (OperationGraphic og : umlClass.getOperationGraphics()) {
