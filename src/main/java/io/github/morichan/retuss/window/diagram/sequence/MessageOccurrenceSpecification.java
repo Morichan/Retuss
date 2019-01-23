@@ -192,7 +192,7 @@ public class MessageOccurrenceSpecification {
         } else if (type == MessageType.Assignment) {
             return name + " = " + value + " : " + umlClass.getName();
         } else if (type == MessageType.Method) {
-            return "";
+            return name;
         }
 
         return name;

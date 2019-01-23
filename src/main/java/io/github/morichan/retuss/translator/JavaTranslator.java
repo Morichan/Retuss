@@ -14,6 +14,8 @@ import io.github.morichan.retuss.window.diagram.sequence.MessageOccurrenceSpecif
 import io.github.morichan.retuss.window.diagram.sequence.MessageType;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -102,12 +104,22 @@ public class JavaTranslator {
 
             if (operationGraphic.getInteraction() != null) {
                 MethodBody body = new MethodBody();
+                Pattern p = Pattern.compile("([^(]*)[(]");
 
                 for (MessageOccurrenceSpecification message : operationGraphic.getInteraction().getMessage().getMessages()) {
                     if (message.getMessageType() == MessageType.Declaration) {
                         LocalVariableDeclaration local = new LocalVariableDeclaration(new Type(message.getType().getName()), message.getName());
                         if (message.getValue() != null) local.setValue(message.getValue());
                         body.addStatement(local);
+                    } else if (message.getMessageType() == MessageType.Assignment) {
+                        Assignment assignment = new Assignment(message.getName());
+                        if (message.getValue() != null) assignment.setValue(message.getValue());
+                        body.addStatement(assignment);
+                    } else if (message.getMessageType() == MessageType.Method) {
+                        Matcher m = p.matcher(message.getName());
+                        if (!m.find()) continue;
+                        Method methodSyntax = new Method(new Type(message.getType().getName()), m.group(1));
+                        body.addStatement(methodSyntax);
                     }
                 }
 

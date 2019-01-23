@@ -27,6 +27,7 @@ import io.github.morichan.retuss.window.diagram.sequence.MessageOccurrenceSpecif
 import io.github.morichan.retuss.window.diagram.sequence.MessageType;
 
 
+import java.lang.invoke.MethodType;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -162,6 +163,7 @@ public class UMLTranslator {
                                 MessageOccurrenceSpecification sourceMessage = sourceOg.getInteraction().getMessage();
 
                                 if (sourceMessage.getName().contains(message.getName() + "(")) {
+                                    sourceMessage.setMessageType(MessageType.Method);
                                     og.getInteraction().getMessage().getMessages().set(i, sourceMessage);
                                     continue toSearchNextMessage;
                                 }
