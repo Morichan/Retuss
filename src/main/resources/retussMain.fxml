@@ -92,7 +92,6 @@
                                                       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                                         <items>
                                                           <Button fx:id="normalButtonInSD" mnemonicParsing="false" text="Normal" />
-                                                            <Button mnemonicParsing="false" text="Message" />
                                                         </items>
                                                       </ToolBar>
                                                    </top>

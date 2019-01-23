@@ -104,7 +104,7 @@ public class JavaTranslator {
 
             if (operationGraphic.getInteraction() != null) {
                 MethodBody body = new MethodBody();
-                Pattern p = Pattern.compile("([^(]*)[(]");
+                Pattern p = Pattern.compile(" ([^(]*)[(]");
 
                 for (MessageOccurrenceSpecification message : operationGraphic.getInteraction().getMessage().getMessages()) {
                     if (message.getMessageType() == MessageType.Declaration) {
