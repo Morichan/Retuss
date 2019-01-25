@@ -66,6 +66,7 @@ public class UtilityJavaFXComponent {
      *
      * @param title      テキスト入力ダイアログのタイトル
      * @param headerText テキスト入力ダイアログのヘッダーテキスト
+     * @param contentText テキスト入力エリアに表示するテキスト
      * @return 入力された文字列 入力せずにOKボタンを押した場合やxボタンを押した場合は空文字を返します。
      */
     public String showClassDiagramInputDialog(String title, String headerText, String contentText) {
