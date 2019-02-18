@@ -18,30 +18,38 @@
 
 
 
-
-
 # RETUSS
 
 __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) は、UMLとソースコード間のトレーサビリティをリアルタイムに維持するツールです。
 
 
 
-
-
-## 言い訳
-
-現在はただの低レベルなクラス図描画ツールですが、これから少しずつ大きくしていこうと思います。
-
-pushしてみたいから変更
-
-## 開発環境
+# 開発環境
 
 * Windows 10 Pro (64 bit) 1803
-* IntelliJ IDEA 2018.1.5 (Community Edition)
+* IntelliJ IDEA 2018.2.7 (Community Edition)
+* Java 9.0.4
+* Gradle
 
 
 
-## 注意点
+# 開発環境の構築
+
+手順の概要を、次に示します。
+
+1. OpenJDK9 or OpenJDK10のインストール
+1. Gradleのインストール
+1. IntelliJのインストール
+1. Gitコマンドのインストール
+1. GitHub上のRETUSSのフェッチおよびクローン
+1. IntelliJの既存システム展開でRETUSSのbuild.gradleの選択
+1. ビルドコマンドの作成
+
+詳細な説明は、Wikiをご覧ください。
+
+
+
+# 注意点
 
 * テストコードのコンパイル時には `-Djdk.attach.allowAttachSelf` システムプロパティを追加してください。
 * ビルドする際にTestFXによるGUIテストを実行するため、マウスなどを動かさないようにしてください。

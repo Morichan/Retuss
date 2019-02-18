@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -37,6 +38,8 @@ public class RetussWindow extends Application {
         Parent root = loader.load();
         mainStage.setTitle(mainTitle);
         mainStage.setScene(new Scene(root));
+        mainStage.setMaxWidth(Screen.getPrimary().getVisualBounds().getWidth());
+        mainStage.setMaxHeight(Screen.getPrimary().getVisualBounds().getHeight());
 
         mainStage.show();
 
