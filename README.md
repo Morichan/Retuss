@@ -50,7 +50,7 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 1. Gradleのインストール
 1. IntelliJのインストール
 1. Gitコマンドのインストール
-1. GitHub上のRETUSSのフェッチおよびクローン
+1. GitHub上のRETUSSのフォークおよびクローン
 1. IntelliJの既存システム展開でRETUSSのbuild.gradleの選択
 1. ビルドコマンドの作成
 
