@@ -54,7 +54,7 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 1. IntelliJの既存システム展開でRETUSSのbuild.gradleの選択
 1. ビルドコマンドの作成
 
-詳細な説明は、Wikiをご覧ください。
+詳細な説明は、RETUSSの開発環境構築を説明した[Wiki](https://github.com/Morichan/Retuss/wiki/RETUSSの開発環境構築)をご覧ください。
 
 
 
