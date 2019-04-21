@@ -1557,7 +1557,7 @@ class MainControllerTest extends ApplicationTest {
                 third = new Point2D(800, 600);
                 betweenFirstAndSecond = new Point2D(first.getX() + (second.getX() - first.getX())/2, first.getY() + (second.getY() - first.getY())/2);
                 betweenFirstAndThird = new Point2D(first.getX() + (third.getX() - first.getX())/2, first.getY() + (third.getY() - first.getY())/2);
-                okButtonPoint = new Point2D(1000.0, 490.0);
+                okButtonPoint = new Point2D(1000.0, 460.0);
                 moveCodeWindow();
                 deleteCodeWindow();
                 deleteCodeWindow();
@@ -1996,7 +1996,7 @@ class MainControllerTest extends ApplicationTest {
                 topLeftCornerEdge = new Point2D(650, 163);
                 bottomRightCornerEdge = new Point2D(1583, 984);
                 xButtonOnDialogBox = new Point2D(1050.0, 350.0);
-                okButtonPoint = new Point2D(1000.0, 490.0);
+                okButtonPoint = new Point2D(1000.0, 460.0);
                 firstClickedClassDiagramCanvas = new Point2D(900.0, 600.0);
                 secondClickedClassDiagramCanvas = new Point2D(1050.0, 300.0);
                 thirdClickedClassDiagramCanvas = new Point2D(800.0, 450.0);
@@ -2639,11 +2639,11 @@ class MainControllerTest extends ApplicationTest {
         }
 
         private void moveCodeWindow() {
-            drag(new Point2D(800.0, 250.0)).dropTo(new Point2D(1700.0, 250.0));
+            drag(new Point2D(800.0, 230.0)).dropTo(new Point2D(1700.0, 230.0));
         }
 
         private void deleteCodeWindow() {
-            clickOn(new Point2D(1250.0, 250.0));
+            clickOn(new Point2D(1250.0, 230.0));
         }
     }
 
@@ -2821,7 +2821,7 @@ class MainControllerTest extends ApplicationTest {
     private void drawClasses(Point2D canvasPoint, String className) {
         clickOn(canvasPoint);
         write(className);
-        clickOn(new Point2D(1000.0, 490.0));
+        clickOn(new Point2D(1000.0, 460.0));
     }
 
     private void drawClasses(Point2D canvasPoint, String className, Point2D okButtonPoint) {

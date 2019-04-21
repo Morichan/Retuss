@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import mockit.*;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ class RetussWindowTest {
     RetussWindow retussWindow = new RetussWindow();
 
     @Test
+    @Disabled
     void main文を実行するとlaunchメソッドを1回実行する() {
         // 初期化
         new Expectations() {{
