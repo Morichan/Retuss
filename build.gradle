@@ -1,29 +1,36 @@
 group 'io.github.morichan'
 version '0.0.1'
 
-apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'spring-boot'
-
-// SpringBoot pluginを利用することで邪魔になったため除外
-// mainClassName = 'io.github.morichan.retuss.window.RetussWindow'
-
-sourceCompatibility = 9
-targetCompatibility = 9
-tasks.withType(AbstractCompile)*.options*.encoding =
-        tasks.withType(GroovyCompile)*.groovyOptions*.encoding =
-                javadoc.options.encoding =
-                        javadoc.options.charSet = 'UTF-8'
-
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.+'
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.+'
+        classpath "org.openjfx:javafx-plugin:0.0.7"
+        classpath "org.beryx:badass-jlink-plugin:2.10.1"
     }
 }
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'spring-boot'
+
+
+
+// SpringBoot pluginを利用することで邪魔になったため除外
+mainClassName = 'io.github.morichan.retuss.window.RetussWindow'
+
+sourceCompatibility = 11
+targetCompatibility = 11
+tasks.withType(AbstractCompile)*.options*.encoding =
+        tasks.withType(GroovyCompile)*.groovyOptions*.encoding =
+                javadoc.options.encoding =
+                        javadoc.options.charSet = 'UTF-8'
 
 
 
@@ -33,6 +40,8 @@ repositories {
 
 apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'antlr'
+apply plugin: "org.openjfx.javafxplugin"
+apply plugin: "org.beryx.jlink"
 
 dependencies {
     antlr 'org.antlr:antlr4:4+'
@@ -87,9 +96,28 @@ jar {
     // SpringBoot pluginを利用することで邪魔になったため除外
     // manifest.attributes 'Main-Class': 'io.github.morichan.retuss.window.RetussWindow'
     jar.into('') from configurations.runtime
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
 }
 
 
+
+javafx {
+    version = "11.0.2"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+jlink {
+    launcher {
+        name = 'hellofx'
+    }
+}
 
 junitPlatformTest {
     jvmArgs "-Djdk.attach.allowAttachSelf"
