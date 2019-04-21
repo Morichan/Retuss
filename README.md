@@ -6,9 +6,9 @@
 
 [![license](https://img.shields.io/github/license/Morichan/Retuss.svg)](LICENSE)
 
-[![Java version](https://img.shields.io/badge/java-9+-4c7e9f.svg)](https://www.java.com/en/)
+[![Java version](https://img.shields.io/badge/java-11+-4c7e9f.svg)](https://www.java.com/en/)
 [![JUnit version](https://img.shields.io/badge/junit-5+-dc524a.svg)](https://junit.org/junit5/)
-[![Gradle version](https://img.shields.io/badge/gradle-4.4+-007042.svg)](https://gradle.org/docs/)
+[![Gradle version](https://img.shields.io/badge/gradle-5.4+-007042.svg)](https://gradle.org/docs/)
 [![ANTLR version](https://img.shields.io/badge/antlr-4+-ec312e.svg)](http://www.antlr.org/)
 [![ANTLR version](https://img.shields.io/badge/fescue-2+-00dc00.svg)](https://github.com/Morichan/fescue/)
 
@@ -36,9 +36,9 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 # 開発環境
 
 * Windows 10 Pro (64 bit) 1803
-* IntelliJ IDEA 2018.2.7 (Community Edition)
-* Java 9.0.4
-* Gradle 4.9
+* IntelliJ IDEA 2019.1 (Community Edition)
+* Java 11
+* Gradle 5.4
 
 
 
@@ -46,15 +46,15 @@ __RETUSS__ (Real-time Ensure Traceability between UML and Source-code System) �
 
 手順の概要を、次に示します。
 
-1. OpenJDK9 or OpenJDK10のインストール
+1. OpenJDK11のインストール
 1. Gradleのインストール
 1. IntelliJのインストール
 1. Gitコマンドのインストール
-1. GitHub上のRETUSSのフェッチおよびクローン
+1. GitHub上のRETUSSのフォークおよびクローン
 1. IntelliJの既存システム展開でRETUSSのbuild.gradleの選択
 1. ビルドコマンドの作成
 
-詳細な説明は、Wikiをご覧ください。
+詳細な説明は、RETUSSの開発環境構築を説明した[Wiki](https://github.com/Morichan/Retuss/wiki/RETUSSの開発環境構築)をご覧ください。
 
 
 
@@ -150,18 +150,6 @@ RETUSSは、次の5つの構造を持ちます。
 ## やらなければならないこと
 
 なにより、これはやっておきたいです。
-
-### Java11への対応
-
-Java9はもう古いです。
-コンパイルはおろか、JREを探すのも大変で、簡単に実行すらできません。
-
-しかも、Java8より新しいせいで、Java8では実行できず、散々です。
-なぜJava9にアップデートしたのか。
-先見の明の無さに呆れます。
-
-Java11にしないと何も進めないと思います。
-Java8に戻してもいいのですが、そうなると今度は2020年以降使いづらくなると思います。
 
 ### 構造の変更
 
